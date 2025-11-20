@@ -6,7 +6,7 @@
 #    By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/12 18:08:48 by ramaroud          #+#    #+#              #
-#    Updated: 2025/11/17 14:40:39 by ramaroud         ###   ########lyon.fr    #
+#    Updated: 2025/11/20 13:02:23 by ramaroud         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,12 +60,13 @@ BONUS_OBJS = $(BONUS:.c=.o)
 CC		= cc
 RM		= rm -f
 CFLAGS		= -Wall -Wextra -Werror
+SRC_INCLUDES	= libft.h
 
 NAME	= libft.a
 
 all:		$(NAME)
 
-${NAME}:	$(OBJS)
+$(NAME):	$(OBJS) $(SRC_INCLUDES)
 			ar rcs $(NAME) $(OBJS)
 
 clean:
