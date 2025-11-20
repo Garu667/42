@@ -6,7 +6,7 @@
 #    By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/12 18:08:48 by ramaroud          #+#    #+#              #
-#    Updated: 2025/11/20 13:02:23 by ramaroud         ###   ########lyon.fr    #
+#    Updated: 2025/11/20 13:32:23 by ramaroud         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -83,5 +83,8 @@ bonus:		.bonus
 .bonus:		$(OBJS) $(BONUS_OBJS)
 			ar rcs $(NAME) $(OBJS) $(BONUS_OBJS)
 			touch .bonus
+
+%.o:		%.c libft.h
+			$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY:		all clean fclean re bonus
