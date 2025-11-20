@@ -6,7 +6,7 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 18:08:54 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/17 12:14:22 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2025/11/20 14:47:50 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void				*ft_memset(void *s, int c, size_t len);
 void				ft_bzero(void *s, size_t n);
 void				*ft_memcpy(void *dst, const void *src, size_t len);
 void				*ft_memmove(void *dst, const void *src, size_t len);
-size_t				ft_strlcpy(char *dst, char *src, size_t size);
+size_t				ft_strlcpy(char *dst, const char *src, size_t size);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
