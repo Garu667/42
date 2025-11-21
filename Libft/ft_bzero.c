@@ -1,10 +1,24 @@
-void	ft_bzero(void *s, int n)
-{
-	int	i;
-	char	*str;
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/12 17:41:42 by ramaroud          #+#    #+#             */
+/*   Updated: 2025/11/12 17:42:40 by ramaroud         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
 
-	i = -1;
+#include "libft.h"
+
+void	ft_bzero(void *s, size_t n)
+{
+	char	*str;
+	size_t	i;
+
+	i = 0;
 	str = (char *)s;
-	while (++i < n)
-		str[i] = 0;
+	while (i < n)
+		str[i++] = 0;
 }

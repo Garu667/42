@@ -1,4 +1,18 @@
-int	ft_atoi(char *str)
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/12 16:24:13 by ramaroud          #+#    #+#             */
+/*   Updated: 2025/11/12 16:26:25 by ramaroud         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "libft.h"
+
+int	ft_atoi(const char *str)
 {
 	int	number;
 	int	sign;
@@ -16,9 +30,6 @@ int	ft_atoi(char *str)
 		i++;
 	}
 	while (str[i] >= '0' && str[i] <= '9')
-	{
-		number = number * 10 + (str[i] - 48);
-		i++;
-	}
+		number = number * 10 + (str[i++] - 48);
 	return (number * sign);
 }
