@@ -12,17 +12,6 @@
 
 #include "get_next_line.h"
 
-void	ft_bzero(void *s, size_t n)
-{
-	char	*str;
-	size_t	i;
-
-	i = 0;
-	str = (char *)s;
-	while (i < n)
-		str[i++] = 0;
-}
-
 size_t	ft_strlen(char *str)
 {
 	size_t	i;
@@ -80,3 +69,25 @@ void	ft_format(char **line, char buffer[])
 	buffer[j] = 0;
 	(*line)[i] = 0;
 }
+
+void	ft_lstadd_back(t_list **lst, int fd)
+{
+	t_list	*node;
+	t_list	*last;
+
+	node = malloc(sizeof(t_list));
+	if (!node)
+		return ;
+	node->fd = fd;
+	node->next = NULL;
+	if (!*lst)
+	{
+		*lst = node;
+		return ;
+	}
+	last = *lst;
+	while (last->next)
+		last = last->next;
+	last->next = node;
+}
+
