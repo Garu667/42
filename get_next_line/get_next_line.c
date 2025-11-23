@@ -11,35 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <string.h>
-
-int	ft_check_line(char *line)
-{
-	int	i;
-
-	i = -1;
-	if (!line || line[0] == 0)
-		return (-1);
-	while (line[++i])
-		if (line[i] == '\n')
-			return (i);
-	return (-1);
-}
-
-void	ft_double_check(char **line, char buffer[])
-{
-	int	i;
-	int	j;
-
-	j = -1;
-	i = ft_check_line(*line) + 1;
-	if (i == 0)
-		return ;
-	while ((*line)[i + ++j] && j != BUFFER_SIZE)
-		buffer[j] = (*line)[i + j];
-	buffer[j] = 0;
-	(*line)[i] = 0;
-}
 
 char	*ft_get_line(int fd, char *line, char buffer[])
 {
@@ -51,9 +22,9 @@ char	*ft_get_line(int fd, char *line, char buffer[])
 	while (ft_check_line(line) == -1 && bytes_read != 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read < 0)
+		if (bytes_read <= 0)
 		{
-			buffer[0] = 0;
+			ft_bzero((void *)buffer, BUFFER_SIZE);
 			free(line);
 			return (NULL);
 		}
@@ -62,56 +33,110 @@ char	*ft_get_line(int fd, char *line, char buffer[])
 		if (!line)
 			return (NULL);
 	}
-	if (bytes_read == 0)
-		return (NULL);
 	return (line);
+}
+
+void	ft_lstadd_back(t_list **lst, int fd)
+{
+	t_list	*node;
+	t_list	*last;
+
+	node = malloc(sizeof(t_list));
+	if (!node)
+		return ;
+	node->fd = fd;
+	node->next = NULL;
+	if (!*lst)
+	{
+		*lst = node;
+		return ;
+	}
+	last = *lst;
+	while (last->next)
+		last = last->next;
+	last->next = node;
+}
+
+int	ft_manage_list(t_list **lst, int fd)
+{
+	t_list	*node;
+	int	i;
+
+	i = 0;
+	node = *lst;
+	if (!node)
+	{
+		node = malloc(sizeof(t_list));
+		if (!node)
+			return (-1);
+		node->fd = fd;
+		node->next = NULL;
+		*lst = node;
+		return (i);
+	}
+	while (node)
+	{
+		if (node->fd == fd)
+			return (i);
+		node = node->next;
+		i++;
+	}
+	ft_lstadd_back(lst, fd);
+	return (i);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
+	static t_list	*lst;
 	char	*line;
+	int	i;
 
-	line = malloc(sizeof(char));
-	if (!line)
-		return (NULL);
 	if (fd < 0 || BUFFER_SIZE <= 0)
-	{
-		free(line);
 		return (NULL);
-	}
-	line = ft_strjoin(line, buffer);
-	line = ft_get_line(fd, line, buffer);
+	i = ft_manage_list(&lst, fd);
+	line = malloc(sizeof(char));
+	if (!line || i == -1)
+		return (NULL);
+	ft_bzero(line, sizeof(char));
+	line = ft_strjoin(line, lst[i].buffer);
 	if (!line)
 	{
 		free(line);
 		return (NULL);
 	}
-	ft_double_check(&line, buffer);
+	line = ft_get_line(fd, line, lst[i].buffer);
+	if (!line)
+		return (NULL);
+	ft_format(&line, lst[i].buffer);
 	return (line);
 }
 
 int	main(int ac, char **av)
 {
 	int	i;
-	int	fd;
+	int	fd1;
+	int	fd2;
 	char	*line;
 
 	i = 0;
-	fd = 0;
-	line = NULL;
-	if (ac == 2)
+	fd1 = open(av[1], O_RDONLY);
+	fd2 = open(av[2], O_RDONLY);
+	while (++i < 4)
 	{
-		fd = open(av[1], O_RDONLY);
-		if (fd == -1)
-			return (-1);
-	}
-	line = get_next_line(fd);
-	while (line && i < 99)
-	{
+		line = get_next_line(fd1);
 		printf("%d: %s", i, line);
-		line = get_next_line(fd);
-		i++;
+	}
+	i = 0;
+	while (++i < 4)
+	{
+		line = get_next_line(fd2);
+		printf("%d: %s", i, line);
+	}
+	i = 0;
+	while (++i < 4)
+	{
+		line = get_next_line(fd1);
+		printf("%d: %s", i, line);
 	}
 	free(line);
 }

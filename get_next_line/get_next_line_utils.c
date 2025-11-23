@@ -12,6 +12,17 @@
 
 #include "get_next_line.h"
 
+void	ft_bzero(void *s, size_t n)
+{
+	char	*str;
+	size_t	i;
+
+	i = 0;
+	str = (char *)s;
+	while (i < n)
+		str[i++] = 0;
+}
+
 size_t	ft_strlen(char *str)
 {
 	size_t	i;
@@ -40,4 +51,32 @@ char	*ft_strjoin(char *s1, char s2[])
 		str[j++] = s2[i++];
 	str[j] = 0;
 	return (str);
+}
+
+int	ft_check_line(char *line)
+{
+	int	i;
+
+	i = -1;
+	if (!line || line[0] == 0)
+		return (-1);
+	while (line[++i])
+		if (line[i] == '\n')
+			return (i);
+	return (-1);
+}
+
+void	ft_format(char **line, char buffer[])
+{
+	int	i;
+	int	j;
+
+	j = -1;
+	i = ft_check_line(*line) + 1;
+	if (i == 0)
+		return ;
+	while ((*line)[i + ++j] && j != BUFFER_SIZE)
+		buffer[j] = (*line)[i + j];
+	buffer[j] = 0;
+	(*line)[i] = 0;
 }

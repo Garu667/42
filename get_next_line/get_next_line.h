@@ -21,15 +21,17 @@
 # include <stdio.h>
 # include <stddef.h>
 
+void	ft_bzero(void *s, size_t n);
 size_t	ft_strlen(char *str);
 char	*ft_strjoin(char *s1, char s2[]);
-/*
-typedef struct s_fd_data
+int	ft_check_line(char *line);
+void	ft_format(char **line, char buffer[]);
+char	*get_next_line(int fd);
+typedef struct	s_list
 {
-	struct s_fd_data	*next;
-	char				*rest;
-	int					fd;
-}	t_fd_data;
-*/
+	char		buffer[BUFFER_SIZE + 1];
+	int		fd;
+	struct s_list	*next;
+}	t_list;
 
 #endif
