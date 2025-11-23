@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <string.h>
 
 int	ft_check_line(char *line)
 {
@@ -21,17 +22,23 @@ int	ft_check_line(char *line)
 		return (-1);
 	while (line[++i])
 		if (line[i] == '\n')
-			return (1);
+			return (i);
 	return (-1);
 }
 
 void	ft_double_check(char **line, char buffer[])
 {
 	int	i;
+	int	j;
 
-	i = -1;
-	while (&line[++i])
-		;;
+	j = -1;
+	i = ft_check_line(*line) + 1;
+	if (i == 0)
+		return ;
+	while ((*line)[i + ++j] && j != BUFFER_SIZE)
+		buffer[j] = (*line)[i + j];
+	buffer[j] = 0;
+	(*line)[i] = 0;
 }
 
 char	*ft_get_line(int fd, char *line, char buffer[])
@@ -41,19 +48,22 @@ char	*ft_get_line(int fd, char *line, char buffer[])
 	bytes_read = 1;
 	if (!line)
 		return (NULL);
-	while (ft_check_line(buffer) == -1 && bytes_read != 0)
+	while (ft_check_line(line) == -1 && bytes_read != 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read < 0)
 		{
 			buffer[0] = 0;
-			return (free(line), NULL);
+			free(line);
+			return (NULL);
 		}
 		buffer[bytes_read] = 0;
 		line = ft_strjoin(line, buffer);
 		if (!line)
 			return (NULL);
 	}
+	if (bytes_read == 0)
+		return (NULL);
 	return (line);
 }
 
@@ -66,12 +76,18 @@ char	*get_next_line(int fd)
 	if (!line)
 		return (NULL);
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (free(line), NULL);
+	{
+		free(line);
+		return (NULL);
+	}
 	line = ft_strjoin(line, buffer);
 	line = ft_get_line(fd, line, buffer);
 	if (!line)
-		return (free(line), NULL);
-	ft_double_check(&line, &buffer);
+	{
+		free(line);
+		return (NULL);
+	}
+	ft_double_check(&line, buffer);
 	return (line);
 }
 
@@ -91,19 +107,11 @@ int	main(int ac, char **av)
 			return (-1);
 	}
 	line = get_next_line(fd);
-	while (line && i < 10)
+	while (line && i < 99)
 	{
 		printf("%d: %s", i, line);
 		line = get_next_line(fd);
 		i++;
 	}
-
-	char	*str;
-	char	buffer[10];
-
-	str = "salut\nsava";
-	buffer[0] = 0;
-	ft_double_check(&str, &buffer);
-	printf("\n\n%s\n%s\n", str, buffer);
 	free(line);
 }
