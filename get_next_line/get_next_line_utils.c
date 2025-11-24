@@ -6,7 +6,7 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:03:58 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/21 15:10:03 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2025/11/24 16:06:44 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(char *str)
 	size_t	i;
 
 	i = 0;
+	if (!str)
+		return (0);
 	while (str[i])
 		i++;
 	return (i);
@@ -33,11 +35,18 @@ char	*ft_strjoin(char *s1, char s2[])
 	str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!str)
 		return (NULL);
-	while (s1[++i])
-		str[i] = s1[i];
+	if (ft_strlen(s1) > 0)
+	{
+		while (s1[++i])
+			str[i] = s1[i];
+	}
 	i = 0;
-	while (s2[i])
-		str[j++] = s2[i++];
+	if (ft_strlen(s2) > 0)
+	{
+		while (s2[i])
+			str[j++] = s2[i++];
+	}
+	free(s1);
 	str[j] = 0;
 	return (str);
 }
@@ -78,6 +87,7 @@ void	ft_lstadd_back(t_list **lst, int fd)
 	node = malloc(sizeof(t_list));
 	if (!node)
 		return ;
+	node->buffer[0] = 0;
 	node->fd = fd;
 	node->next = NULL;
 	if (!*lst)
@@ -90,4 +100,3 @@ void	ft_lstadd_back(t_list **lst, int fd)
 		last = last->next;
 	last->next = node;
 }
-
