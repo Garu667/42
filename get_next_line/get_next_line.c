@@ -6,7 +6,7 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:47:45 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/24 17:34:49 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2025/11/24 17:41:05 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,7 @@ char	*ft_get_line(t_list **lst, int fd, char *line, char buffer[])
 		ft_strlen(line);
 		line = ft_strjoin(line, buffer);
 		if (!line)
-		{
-			free(line);
 			return (NULL);
-		}
 	}
 	return (line);
 }
@@ -104,10 +101,7 @@ char	*get_next_line(int fd)
 	line[0] = 0;
 	line = ft_strjoin(line, node->buffer);
 	if (!line)
-	{
-		free(line);
 		return (NULL);
-	}
 	line = ft_get_line(&lst, fd, line, node->buffer);
 	if (!line)
 		return (NULL);
@@ -119,7 +113,7 @@ int	main(int ac, char **av)
 {
 	int	i;
 	int	fd1;
-	int	fd2;
+	char	*prev;
 	char	*line;
 
 	i = 0;
@@ -128,8 +122,9 @@ int	main(int ac, char **av)
 	while (line)
 	{
 		printf("%d: %s", fd1, line);
+		prev = line;
 		line = get_next_line(fd1);
-		free(line);
+		free(prev);
 	}
 	close(fd1);
 }
