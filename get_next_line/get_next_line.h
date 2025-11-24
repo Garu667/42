@@ -6,7 +6,7 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:05:26 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/24 16:08:15 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2025/11/24 17:12:13 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,11 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-void	ft_bzero(void *s, size_t n);
 size_t	ft_strlen(char *str);
 char	*ft_strjoin(char *s1, char s2[]);
 int		ft_check_line(char *line);
 void	ft_format(char **line, char buffer[]);
-void	ft_lstadd_back(t_list **lst, int fd);
+int		ft_lstadd_back(t_list **lst, int fd);
 char	*get_next_line(int fd);
 
 #endif

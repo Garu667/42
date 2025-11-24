@@ -6,7 +6,7 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:03:58 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/24 16:06:44 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2025/11/24 17:11:57 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,24 +79,25 @@ void	ft_format(char **line, char buffer[])
 	(*line)[i] = 0;
 }
 
-void	ft_lstadd_back(t_list **lst, int fd)
+int	ft_lstadd_back(t_list **lst, int fd)
 {
 	t_list	*node;
 	t_list	*last;
 
 	node = malloc(sizeof(t_list));
 	if (!node)
-		return ;
+		return (-1);
 	node->buffer[0] = 0;
 	node->fd = fd;
 	node->next = NULL;
 	if (!*lst)
 	{
 		*lst = node;
-		return ;
+		return (0);
 	}
 	last = *lst;
 	while (last->next)
 		last = last->next;
 	last->next = node;
+	return (0);
 }

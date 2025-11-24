@@ -6,7 +6,7 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:47:45 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/24 16:08:13 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2025/11/24 17:14:03 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ int	ft_manage_list(t_list **lst, int fd)
 		node = node->next;
 		i++;
 	}
-	ft_lstadd_back(lst, fd);
+	if (ft_lstadd_back(lst, fd) == -1)
+		return (-1);
 	return (i);
 }
 
@@ -92,28 +93,30 @@ char	*ft_get_line(t_list **lst, int fd, char *line, char buffer[])
 char	*get_next_line(int fd)
 {
 	static t_list	*lst;
+	t_list		*node;
 	char			*line;
 	int				i;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	i = ft_manage_list(&lst, fd);
-	while (lst->next && lst->fd == fd)
-		lst = lst->next;
+	node = lst;
+	while (node->next && node->fd != fd)
+		node = node->next;
 	line = malloc(sizeof(char));
 	if (!line || i == -1)
 		return (NULL);
 	line[0] = 0;
-	line = ft_strjoin(line, lst->buffer);
+	line = ft_strjoin(line, node->buffer);
 	if (!line)
 	{
 		free(line);
 		return (NULL);
 	}
-	line = ft_get_line(&lst, fd, line, lst->buffer);
+	line = ft_get_line(&lst, fd, line, node->buffer);
 	if (!line)
 		return (free(line), NULL);
-	ft_format(&line, lst->buffer);
+	ft_format(&line, node->buffer);
 	return (line);
 }
 
