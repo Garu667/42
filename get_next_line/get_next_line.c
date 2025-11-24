@@ -6,7 +6,7 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:47:45 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/24 17:14:03 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2025/11/24 17:34:49 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,7 @@ int	ft_manage_list(t_list **lst, int fd)
 	i = 0;
 	if (!*lst)
 	{
-		node = malloc(sizeof(t_list));
-		if (!node)
-			return (-1);
-		node->buffer[0] = 0;
-		node->fd = fd;
-		node->next = NULL;
-		*lst = node;
+		ft_lstadd_back(lst, fd);
 		return (i);
 	}
 	node = *lst;
@@ -85,7 +79,10 @@ char	*ft_get_line(t_list **lst, int fd, char *line, char buffer[])
 		ft_strlen(line);
 		line = ft_strjoin(line, buffer);
 		if (!line)
+		{
+			free(line);
 			return (NULL);
+		}
 	}
 	return (line);
 }
@@ -93,18 +90,16 @@ char	*ft_get_line(t_list **lst, int fd, char *line, char buffer[])
 char	*get_next_line(int fd)
 {
 	static t_list	*lst;
-	t_list		*node;
+	t_list			*node;
 	char			*line;
-	int				i;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || ft_manage_list(&lst, fd) == -1)
 		return (NULL);
-	i = ft_manage_list(&lst, fd);
 	node = lst;
 	while (node->next && node->fd != fd)
 		node = node->next;
 	line = malloc(sizeof(char));
-	if (!line || i == -1)
+	if (!line)
 		return (NULL);
 	line[0] = 0;
 	line = ft_strjoin(line, node->buffer);
@@ -115,7 +110,7 @@ char	*get_next_line(int fd)
 	}
 	line = ft_get_line(&lst, fd, line, node->buffer);
 	if (!line)
-		return (free(line), NULL);
+		return (NULL);
 	ft_format(&line, node->buffer);
 	return (line);
 }
@@ -129,27 +124,12 @@ int	main(int ac, char **av)
 
 	i = 0;
 	fd1 = open(av[1], O_RDONLY);
-	fd2 = open(av[2], O_RDONLY);
-	while (++i < 6)
+	line = get_next_line(fd1);
+	while (line)
 	{
-		line = get_next_line(fd1);
 		printf("%d: %s", fd1, line);
-		free(line);
-	}
-	i = 0;
-	while (++i < 6)
-	{
-		line = get_next_line(fd2);
-		printf("%d: %s", fd2, line);
-		free(line);
-	}
-	i = 0;
-	while (++i < 6)
-	{
 		line = get_next_line(fd1);
-		printf("%d: %s", fd1, line);
 		free(line);
 	}
 	close(fd1);
-	close(fd2);
 }
