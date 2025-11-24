@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:47:45 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/24 20:41:29 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2025/11/24 20:30:52 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	ft_manage_list(t_list **lst, int fd)
 {
@@ -110,28 +110,25 @@ char	*get_next_line(int fd)
 	if (!line)
 		return (NULL);
 	ft_format(&line, node->buffer);
-	if (line[0] == 0)
-		return (NULL);
 	return (line);
 }
-/*
-int	main(int ac, char **av)
-{
-	int	i;
-	int	fd1;
-	char	*prev;
-	char	*line;
 
-	i = 0;
-	fd1 = open(av[1], O_RDONLY);
-	line = get_next_line(fd1);
-	while (line)
-	{
-		printf("%d: %s", ++i, line);
-		prev = line;
-		line = get_next_line(fd1);
-		free(prev);
-	}
-	close(fd1);
-}
-*/
+// int	main(int ac, char **av)
+// {
+// 	int	i;
+// 	int	fd1;
+// 	char	*prev;
+// 	char	*line;
+
+// 	i = 0;
+// 	fd1 = open(av[1], O_RDONLY);
+// 	line = get_next_line(fd1);
+// 	while (line)
+// 	{
+// 		printf("%d: %s", ++i, line);
+// 		prev = line;
+// 		line = get_next_line(fd1);
+// 		free(prev);
+// 	}
+// 	close(fd1);
+// }
