@@ -6,7 +6,7 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:47:45 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/24 20:30:52 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2025/11/25 14:41:56 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ char	*get_next_line(int fd)
 	static t_list	*lst;
 	t_list			*node;
 	char			*line;
+	char			*tmp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || ft_manage_list(&lst, fd) == -1)
 		return (NULL);
@@ -103,32 +104,34 @@ char	*get_next_line(int fd)
 	if (!line)
 		return (NULL);
 	line[0] = 0;
+	tmp = line;
 	line = ft_strjoin(line, node->buffer);
 	if (!line)
-		return (NULL);
+		return (free(tmp), NULL);
 	line = ft_get_line(&lst, fd, line, node->buffer);
 	if (!line)
 		return (NULL);
 	ft_format(&line, node->buffer);
 	return (line);
 }
+/*
+int	main(int ac, char **av)
+{
+	int	i;
+	int	fd1;
+	char	*prev;
+	char	*line;
 
-// int	main(int ac, char **av)
-// {
-// 	int	i;
-// 	int	fd1;
-// 	char	*prev;
-// 	char	*line;
-
-// 	i = 0;
-// 	fd1 = open(av[1], O_RDONLY);
-// 	line = get_next_line(fd1);
-// 	while (line)
-// 	{
-// 		printf("%d: %s", ++i, line);
-// 		prev = line;
-// 		line = get_next_line(fd1);
-// 		free(prev);
-// 	}
-// 	close(fd1);
-// }
+	i = 0;
+	fd1 = open(av[1], O_RDONLY);
+	line = get_next_line(fd1);
+	while (line)
+	{
+		printf("%d: %s", ++i, line);
+		prev = line;
+		line = get_next_line(fd1);
+		free(prev);
+	}
+	close(fd1);
+}
+*/
