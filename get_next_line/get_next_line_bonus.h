@@ -31,5 +31,7 @@ int		ft_check_line(char *line);
 void	ft_format(char **line, char buffer[]);
 int		ft_lstadd_back(t_list **lst, int fd);
 char	*get_next_line(int fd);
+void	ft_delnode(t_list **lst, int fd);
+char	*ft_clean(t_list **lst, char *to_free, int fd, int flag);
 
 #endif

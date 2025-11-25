@@ -37,40 +37,18 @@ int	ft_manage_list(t_list **lst, int fd)
 	return (i);
 }
 
-void	ft_delnode(t_list **lst, int fd)
-{
-	t_list	*node;
-	t_list	*behind_node;
-
-	node = *lst;
-	behind_node = NULL;
-	while (node)
-	{
-		if (node->fd == fd)
-		{
-			if (behind_node)
-				behind_node->next = node->next;
-			else
-				*lst = node->next;
-			free(node);
-			return ;
-		}
-		behind_node = node;
-		node = node->next;
-	}
-}
-
 char	*ft_get_line(t_list **lst, int fd, char *line, char buffer[])
 {
 	long	bytes_read;
 
+	(void)lst;
 	bytes_read = 1;
 	while (ft_check_line(line) == -1 && bytes_read != 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read < 0)
 		{
-			ft_delnode(lst, fd);
+			//ft_delnode(lst, fd);
 			free(line);
 			return (NULL);
 		}
@@ -81,11 +59,54 @@ char	*ft_get_line(t_list **lst, int fd, char *line, char buffer[])
 	}
 	if (ft_strlen(line) == 0)
 	{
-		ft_delnode(lst, fd);
+		//ft_delnode(lst, fd);
 		free(line);
 		return (NULL);
 	}
 	return (line);
+}
+
+void	ft_delnode(t_list **lst, int fd)
+{
+	t_list	*node;
+	t_list	*behind_node;
+
+	if (!lst || !*lst)
+		return ;
+	node = *lst;
+	behind_node = NULL;
+	while (node)
+	{
+		if (node->fd == fd)
+		{
+			if (node->buffer[0] == 0)
+			{
+				if (behind_node)
+					behind_node->next = node->next;
+				else
+					*lst = node->next;
+				free(node);
+			}
+			return ;
+		}
+		behind_node = node;
+		node = node->next;
+	}
+}
+
+char	*ft_clean(t_list **lst, char *to_free, int fd, int flag)
+{
+	if (flag == 1)
+	{
+		free(to_free);
+		return (NULL);
+	}
+	if (flag == 2)
+	{
+		ft_delnode(lst, fd);
+		return (NULL);
+	}
+	return (NULL);
 }
 
 char	*get_next_line(int fd)
@@ -98,19 +119,19 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0 || ft_manage_list(&lst, fd) == -1)
 		return (NULL);
 	node = lst;
-	while (node->next && node->fd != fd)
+	while (node && node->fd != fd)
 		node = node->next;
 	line = malloc(sizeof(char));
-	if (!line)
-		return (NULL);
+	if (!line || !node)
+		return (ft_clean(&lst, NULL, fd, 2));
 	line[0] = 0;
 	tmp = line;
 	line = ft_strjoin(line, node->buffer);
 	if (!line)
-		return (free(tmp), NULL);
+		return (ft_clean(&lst, tmp, fd, 1));
 	line = ft_get_line(&lst, fd, line, node->buffer);
 	if (!line)
-		return (NULL);
+		return (ft_clean(&lst, NULL, fd, 2));
 	ft_format(&line, node->buffer);
 	return (line);
 }
