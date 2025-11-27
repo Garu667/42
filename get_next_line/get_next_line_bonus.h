@@ -28,7 +28,7 @@ typedef struct s_list
 size_t	ft_strlen(char *str);
 char	*ft_strjoin(char *s1, char s2[]);
 int		ft_check_line(char *line);
-void	ft_format(char **line, char buffer[]);
+void	ft_format(char **line, t_list *node);
 int		ft_lstadd_back(t_list **lst, int fd);
 char	*get_next_line(int fd);
 

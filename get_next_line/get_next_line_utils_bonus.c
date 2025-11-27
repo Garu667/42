@@ -64,7 +64,7 @@ int	ft_check_line(char *line)
 	return (-1);
 }
 
-void	ft_format(char **line, char buffer[])
+void	ft_format(char **line, t_list *node)
 {
 	int	i;
 	int	j;
@@ -75,10 +75,10 @@ void	ft_format(char **line, char buffer[])
 		return ;
 	while ((*line)[i + j] && j < BUFFER_SIZE)
 	{
-		buffer[j] = (*line)[i + j];
+		node->buffer[j] = (*line)[i + j];
 		j++;
 	}
-	buffer[j] = 0;
+	node->buffer[j] = 0;
 	(*line)[i] = 0;
 }
 
