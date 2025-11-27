@@ -98,40 +98,66 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0 || ft_manage_list(&lst, fd) == -1)
 		return (NULL);
 	node = lst;
-	while (node->next && node->fd != fd)
+	while (node && node->fd != fd)
 		node = node->next;
 	line = malloc(sizeof(char));
 	if (!line)
-		return (NULL);
+		return (ft_delnode(&lst, node->fd), NULL);
 	line[0] = 0;
 	tmp = line;
 	line = ft_strjoin(line, node->buffer);
 	if (!line)
-		return (free(tmp), NULL);
-	line = ft_get_line(&lst, fd, line, node->buffer);
+		return (ft_delnode(&lst, node->fd), free(tmp), NULL);
+	line = ft_get_line(&lst, node->fd, line, node->buffer);
 	if (!line)
 		return (NULL);
 	ft_format(&line, node->buffer);
+	if (node->buffer[0] == 0)
+		ft_delnode(&lst, node->fd);
 	return (line);
 }
 /*
-int	main(int ac, char **av)
-{
-	int	i;
-	int	fd1;
-	char	*prev;
-	char	*line;
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-	i = 0;
-	fd1 = open(av[1], O_RDONLY);
-	line = get_next_line(fd1);
-	while (line)
-	{
-		printf("%d: %s", ++i, line);
-		prev = line;
-		line = get_next_line(fd1);
-		free(prev);
-	}
-	close(fd1);
+int main(int argc, char **argv)
+{
+    int     i;
+    int        j;
+    int     fd;
+    char    *line;
+
+    j = 0;
+    if (argc < 2)
+    {
+        printf("Usage: %s <file1> [file2...]\n", argv[0]);
+        return (1);
+    }
+
+    i = 1;
+    while (i < argc)
+    {
+        fd = open(argv[i], O_RDONLY);
+        if (fd < 0)
+        {
+            perror("open");
+            i++;
+            continue;
+        }
+        printf("=== Lecture du fichier %s ===\n", argv[i]);
+        while ((line = get_next_line(fd)) != NULL && j < 5)
+        {
+            printf("%s", line);
+	    j++;
+            free(line);
+        }
+        j = 0;
+        close(fd);
+        i++;
+        printf("\n");
+    }
+    return (0);
 }
 */

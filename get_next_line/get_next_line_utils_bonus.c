@@ -69,12 +69,15 @@ void	ft_format(char **line, char buffer[])
 	int	i;
 	int	j;
 
-	j = -1;
+	j = 0;
 	i = ft_check_line(*line) + 1;
 	if (i == 0)
 		return ;
-	while ((*line)[i + ++j] && j != BUFFER_SIZE)
+	while ((*line)[i + j] && j < BUFFER_SIZE)
+	{
 		buffer[j] = (*line)[i + j];
+		j++;
+	}
 	buffer[j] = 0;
 	(*line)[i] = 0;
 }
@@ -83,10 +86,14 @@ int	ft_lstadd_back(t_list **lst, int fd)
 {
 	t_list	*node;
 	t_list	*last;
+	int		i;
 
 	node = malloc(sizeof(t_list));
 	if (!node)
 		return (-1);
+	i = 0;
+	while (i <= BUFFER_SIZE)
+		node->buffer[i++] = 0;
 	node->buffer[0] = 0;
 	node->fd = fd;
 	node->next = NULL;
