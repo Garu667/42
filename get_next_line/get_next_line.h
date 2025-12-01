@@ -18,18 +18,10 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-typedef struct s_list
-{
-	char			buffer[BUFFER_SIZE + 1];
-	int				fd;
-	struct s_list	*next;
-}	t_list;
-
 size_t	ft_strlen(char *str);
 char	*ft_strjoin(char *s1, char s2[]);
 int		ft_check_line(char *line);
 void	ft_format(char **line, char buffer[]);
-int		ft_lstadd_back(t_list **lst, int fd);
 char	*get_next_line(int fd);
 
 #endif
