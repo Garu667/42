@@ -17,9 +17,9 @@ ALL_D	= $(SRCS:.c=.d)
 
 
 CFLAGS		= -Wall -Wextra -Werror -MMD -MP
-RM		= rm -f
-AR		= ar rcs
-INC		= ft_printf.h
+RM			= rm -f
+AR			= ar rcs
+INC			= ft_printf.h
 
 NAME		= libftprintf.a
 

@@ -22,6 +22,6 @@ int	ft_putnbr_base(int nbr, char *base);
 int	ft_putnbr_base2(unsigned int nbr, char *base);
 int	ft_putnbr_base3(unsigned long long int nbr);
 int	format(const char *str, va_list args);
-int	ft_printf(const char *str, ...);
+int	ft_printf(const char *str, ...)__attribute__((format(printf, 1, 2)));
 
 #endif

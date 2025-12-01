@@ -99,7 +99,8 @@ int	main(int ac, char **av)
 {
 	int	ret1;
 	int	ret2;
-	
+	char *str = NULL;
+
 	ret1 = ft_printf("%d\n", 0);
 	ret2 =    printf("%d\n", 0);
 	printf("%d\n", ret1);
@@ -107,6 +108,11 @@ int	main(int ac, char **av)
 
 	ret1 = ft_printf(NULL);
 	ret2 =    printf(NULL);
+	printf("%d\n", ret1);
+	printf("%d\n", ret2);
+
+	ret1 = ft_printf("%p%%\n", str);
+	ret2 =    printf("%p%%\n", str);
 	printf("%d\n", ret1);
 	printf("%d\n", ret2);
 }
