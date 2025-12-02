@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/17 15:03:58 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/11/24 19:27:56 by ramaroud         ###   ########lyon.fr   */
+/*   Created: 2025/12/02 15:12:12 by ramaroud          #+#    #+#             */
+/*   Updated: 2025/12/02 15:12:16 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,27 +27,20 @@ size_t	ft_strlen(char *str)
 char	*ft_strjoin(char *s1, char s2[])
 {
 	char	*str;
+	char	*tmp;
 	size_t	i;
-	size_t	j;
 
-	i = -1;
-	j = ft_strlen(s1);
-	str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!str)
-		return (NULL);
-	if (ft_strlen(s1) > 0)
-	{
-		while (s1[++i])
-			str[i] = s1[i];
-	}
 	i = 0;
-	if (ft_strlen(s2) > 0)
-	{
-		while (s2[i])
-			str[j++] = s2[i++];
-	}
-	free(s1);
-	str[j] = 0;
+	tmp = s1;
+	str = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (!str)
+		return (free(s1), NULL);
+	while (*s1)
+		str[i++] = *s1++;
+	while (*s2)
+		str[i++] = *s2++;
+	free(tmp);
+	str[i] = 0;
 	return (str);
 }
 
@@ -64,47 +57,20 @@ int	ft_check_line(char *line)
 	return (-1);
 }
 
-void	ft_format(char **line, t_list *node)
+void	ft_format(char **line, char buffer[])
 {
 	int	i;
 	int	j;
 
-	j = 0;
+	j = -1;
+	if (!line || !*line)
+		return ;
 	i = ft_check_line(*line) + 1;
 	if (i == 0)
 		return ;
-	while ((*line)[i + j] && j < BUFFER_SIZE)
-	{
-		node->buffer[j] = (*line)[i + j];
-		j++;
-	}
-	node->buffer[j] = 0;
-	(*line)[i] = 0;
-}
-
-int	ft_lstadd_back(t_list **lst, int fd)
-{
-	t_list	*node;
-	t_list	*last;
-	int		i;
-
-	node = malloc(sizeof(t_list));
-	if (!node)
-		return (-1);
-	i = 0;
-	while (i <= BUFFER_SIZE)
-		node->buffer[i++] = 0;
-	node->buffer[0] = 0;
-	node->fd = fd;
-	node->next = NULL;
-	if (!*lst)
-	{
-		*lst = node;
-		return (0);
-	}
-	last = *lst;
-	while (last->next)
-		last = last->next;
-	last->next = node;
-	return (0);
+	while (j < BUFFER_SIZE && (*line)[i + ++j])
+		buffer[j] = (*line)[i + j];
+	while ((*line)[i])
+		(*line)[i++] = 0;
+	buffer[j] = 0;
 }
