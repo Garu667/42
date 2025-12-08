@@ -9,7 +9,7 @@ La fonction doit retourner **une ligne complète** (terminée par un `\n` ou par
 
 Ce projet introduit plusieurs notions importantes :
 - La gestion bas-niveau des fichiers via `read()`
-- Les buffers statiques et/ou dynamiques
+- Les buffers statiques et dynamiques
 - La manipulation de chaînes de caractères en C
 - La gestion d'un "reste" entre les appels grace aux variables statics 
 - La robustesse de la mémoire (malloc/free)
