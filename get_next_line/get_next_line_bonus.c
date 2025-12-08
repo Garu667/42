@@ -12,6 +12,12 @@
 
 #include "get_next_line_bonus.h"
 
+char	*ft_free(char *to_free)
+{
+	free(to_free);
+	return (NULL);
+}
+
 char	*clear_line(char *line)
 {
 	char	*new_line;
@@ -90,7 +96,7 @@ char	*get_next_line(int fd)
 	if (!new_line)
 		return (NULL);
 	if (new_line[0] == 0)
-		return (free(line), free(new_line), NULL);
+		return (ft_free(line));
 	ft_format(&line, buffer[fd]);
 	free(line);
 	return (new_line);
