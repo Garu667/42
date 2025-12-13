@@ -56,7 +56,7 @@ int		rrr(t_stack *a, t_stack *b, bool write_switch);
 /*-------------algo-------------*/
 void	select_sort(t_stack *a, t_stack *b, t_bench *bench);
 /*-------------check-------------*/
-int	ft_check_flag(char **av, int *i);
+int		ft_check_flag(char **av, int *i);
 /*-------------utils-------------*/
 size_t	ft_strlen(char *str);
 char	*ft_strtrim(char *s1, char *set);
