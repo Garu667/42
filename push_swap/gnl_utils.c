@@ -1,0 +1,76 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/17 15:03:58 by ramaroud          #+#    #+#             */
+/*   Updated: 2025/11/24 19:27:56 by ramaroud         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "header.h"
+
+size_t	ft_strlen(char *str)
+{
+	size_t	i;
+
+	i = 0;
+	if (!str)
+		return (0);
+	while (str[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strjoin(char *s1, char s2[])
+{
+	char	*str;
+	char	*tmp;
+	size_t	i;
+
+	i = 0;
+	tmp = s1;
+	str = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (!str)
+		return (free(s1), NULL);
+	while (*s1)
+		str[i++] = *s1++;
+	while (*s2)
+		str[i++] = *s2++;
+	free(tmp);
+	str[i] = 0;
+	return (str);
+}
+
+int	ft_check_line(char *line)
+{
+	int	i;
+
+	i = -1;
+	if (!line || line[0] == 0)
+		return (-1);
+	while (line[++i])
+		if (line[i] == '\n')
+			return (i);
+	return (-1);
+}
+
+void	ft_format(char **line, char buffer[])
+{
+	int	i;
+	int	j;
+
+	j = -1;
+	if (!line || !*line)
+		return ;
+	i = ft_check_line(*line) + 1;
+	if (i == 0)
+		return ;
+	while (j < BUFFER_SIZE && (*line)[i + ++j])
+		buffer[j] = (*line)[i + j];
+	while ((*line)[i])
+		(*line)[i++] = 0;
+	buffer[j] = 0;
+}
