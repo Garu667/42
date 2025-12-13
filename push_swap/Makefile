@@ -18,11 +18,11 @@ SRCS	= algo.c		\
 		ft_ops2.c		\
 		ft_ops3.c		\
 		parsing.c		\
+		ft_split.c		\
 		benchmark.c		\
 		main_push_swap.c
 OBJS	= $(SRCS:.c=.o)
 
-# ft_ops.c ft_ops2.c ft_ops3.c gnl.c gnl_utils.c utils.c utils2.c check.c
 BONUS	= gnl.c			\
 		check.c			\
 		utils.c			\
@@ -31,6 +31,7 @@ BONUS	= gnl.c			\
 		ft_ops2.c		\
 		ft_ops3.c		\
 		parsing.c		\
+		ft_split.c		\
 		gnl_utils.c		\
 		main_checker.c
 BONUS_OBJS = $(BONUS:.c=.o)

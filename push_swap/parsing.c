@@ -25,69 +25,47 @@ static bool	is_double(int *tab, int indx, int nbr)
 	return (false);
 }
 
-static void	realloc_tab(t_stack *stack, int size)
+static void	parse_multiple(char **split, t_stack *a)
 {
-	int	*new_tab;
+	int	value;
 	int	i;
 
-	i = 0;
-	new_tab = malloc((size + 1) * sizeof(int));
-	if (!new_tab)
-		exit(write(2, "Error\n", 6));
-	while (i < stack->size)
+	a->size = 0;
+	while (split[a->size])
+		a->size++;
+	if (a->size == 0)
 	{
-		new_tab[i] = stack->tab[i];
-		i++;
+		a->tab = NULL;
+		return ;
 	}
-	if (stack->tab)
-		free(stack->tab);
-	stack->tab = new_tab;
-	stack->size++;
-}
-
-static void	parse_one(char *str, t_stack *stack)
-{
-	int	nbr;
-	int	i;
-	int	j;
-
-	j = 0;
+	a->tab = malloc(sizeof(int) * a->size);
+	if (!a->tab)
+		return ;
 	i = 0;
-	stack->size = 0;
-	stack->tab = NULL;
-	str = ft_strtrim(str, "\n\t");
-	while (str[i] && str[i + 1])
+	while (i < a->size)
 	{
-		while (!ft_isalnum(str[i]) && str[i] != '-' && str[i] != '+')
-			i++;
-		i += ft_atoi((str + i), &nbr);
-		if (nbr >= INT_MAX || nbr <= INT_MIN
-			|| is_double(stack->tab, j, nbr))
+		if (!ft_atoi(split[i], &value) || is_double(a->tab, i, value)
+			|| !(value <= INT_MAX && value >= INT_MIN))
 			exit(write(2, "Error\n", 6));
-		if (j >= stack->size)
-			realloc_tab(stack, (j + 1));
-		stack->tab[j] = nbr;
-		j++;
+		if (is_double(a->tab, i, value))
+			exit(write(2, "Error\n", 6));
+		a->tab[i] = value;
+		i++;
 	}
 }
 
-static void	parse_multiple(char **av, int len, t_stack *stack)
+static void	parse_one(char *str, t_stack *a)
 {
-	int	nbr;
-	int	i;
+	char	**split;
 
-	i = 0;
-	stack->size = len;
-	stack->tab = malloc(len * sizeof(int));
-	while (i < len)
+	split = ft_split(str, ' ');
+	if (!split)
 	{
-		ft_atoi(av[i], &nbr);
-		if (nbr >= INT_MAX || nbr <= INT_MIN
-			|| is_double(stack->tab, (i - 1), nbr))
-			exit(write(2, "Error\n", 6));
-		stack->tab[i] = nbr;
-		i++;
+		a->tab = NULL;
+		return ;
 	}
+	parse_multiple(split, a);
+	free_split(split, a->size, 2);
 }
 
 t_stack	parsing(int *ac, char **av, int i)
@@ -101,7 +79,7 @@ t_stack	parsing(int *ac, char **av, int i)
 	if ((i + 1) == (*ac))
 		parse_one(av[i], &a);
 	else
-		parse_multiple((av + i), ((*ac) - i), &a);
+		parse_multiple((av + i), &a);
 	(*ac) = flag;
 	return (a);
 }

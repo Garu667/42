@@ -62,7 +62,6 @@ size_t	ft_strlen(char *str);
 char	*ft_strtrim(char *s1, char *set);
 void	ft_safe_write(int fd, char *str, int len);
 void	ft_putnbr_fd(int n, int fd);
-bool	ft_isalnum(int c);
 int		ft_putstr_fd(char *s, int fd);
 int		ft_strncmp(char *s1, char *s2, size_t n);
 int		ft_atoi(const char *str, int *nbr);
@@ -73,8 +72,11 @@ void	print_benchmark(t_bench *bench);
 float	ft_compute_disorder(t_stack stack);
 t_bench	setup_benchmark(float disorder, int flag);
 /*-------------parsing-------------*/
+char	**free_split(char **split, int indx, int flag);
+char	**ft_split(char const *s, char c);
 t_stack	parsing(int *ac, char **av, int i);
 /*---------------bonus-----------------*/
+bool	is_sorted(t_stack *a);
 char	*ft_strjoin(char *s1, char s2[]);
 int		ft_check_line(char *line);
 void	ft_format(char **line, char buffer[]);

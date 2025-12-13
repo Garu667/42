@@ -70,13 +70,17 @@ static int	checker(t_stack *a)
 		if (!line)
 			break ;
 		if (do_op(a, &b, line) == -1)
+		{
+			free(b.tab);
 			exit(write(2, "Error\n", 6));
+		}
 		free(line);
 	}
 	if (is_sorted(a) && b.size == 0)
 		ft_safe_write(1, "OK\n", 3);
 	else
 		ft_safe_write(1, "KO\n", 3);
+	free(b.tab);
 	return (0);
 }
 
@@ -88,4 +92,5 @@ int	main(int ac, char **av)
 		return (0);
 	a = parsing(&ac, av, 1);
 	checker(&a);
+	free(a.tab);
 }

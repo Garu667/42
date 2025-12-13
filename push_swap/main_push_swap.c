@@ -46,7 +46,10 @@ void	push_swap(t_stack *a, int flag, float disorder)
 	b.size = 0;
 	b.tab = malloc(a->size * sizeof(int));
 	if (!b.tab)
+	{
+		free(a->tab);
 		exit(write(2, "Error\n", 6));
+	}
 	choose_algo(a, &b, flag, disorder);
 	free(b.tab);
 }
@@ -60,6 +63,8 @@ int	main(int ac, char **av)
 	if (ac < 1)
 		return (write(2, "Error\n", 6));
 	a = parsing(&ac, av, i);
+	if (!a.tab)
+		return (write(2, "Error\n", 6));
 	push_swap(&a, ac, ft_compute_disorder(a));
 	free(a.tab);
 }

@@ -31,17 +31,6 @@ int	ft_putstr_fd(char *s, int fd)
 	return (i);
 }
 
-bool	ft_isalnum(int c)
-{
-	if (c >= 'a' && c <= 'z')
-		return (true);
-	if (c >= 'A' && c <= 'Z')
-		return (true);
-	if (c >= '0' && c <= '9')
-		return (true);
-	return (false);
-}
-
 size_t	ft_strlen(char *str)
 {
 	size_t	i;
