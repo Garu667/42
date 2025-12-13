@@ -34,7 +34,10 @@ char	*ft_strjoin(char *s1, char s2[])
 	tmp = s1;
 	str = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
 	if (!str)
-		return (free(s1), NULL);
+	{
+		free(s1);
+		return (NULL);
+	}
 	while (*s1)
 		str[i++] = *s1++;
 	while (*s2)
