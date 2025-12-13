@@ -13,12 +13,13 @@
 #ifndef HEADER_H
 # define HEADER_H
 
-# define BUFFER_SIZE 1
-# define FLAG_BENCH    1	// 00001
-# define FLAG_SIMPLE   2	// 00010
-# define FLAG_MEDIUM   4	// 00100
-# define FLAG_COMPLEXE 8	// 01000
-# define FLAG_ADAPTIVE 16	// 10000
+# define BUFFER_SIZE	1
+# define FLAG_BENCH		1	// 00001
+# define FLAG_SIMPLE	2	// 00010
+# define FLAG_MEDIUM	4	// 00100
+# define FLAG_COMPLEXE	8	// 01000
+# define FLAG_ADAPTIVE	16	// 10000
+
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdarg.h>
@@ -52,17 +53,28 @@ int		rr(t_stack *a, t_stack *b, bool write_switch);
 int		rra(t_stack *a, bool write_switch);
 int		rrb(t_stack *b, bool write_switch);
 int		rrr(t_stack *a, t_stack *b, bool write_switch);
-/*-------------mandatory-------------*/
+/*-------------algo-------------*/
+void	select_sort(t_stack *a, t_stack *b, t_bench *bench);
+/*-------------check-------------*/
+int	ft_check_flag(char **av, int *i);
+/*-------------utils-------------*/
+size_t	ft_strlen(char *str);
+char	*ft_strtrim(char *s1, char *set);
 void	ft_safe_write(int fd, char *str, int len);
+void	ft_putnbr_fd(int n, int fd);
+bool	ft_isalnum(int c);
 int		ft_putstr_fd(char *s, int fd);
 int		ft_strncmp(char *s1, char *s2, size_t n);
+int		ft_atoi(const char *str, int *nbr);
+/*-------------benchmark-------------*/
+void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op);
+void	do_op_nobench(t_stack *a, t_stack *b, t_bench *bench, char *op);
+void	print_benchmark(t_bench *bench);
 float	ft_compute_disorder(t_stack stack);
-void	parse_one(char *str, t_stack *stack);
-void	parse_multiple(char **av, int len, t_stack *stack);
+t_bench	setup_benchmark(float disorder, int flag);
+/*-------------parsing-------------*/
 t_stack	parsing(int *ac, char **av, int i);
-void	push_swap(t_stack *a, int flag, float disorder);
 /*---------------bonus-----------------*/
-size_t	ft_strlen(char *str);
 char	*ft_strjoin(char *s1, char s2[]);
 int		ft_check_line(char *line);
 void	ft_format(char **line, char buffer[]);

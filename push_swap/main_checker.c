@@ -12,6 +12,20 @@
 
 #include "header.h"
 
+bool	is_sorted(t_stack *a)
+{
+	int	i;
+
+	i = 0;
+	while (i < (a->size - 1))
+	{
+		if (a->tab[i] > a->tab[i + 1])
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
 static int	do_op(t_stack *a, t_stack *b, char *op)
 {
 	if (ft_strncmp(op, "sa\n", 3) == 0)
@@ -41,22 +55,6 @@ static int	do_op(t_stack *a, t_stack *b, char *op)
 	return (0);
 }
 
-static bool	is_sorted(t_stack *a, t_stack *b)
-{
-	int	i;
-
-	i = 0;
-	if (b->size != 0)
-		return (false);
-	while (i < (a->size - 1))
-	{
-		if (a->tab[i] > a->tab[i + 1])
-			return (false);
-		i++;
-	}
-	return (true);
-}
-
 static int	checker(t_stack *a)
 {
 	char	*line;
@@ -75,7 +73,7 @@ static int	checker(t_stack *a)
 			exit(write(2, "Error\n", 6));
 		free(line);
 	}
-	if (is_sorted(a, &b))
+	if (is_sorted(a) && b.size == 0)
 		ft_safe_write(1, "OK\n", 3);
 	else
 		ft_safe_write(1, "KO\n", 3);
@@ -88,9 +86,6 @@ int	main(int ac, char **av)
 
 	if (ac < 2)
 		return (0);
-	if (ac == 2)
-		parse_one(av[1], &a);
-	else
-		parse_multiple((av + 1), (ac - 1), &a);
+	a = parsing(&ac, av, 1);
 	checker(&a);
 }
