@@ -38,6 +38,8 @@ void	select_sort(t_stack *a, t_stack *b, t_bench *bench)
 	int	index;
 
 	bench->strats |= FLAG_SIMPLE;
+	if (is_sorted(a))
+		return ;
 	while (a->size)
 	{
 		index = min_index(a);

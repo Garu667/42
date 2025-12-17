@@ -56,3 +56,17 @@ int	ft_strncmp(char *s1, char *s2, size_t n)
 	}
 	return (0);
 }
+
+bool	is_sorted(t_stack *a)
+{
+	int	i;
+
+	i = 0;
+	while (i < (a->size - 1))
+	{
+		if (a->tab[i] > a->tab[i + 1])
+			return (false);
+		i++;
+	}
+	return (true);
+}

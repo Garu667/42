@@ -39,9 +39,6 @@ static void	ft_strcpy(char *dest, char const *s, char c)
 
 char	**free_split(char **split, int indx, int flag)
 {
-	int	i;
-
-	i = 0;
 	if (flag == 1)
 		free(split);
 	if (flag == 2)

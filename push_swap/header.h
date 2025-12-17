@@ -70,7 +70,7 @@ void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op);
 void	do_op_nobench(t_stack *a, t_stack *b, t_bench *bench, char *op);
 void	print_benchmark(t_bench *bench);
 float	ft_compute_disorder(t_stack stack);
-t_bench	setup_benchmark(float disorder, int flag);
+void	setup_benchmark(t_bench *bench, float disorder, int flag);
 /*-------------parsing-------------*/
 char	**free_split(char **split, int indx, int flag);
 char	**ft_split(char const *s, char c);

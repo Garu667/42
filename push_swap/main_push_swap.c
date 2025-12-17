@@ -19,22 +19,23 @@ void	choose_algo(t_stack *a, t_stack *b, int flag, float disorder)
 	bench.strats = -1;
 	bench.op = do_op_nobench;
 	if (flag & FLAG_BENCH)
-		bench = setup_benchmark(disorder, flag);
+		setup_benchmark(&bench, disorder, flag);
 	if (flag & FLAG_SIMPLE)
 		select_sort(a, b, &bench);
 	else if (flag & FLAG_MEDIUM)
-		select_sort(a, b, &bench);
+		write(1, "Medium a faire\n", 15);
 	else if (flag & FLAG_COMPLEXE)
-		select_sort(a, b, &bench);
+		write(1, "Complexe a faire\n", 17);
 	else if (flag & FLAG_ADAPTIVE)
-		select_sort(a, b, &bench);
+		write(1, "Adaptive a faire\n", 17);
 	else if (disorder < 0.2f)
 		select_sort(a, b, &bench);
 	else if (disorder >= 0.2f && disorder < 0.5f)
-		select_sort(a, b, &bench);
+		write(1, "Medium a faire\n", 15);
 	else if (disorder >= 0.5f)
-		select_sort(a, b, &bench);
-	select_sort(a, b, &bench);
+		write(1, "Complexe a faire\n", 17);
+	else
+		write(1, "Adaptive a faire\n", 17);
 	if (flag & FLAG_BENCH)
 		print_benchmark(&bench);
 }

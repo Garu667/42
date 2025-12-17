@@ -107,23 +107,21 @@ void	print_benchmark(t_bench *bench)
 	print_ops(bench);
 }
 
-t_bench	setup_benchmark(float disorder, int flag)
+void	setup_benchmark(t_bench *bench, float disorder, int flag)
 {
-	t_bench	bench;
 	int		i;
 
 	i = -1;
 	if (flag & FLAG_SIMPLE)
-		bench.strats |= FLAG_SIMPLE;
+		bench->strats |= FLAG_SIMPLE;
 	else if (flag & FLAG_MEDIUM)
-		bench.strats |= FLAG_MEDIUM;
+		bench->strats |= FLAG_MEDIUM;
 	else if (flag & FLAG_COMPLEXE)
-		bench.strats |= FLAG_COMPLEXE;
+		bench->strats |= FLAG_COMPLEXE;
 	else if (flag & FLAG_ADAPTIVE)
-		bench.strats |= FLAG_ADAPTIVE;
-	bench.disorder = disorder;
-	bench.op = do_op_bench;
+		bench->strats |= FLAG_ADAPTIVE;
+	bench->disorder = disorder;
+	bench->op = do_op_bench;
 	while (++i < 11)
-		bench.ops[i] = 0;
-	return (bench);
+		bench->ops[i] = 0;
 }

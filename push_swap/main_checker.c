@@ -12,20 +12,6 @@
 
 #include "header.h"
 
-bool	is_sorted(t_stack *a)
-{
-	int	i;
-
-	i = 0;
-	while (i < (a->size - 1))
-	{
-		if (a->tab[i] > a->tab[i + 1])
-			return (false);
-		i++;
-	}
-	return (true);
-}
-
 static int	do_op(t_stack *a, t_stack *b, char *op)
 {
 	if (ft_strncmp(op, "sa\n", 3) == 0)
@@ -77,9 +63,17 @@ static int	checker(t_stack *a)
 		free(line);
 	}
 	if (is_sorted(a) && b.size == 0)
+	{
+		ft_safe_write(1, "\033[0;32m", 7);
 		ft_safe_write(1, "OK\n", 3);
+		ft_safe_write(1, "\033[0m", 4);
+	}
 	else
+	{
+		ft_safe_write(1, "\033[0;31m", 7);
 		ft_safe_write(1, "KO\n", 3);
+		ft_safe_write(1, "\033[0m", 4);
+	}
 	free(b.tab);
 	return (0);
 }
