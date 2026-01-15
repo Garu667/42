@@ -27,6 +27,7 @@
 # include <stdbool.h>
 # include <limits.h>
 
+# include <stdio.h>
 typedef	struct s_node
 {
 	int				value;
@@ -65,6 +66,13 @@ int		rrr(t_stack *a, t_stack *b, bool write_switch);
 char	**ft_split(char const *s, char c);
 char	**free_split(char **split, int indx, int flag);
 
-int	ft_check_flag(char **av, int *i);
+int		ft_check_flag(char **av, int *i);
+int		ft_strncmp(char *s1, char *s2, size_t n);
+int		ft_atoi(const char *str, int *nbr);
+
+size_t	ft_strlen(char *str);
+
+void	ft_safe_write(int fd, char *str, int len);
+t_stack	parsing(int *ac, char **av);
 
 #endif
