@@ -27,11 +27,19 @@
 # include <stdbool.h>
 # include <limits.h>
 
+typedef	struct s_node
+{
+	int				value;
+	unsigned int	index;
+	struct s_node	*next;
+	struct s_node	*previous;
+}					t_node;
+
 typedef struct s_stack
 {
-	int		*tab;
+	t_node	*head;
 	int		size;
-}	t_stack;
+}			t_stack;
 
 typedef struct s_bench
 {
@@ -53,3 +61,10 @@ int		rr(t_stack *a, t_stack *b, bool write_switch);
 int		rra(t_stack *a, bool write_switch);
 int		rrb(t_stack *b, bool write_switch);
 int		rrr(t_stack *a, t_stack *b, bool write_switch);
+
+char	**ft_split(char const *s, char c);
+char	**free_split(char **split, int indx, int flag);
+
+int	ft_check_flag(char **av, int *i);
+
+#endif
