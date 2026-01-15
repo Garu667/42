@@ -41,27 +41,6 @@ static int	do_op(t_stack *a, t_stack *b, char *op)
 	return (0);
 }
 
-static void	free_stack(t_stack *stack)
-{
-	t_node	*current;
-	t_node	*next;
-	int		i;
-
-	if (!stack || !stack->head)
-		return ;
-	i = 0;
-	current = stack->head;
-	while (i < stack->size)
-	{
-		next = current->next;
-		free(current);
-		current = next;
-		i++;
-	}
-	stack->head = NULL;
-	stack->size = 0;
-}
-
 static int	checker(t_stack *a)
 {
 	char	*line;

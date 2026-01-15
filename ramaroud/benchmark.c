@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/13 07:04:21 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/12/13 07:04:22 by ramaroud         ###   ########lyon.fr   */
+/*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/01/15 16:02:06 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../header.h"
 
 float	ft_compute_disorder(t_stack stack)
 {
@@ -21,8 +21,8 @@ float	ft_compute_disorder(t_stack stack)
 
 	if (!stack.head || stack.size <= 1)
 		return (0);
-	mistake = 0;
 	pairs = 0;
+	mistake = 0;
 	i = stack.head;
 	while (i->next != stack.head)
 	{

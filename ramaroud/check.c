@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ramaroud.c                                         :+:      :+:    :+:   */
+/*   check.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/13 01:53:19 by ramaroud          #+#    #+#             */
-/*   Updated: 2025/12/13 01:53:21 by ramaroud         ###   ########lyon.fr   */
+/*   Created: 2026/01/15 16:02:13 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/01/15 16:02:13 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,3 +68,26 @@ int	ft_check_flag(char **av, int *i)
 	(*i) += ret;
 	return (flag);
 }
+
+void	free_stack(t_stack *stack)
+{
+	t_node	*current;
+	t_node	*next;
+	int		i;
+
+	if (!stack || !stack->head)
+		return ;
+	i = 0;
+	current = stack->head;
+	while (i < stack->size)
+	{
+		next = current->next;
+		free(current);
+		current = next;
+		i++;
+	}
+	stack->head = NULL;
+	stack->size = 0;
+}
+
+

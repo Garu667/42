@@ -62,17 +62,28 @@ int		rr(t_stack *a, t_stack *b, bool write_switch);
 int		rra(t_stack *a, bool write_switch);
 int		rrb(t_stack *b, bool write_switch);
 int		rrr(t_stack *a, t_stack *b, bool write_switch);
-
+/*-------------ft_split-------------*/
 char	**ft_split(char const *s, char c);
 char	**free_split(char **split, int indx, int flag);
-
+/*-------------check-------------*/
 int		ft_check_flag(char **av, int *i);
+void	free_stack(t_stack *stack);
+/*-------------parsing-------------*/
+t_stack	parsing(int *ac, char **av);
+/*-------------benchmark-------------*/
+float	ft_compute_disorder(t_stack stack);
+void	print_benchmark(t_bench *bench);
+void	setup_benchmark(t_bench *bench, float disorder, int flag);
+void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op);
+void	do_op_nobench(t_stack *a, t_stack *b, t_bench *bench, char *op);
+/*-------------utils-------------*/
+void	ft_safe_write(int fd, char *str, int len);
+size_t	ft_strlen(char *str);
+int		ft_putstr_fd(char *s, int fd);
 int		ft_strncmp(char *s1, char *s2, size_t n);
 int		ft_atoi(const char *str, int *nbr);
-
-size_t	ft_strlen(char *str);
-
-void	ft_safe_write(int fd, char *str, int len);
-t_stack	parsing(int *ac, char **av);
+bool	is_sorted(t_stack *a);
+char	*ft_strtrim(char *s1, char *set);
+void	ft_putnbr_fd(int n, int fd);
 
 #endif
