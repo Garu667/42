@@ -22,7 +22,7 @@ int	find_min_position(t_stack *a)
 	return (position);
 }
 
-void	bring_min_to_top(t_stack *a)
+void	bring_min_top(t_stack *a)
 {
 	int	position;
 
@@ -47,11 +47,11 @@ void	bring_min_to_top(t_stack *a)
 
 void	min_sort(t_stack *a, t_stack *b)
 {
-	if (!a || is_sorted(a))
+	if (!a || is_sorted(a) || !b)
 		return ;
 	while (a->size > 1)
 	{
-		bring_min_to_top(a);
+		bring_min_top(a);
 		pb(b, a, true);
 	}
 	while (b->size > 0)
