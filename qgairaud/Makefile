@@ -1,21 +1,23 @@
 NAME = push_swap.a
 
-SRCS =	benchmark.c \
-	check.c \
-	chunk_pa.c \
-	chunk_pb.c \
-	chunk_sort.c \
-	ft_op.c \
-	ft_split.c \
-	index.c \
-	parsing.c \
-	push_operations.c \
-	reverse_operations.c \
-	rotate_operations.c \
-	selection_sort.c \
-	swap_operations.c \
-	utils.c \
-	utils2.c \
+SRCS = algo_utils.c			\
+	benchmark.c				\
+	check.c 				\
+	chunk_sort.c 			\
+	chunk_utils.c 			\
+	ft_op.c 				\
+	ft_split.c 				\
+	index.c 				\
+	parsing.c 				\
+	push_operations.c 		\
+	radix_sort.c 			\
+	reverse_operations.c 	\
+	rotate_operations.c 	\
+	selection_sort.c 		\
+	swap_operations.c 		\
+	tiny_sort.c				\
+	utils.c 				\
+	utils2.c 				\
 
 OBJDIR = Objets
 OBJS = ${SRCS:%.c=${OBJDIR}/%.o}

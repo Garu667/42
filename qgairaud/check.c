@@ -6,7 +6,7 @@
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:13 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/16 18:20:41 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/17 21:43:40 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,3 @@ void	free_stack(t_stack *stack)
 	stack->head = NULL;
 	stack->size = 0;
 }
-
-

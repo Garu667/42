@@ -1,74 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   selection_sort.c                                   :+:      :+:    :+:   */
+/*   algo_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/17 21:51:53 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/17 22:20:02 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-static int	find_min_position(t_stack *a)
+int	get_position(t_stack *stack, int index)
 {
-	t_node	*current;
-	int		i;
-	int		min_value;
 	int		position;
+	t_node	*current;
 
-	current = a->head;
-	min_value = current->value;
+	current = stack->head;
 	position = 0;
-	i = 0;
 	while (current)
 	{
-		if (current->value < min_value)
-		{
-			min_value = current->value;
-			position = i;
-		}
+		if (current->index == index)
+			return (position);
 		current = current->next;
-		i++;
+		position++;
 	}
-	return (position);
+	return (-1);
 }
-
-static void	bring_min_top(t_stack *a)
+void	push_min(t_stack *a, t_stack *b)
 {
 	int	position;
 
-	position = find_min_position(a);
+	position = get_position(a, 0);
 	if (position <= a->size / 2)
 	{
-		while (position > 0)
-		{
+		while (position--)
 			ra(a, true);
-			position--;
-		}
 	}
 	else
 	{
-		while (position < a->size)
-		{
+		while (position++ < a->size)
 			rra(a, true);
-			position++;
-		}
 	}
-}
-
-void	selection_sort(t_stack *a, t_stack *b)
-{
-	if (!a || is_sorted(a) || !b)
-		return ;
-	printf("\n\t-> Selection sort <- \n");
-	while (a->size > 1)
-	{
-		bring_min_top(a);
-		pb(b, a, true);
-	}
-	while (b->size > 0)
-		pa(a, b, true);
+	pb(b, a, true);
 }

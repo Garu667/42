@@ -6,7 +6,7 @@
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:50 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/16 18:22:19 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/17 21:53:45 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,8 @@ int	ft_atoi(const char *str, int *nbr)
 		nb = nb * 10 + (str[i++] - 48);
 		j++;
 	}
-	if (j == 0 || (sign == 1 && nb > INT_MAX) || (sign == -1 && nb > ((long)INT_MAX + 1)))
+	if (j == 0 || (sign == 1 && nb > INT_MAX)
+		|| (sign == -1 && nb > ((long)INT_MAX + 1)))
 		exit(write(2, "Error\n", 6));
 	*nbr = (int)(nb * sign);
 	return (j);

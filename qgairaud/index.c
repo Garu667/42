@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   index.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/01/17 21:46:10 by quentin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
 
 static int	define_index(int *array, int size, int value)
@@ -40,9 +52,9 @@ static void	bubble_sort_array(int *array, int size)
 
 static int	*stack_to_array(t_stack *a)
 {
+	int		*array;
+	int		i;
 	t_node	*current;
-	int	*array;
-	int	i;
 
 	array = malloc(sizeof(int) * a->size);
 	if (!array)
@@ -60,8 +72,8 @@ static int	*stack_to_array(t_stack *a)
 
 void	stack_to_index(t_stack *a)
 {
+	int		*array;
 	t_node	*current;
-	int	*array;
 
 	if (!a || a->size <= 0)
 		return ;
