@@ -6,7 +6,7 @@
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/17 22:19:44 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/18 19:01:08 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,28 @@ static void	sort_four(t_stack *a, t_stack *b)
 	pa(a, b, true);
 }
 
+static void	sort_five(t_stack *a, t_stack *b)
+{
+	int		position;
+	t_node	*current;
+
+	push_min(a, b);
+	current = a->head;
+	position = 0;
+	while (current && current->index != a->size)
+	{
+		current = current->next;
+		position++;
+	}
+	while (position--)
+		ra(a, true);
+	pb(b, a, true);
+	sort_three(a);
+	pa(a, b, true);
+	ra(a, true);
+	pa(a, b, true);
+}
+
 void	tiny_sort(t_stack *a, t_stack *b)
 {
 	if (!a || is_sorted(a) || !b)
@@ -63,4 +85,6 @@ void	tiny_sort(t_stack *a, t_stack *b)
 		sort_three(a);
 	else if (a->size == 4)
 		sort_four(a, b);
+	else if (a->size == 5)
+		sort_five(a, b);
 }

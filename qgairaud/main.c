@@ -25,7 +25,7 @@ static void	choose_algo(t_stack *a, t_stack *b, int flag)
 		radix_sort(a, b);
 	else if (flag == FLAG_ADAPTIVE)
 	{
-		if (a->size <= 4)
+		if (a->size <= 5)
 			tiny_sort(a, b);
 		else
 			chunk_sort(a, b);

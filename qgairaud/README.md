@@ -2,116 +2,160 @@
 
 # DESCRIPTION
 
-The purpose of this project is to implement a program named `push_swap`, able to analyze a list of disordered integers and return an adequate set of operations to sort it.
+The purpose of this project is to implement a program named `push_swap`, capable of analyzing a list of unordered integers and outputting an optimized sequence of operations to sort it.
 
-This project introduces sorting algorithms, Big-O complexity, and highlights the importance of choosing the most appropriate strategy in order to ensure both efficiency and memory optimization.
+This project introduces fundamental concepts related to sorting algorithms, Big-O complexity, and highlights the importance of selecting the most appropriate strategy in order to achieve both operational efficiency and memory optimization.
 
-The list of integers is initially stored in a first stack `a`. Using a second stack `b`, which starts empty, the program must apply a restricted set of predefined operations to swap, rotate, reverse rotate, or push values from one stack to the other, until stack `a` is fully sorted.
+The list of integers is initially stored in a first stack, named stack `a`. Using a second stack `b`, which starts empty, the program must apply a restricted set of predefined operations to swap, rotate, reverse rotate, or push values from one stack to the other, until stack `a` is fully sorted.
 
-To ensure optimal efficiency, the program analyzes the input list and estimates its disorder rate before selecting the most suitable sorting algorithm.
+To ensure optimal performance, the program analyzes the input list and estimates its disorder rate before selecting the most suitable sorting algorithm.
 
 
-# ALGORYTHMS LIST
+# ALGORYTHMS
 
-Below is a brief overview of the sorting algorithms considered for building this project.
+Below is a brief overview of all sorting algorithms studied during the development of this project.
 
 <details>
-<summary> Algorithm Choices </summary>
+<summary> Algorithm List </summary>
 
 ## Simple algorithm
-Allows direct comparisons with progressive extraction → O(n²)
 
-These algorithms rely on explicit comparisons between elements and progressively move values toward their final position. They are easier to understand and implement, but generate a large number of operations on big inputs.
+Direct comparisons with progressive extraction → O(n²)
+
+These algorithms rely on explicit comparisons between elements and progressively move values toward their final positions. They are easier to understand and implement but generate a large number of operations on large input sizes.
 
 ### Insertion sort adaptation
 
-Builds the sorted zone by inserting, one by one, each element at its correct position.
+Builds a sorted section by inserting each element, one by one, into its correct position.
 
 ### Selection sort adaptation
 
-At each step, searches for the smallest remaining value in the unsorted stack and places it directly at its final position.
+At each step, searches for the smallest remaining value in the unsorted stack and places it directly into its final position.
 
 ### Bubble sort adaptation
 
-Compares adjacent elements pair by pair and swaps them when they are in the wrong order.  
+Compares adjacent elements pairwise and swaps them when they are in the wrong order.
 Several successive passes are required to sort the entire set.
 
 ### Simple min/max extraction methods
 
-A variant of selection sort that extracts, at each iteration, the smallest and the largest values.  
-Both elements are placed at their final positions, reducing the unsorted zone more quickly.
+A variant of selection sort that extracts, at each iteration, both the smallest and the largest values.
+Placing two elements per iteration reduces the size of the unsorted zone more quickly.
 
 
 ## Medium algorithm
-Reduction of the search space by ranks → O(n√n)
 
-These strategies limit the number of operations by processing values by groups or ranges rather than individually. They require a preliminary partitioning step to reduce unnecessary movements.
+Search space reduction by ranks → O(n√n)
+
+These strategies reduce the number of operations by processing values in groups or ranges rather than individually. They require a preliminary partitioning step to limit unnecessary movements.
 
 ### Chunk-based sorting (divide into chunks)
 
-Values are split into several rank ranges of equivalent sizes.  
-Each formed chunk is processed independently in order to limit long rotations within the stack.
+Values are split into several rank ranges of equivalent sizes.
+Each chunk is processed independently in order to reduce long rotations within the stack.
 
 ### Block-based partitioning methods
 
-Stack A is partitioned into successive blocks sent to stack B.  
-A small base is sorted, then the blocks are reinserted in a controlled manner.  
-The final sort relies on an optimized reassembly of the blocks.
+Stack `a` is divided into successive blocks that are pushed to stack `b`.
+A small base is sorted, after which the blocks are reinserted in a controlled manner.
+The final sorting phase relies on an optimized reassembly of these blocks.
 
 ### Bucket sort adaptations with buckets
 
-Values are distributed into several groups representing rank intervals.  
-These groups are not fully sorted but organized to facilitate their global repositioning.  
-The final sort consists in emptying the buckets in the appropriate order.
+Values are distributed into several groups representing rank intervals.
+These groups are not fully sorted but are organized to facilitate global repositioning.
+The final step consists of emptying the buckets in the appropriate order.
 
 ### Range-based sorting strategies
 
-A window of acceptable values is defined and progressively moved.  
+A sliding window of acceptable values is defined and progressively shifted.
 Only the values belonging to this range are moved at each step.
 
 
 ## Complex algorithm
-Global non-comparative or partition-based strategies → O(n log n)
 
-These algorithms significantly reduce the number of operations by exploiting global properties of the data. They require a preparation phase or more advanced partitioning logic.
+Non-comparative or global partition-based strategies → O(n log n)
+
+These algorithms significantly reduce the number of operations by exploiting global properties of the data. They generally require a preparation phase or more advanced partitioning logic.
 
 ### Radix sort adaptation (LSD or MSD)
 
-Values are first indexed, then sorted by examining successive bits or digits.  
-Each pass redistributes elements according to a given binary position.  
-The sorting is performed without direct value comparisons.
+Values are sorted by examining successive bits or digits.
+Each pass redistributes elements according to a specific binary position.
+The sorting process is performed without direct value comparisons.
 
 ### Merge sort adaptation using two stacks
 
-The stack is recursively divided into smaller and smaller subsets.  
+The stack is recursively divided into smaller subsets.
 Once these subsets are sorted, they are progressively merged back in the correct order.
 
 ### Quick sort adaptation with stack partitioning
 
-A pivot is defined to separate values into two distinct groups.  
-Elements lower and higher than the pivot are processed separately.  
-The process is repeated recursively until a fully sorted set is obtained.
+A pivot value is chosen to split elements into two groups.
+Values lower and higher than the pivot are processed separately.
+This process is repeated recursively until the stack is fully sorted.
 
 ### Heap sort adaptation
 
-The sort relies on a heap structure guaranteeing fast access to the extreme element.  
-Each extraction places a value at its final position, then rebuilds the heap.
+Relies on a heap structure guaranteeing fast access to extreme values.
+Each extraction places a value at its final position before rebuilding the heap.
 
 ### Binary indexed tree approaches
 
-A data structure allowing fast cumulative calculations over index sets.  
-Used for data analysis, such as inversion counting or disorder computation.
+Data structures allowing fast cumulative computations over indexed sets.
+Used mainly for analysis purposes, such as inversion counting or disorder estimation.
 </details>
 <br/>
 
-In this version of the project, we chose **X**, **Y**, and **Z**, each providing a different strategy to sort the list.  
-By default, the program automatically selects the most appropriate algorithm based on the initial disorder rate.
+## Selected algorithms
+
+We chose to implement four different sorting algorithms.
+
+All of them operate on a list that has been pre-indexed using a Bubble Sort pass, which simplifies the handling of negative numbers and significantly reduces the number of operations by working on indices instead of raw values.
+
+### Tiny sort
+
+Designed for very small input sizes (≤ 5 elements).
+
+- For two elements, a single swap on `a` is sufficient.
+
+- For three elements, `b` is not required. Only five distributions are possible, all handled directly within `a`.
+
+- For four or five elements, one or two values are pushed to `b`. `a` is sorted independently, and the elements are then reintegrated.
+
+### Selection sort
+
+Elements from `a` are pushed one by one to `b`, from the smallest to the largest.
+They are then pushed back to `a` in reverse order to obtain a sorted stack.
+
+### Chunk sort
+
+Works similarly to selection sort but first organizes elements into predefined ranges (chunks).
+This pre-ordering reduces the number of operations needed when reinserting values back into `a`.
+
+### Radix sort
+
+Processes element indices based on their binary representation.
+For each bit position, all indices whose current bit is 0 are pushed to `b` and then restored to `a`.
+This process is repeated for each successive bit until the entire stack is sorted.
 
 # INSTRUCTIONS
 
+(to be completed)
+
+# TASK DISTRIBUTION
+
+This project was developed by a two-person team:
+
+ramaroud was responsible for parsing, benchmarking, and writing the bonus section.
+
+qgairaud implemented the sorting algorithms, the Makefile, and wrote the README.
+
 # RESOURCES
 
-To determine which algorithms best matched our approach to the project, we explored several external resources.  
+To determine which algorithms best suited our approach, we consulted several external resources.
+We also studied bit manipulation techniques and their operators in C.
+
 Below is a list of the most useful references used during the design phase:
 
 - https://www.bigocheatsheet.com/
