@@ -6,7 +6,7 @@
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:44 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/16 19:13:04 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/19 22:23:39 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ static bool	is_double(t_stack *stack, int nbr)
 {
 	t_node	*current;
 
+	if (!stack || !stack->head)
+		return (false);
 	current = stack->head;
 	while (current)
 	{
@@ -44,9 +46,7 @@ static void	add_node_back(t_stack *stack, t_node *new_node)
 	t_node	*current;
 
 	if (!stack->head)
-	{
 		stack->head = new_node;
-	}
 	else
 	{
 		current = stack->head;
@@ -72,7 +72,8 @@ static void	parse_multiple(char **split, t_stack *a)
 	i = 0;
 	while (i < count)
 	{
-		if (!ft_atoi(split[i], &value) || !(value <= INT_MAX && value >= INT_MIN) || is_double(a, value))
+		if (!ft_atoi(split[i], &value)
+			|| !(value <= INT_MAX && value >= INT_MIN) || is_double(a, value))
 			exit(write(2, "Error\n", 6));
 		new_node = create_node(value);
 		if (!new_node)
@@ -82,41 +83,29 @@ static void	parse_multiple(char **split, t_stack *a)
 	}
 }
 
-static void	parse_one(char *str, t_stack *a)
-{
-	char	**split;
-	int		count;
-
-	split = ft_split(str, ' ');
-	if (!split)
-		return ;
-	count = 0;
-	while (split[count])
-		count++;
-	parse_multiple(split, a);
-	free_split(split, count, 2);
-}
-
 t_stack	parsing(int *ac, char **av)
 {
 	t_stack	a;
+	char	**split;
+	int		count;
 	int		flag;
 	int		i;
 
-	i = 1;
+	i = 0;
+	count = 0;
 	a.size = 0;
 	a.head = NULL;
 	flag = ft_check_flag(av, &i);
 	if (flag == -1)
 		exit(write(2, "Error\n", 6));
-	//if ((i + 1) == (*ac))
-	while (i != (*ac))
+	while (++i != (*ac))
 	{
-		parse_one(av[i], &a);
-		i++;
+		split = ft_split(av[i], ' ');
+		if (!split)
+			exit(write(2, "Error\n", 6));
+		parse_multiple(split, &a);
+		free_split(split, count, 2);
 	}
-	//else
-	//	parse_multiple((av + i), &a);
 	(*ac) = flag;
 	return (a);
 }
