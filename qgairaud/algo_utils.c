@@ -28,6 +28,7 @@ int	get_position(t_stack *stack, int index)
 	}
 	return (-1);
 }
+
 int	find_min_position(t_stack *a)
 {
 	t_node	*current;

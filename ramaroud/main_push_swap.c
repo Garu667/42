@@ -59,19 +59,6 @@ int	main(int ac, char **av)
 	a = parsing(&ac, av);
 	if (!a.head)
 		return (write(2, "Error\n", 6));
-	t_node	*current;
-	t_node	*start;
-	current = a.head;
-	start = a.head;
-	while (1)
-	{
-		printf("%d ", current->value);
-		current = current->next;
-		if (current == start)
-			break ;
-	}
-	printf("\n");
-
 	push_swap(&a, ac, ft_compute_disorder(a));
 	free_stack(&a);
 	return (0);

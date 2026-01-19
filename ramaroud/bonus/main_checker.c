@@ -62,17 +62,9 @@ static int	checker(t_stack *a)
 		free(line);
 	}
 	if (is_sorted(a) && b.size == 0)
-	{
-		ft_safe_write(1, "\033[0;32m", 7);
-		ft_safe_write(1, "OK\n", 3);
-		ft_safe_write(1, "\033[0m", 4);
-	}
+		ft_safe_write(1, "\033[0;32mOK\n\033[0m", 14);
 	else
-	{
-		ft_safe_write(1, "\033[0;31m", 7);
-		ft_safe_write(1, "KO\n", 3);
-		ft_safe_write(1, "\033[0m", 4);
-	}
+		ft_safe_write(1, "\033[0;31mKO\n\033[0m", 14);
 	free_stack(&b);
 	return (0);
 }
