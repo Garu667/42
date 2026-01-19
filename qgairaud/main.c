@@ -54,7 +54,7 @@ int	main(int ac, char **av)
 		return (write(2, "Error\n", 6));
     printf("\nAvant tri :\n\n");
     print_stack(&a);
-    push_swap(&a, FLAG_COMPLEXE);
+    push_swap(&a, FLAG_ADAPTIVE);
     printf("\nAprès tri :\n\n");
     print_stack(&a);
 	free_stack(&a);
