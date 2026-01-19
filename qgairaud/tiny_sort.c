@@ -6,7 +6,7 @@
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/18 19:01:08 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/19 06:29:39 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ static void	sort_three(t_stack *a)
 
 static void	sort_four(t_stack *a, t_stack *b)
 {
-	push_min(a, b);
+	bring_min_top(a);
+	pb(b, a, true);
 	sort_three(a);
 	pa(a, b, true);
 }
@@ -57,7 +58,8 @@ static void	sort_five(t_stack *a, t_stack *b)
 	int		position;
 	t_node	*current;
 
-	push_min(a, b);
+	bring_min_top(a);
+	pb(b, a, true);
 	current = a->head;
 	position = 0;
 	while (current && current->index != a->size)

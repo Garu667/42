@@ -6,7 +6,7 @@
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:19 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/17 22:19:24 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/19 06:29:19 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ typedef struct s_bench
 }	t_bench;
 
 /*-------------algos-------------*/
+int		find_min_position(t_stack *a);
+int		get_position(t_stack *stack, int index);
+void	bring_min_top(t_stack *a);
 void	chunk_sort(t_stack *a, t_stack *b);
 void	chunk_pa(t_stack *a, t_stack *b);
 void	chunk_pb(t_stack *a, t_stack *b, int min, int max);
@@ -57,7 +60,6 @@ void	push_min(t_stack *a, t_stack *b);
 void	radix_sort(t_stack *a, t_stack *b);
 void	selection_sort(t_stack *a, t_stack *b);
 void	tiny_sort(t_stack *a, t_stack *b);
-int		get_position(t_stack *stack, int index);
 /*-------------benchmark-------------*/
 float	ft_compute_disorder(t_stack stack);
 void	print_benchmark(t_bench *bench);
