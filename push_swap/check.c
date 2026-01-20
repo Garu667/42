@@ -31,18 +31,18 @@ static int	ft_check(char *str, int *flag)
 	int	count;
 
 	count = 0;
-	if (ft_strncmp(str, "--bench", 7) == 0)
+	if (ft_strncmp(str, "--bench", 8) == 0)
 		ft_check2(flag, &count, FLAG_BENCH);
-	else if (ft_strncmp(str, "--simple", 8) == 0)
+	else if (ft_strncmp(str, "--simple", 9) == 0)
 		ft_check2(flag, &count, FLAG_SIMPLE);
-	else if (ft_strncmp(str, "--medium", 8) == 0)
+	else if (ft_strncmp(str, "--medium", 9) == 0)
 		ft_check2(flag, &count, FLAG_MEDIUM);
-	else if (ft_strncmp(str, "--complexe", 10) == 0)
+	else if (ft_strncmp(str, "--complexe", 11) == 0)
 		ft_check2(flag, &count, FLAG_COMPLEXE);
-	else if (ft_strncmp(str, "--adaptive", 10) == 0)
+	else if (ft_strncmp(str, "--adaptive", 11) == 0)
 		ft_check2(flag, &count, FLAG_ADAPTIVE);
 	else
-		exit(write(2, "Error\n", 6));
+		exit(write(2, "Error\n", 7));
 	return (count);
 }
 
