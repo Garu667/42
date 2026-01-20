@@ -6,7 +6,7 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/20 14:15:58 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/20 22:08:30 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 static int	define_chunks_size(int size)
 {
-	if (size <= 100)
-		return (size / 5);
-	return (size / 10);
+	if (size <= 10)
+		return (3);
+	return (5);
 }
 
-void	chunk_sort(t_stack *a, t_stack *b)
+void	chunk_sort(t_stack *a, t_stack *b, t_bench *bench)
 {
 	int	chunks_size;
 	int	min;
@@ -33,12 +33,12 @@ void	chunk_sort(t_stack *a, t_stack *b)
 	max = chunks_size - 1;
 	while (a->size > 0)
 	{
-		chunk_pb(a, b, min, max);
+		chunk_pb(a, b, bench, min, max);
 		min = min + chunks_size;
 		max = max + chunks_size;
 		if (max >= a->size + b->size)
 			max = a->size + b->size - 1;
 	}
 	while (b->size > 0)
-		chunk_pa(a, b);
+		chunk_pa(a, b, bench);
 }

@@ -4,7 +4,7 @@ SRCS = algo_utils.c			\
 	benchmark.c				\
 	check.c 				\
 	chunk_sort.c 			\
-	chunk_utils.c 			\
+	chunk_utils.c			\
 	ft_op.c 				\
 	ft_split.c 				\
 	index.c 				\

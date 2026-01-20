@@ -6,7 +6,7 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:19 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/20 14:16:11 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/20 22:10:19 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ typedef struct s_bench
 /*-------------algos-------------*/
 int		find_min_position(t_stack *a);
 int		get_position(t_stack *stack, int index);
-void	bring_min_top(t_stack *a);
-void	chunk_sort(t_stack *a, t_stack *b);
-void	chunk_pa(t_stack *a, t_stack *b);
-void	chunk_pb(t_stack *a, t_stack *b, int min, int max);
+void	bring_min_top(t_stack *a, t_stack *b, t_bench *bench);
+void	chunk_pa(t_stack *a, t_stack *b, t_bench *bench);
+void	chunk_pb(t_stack *a, t_stack *b, t_bench *bench, int min, int max);
+void	chunk_sort(t_stack *a, t_stack *b, t_bench *bench);
 void	push_min(t_stack *a, t_stack *b);
-void	radix_sort(t_stack *a, t_stack *b);
-void	selection_sort(t_stack *a, t_stack *b);
-void	tiny_sort(t_stack *a, t_stack *b);
+void	radix_sort(t_stack *a, t_stack *b, t_bench *bench);
+void	selection_sort(t_stack *a, t_stack *b, t_bench *bench);
+void	tiny_sort(t_stack *a, t_stack *b, t_bench *bench);
 /*-------------benchmark-------------*/
 float	ft_compute_disorder(t_stack stack);
 void	print_benchmark(t_bench *bench);

@@ -6,7 +6,7 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/20 14:15:27 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/20 20:02:24 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	find_min_position(t_stack *a)
 	return (position);
 }
 
-void	bring_min_top(t_stack *a)
+void	bring_min_top(t_stack *a, t_stack *b, t_bench *bench)
 {
 	int	position;
 
@@ -62,7 +62,7 @@ void	bring_min_top(t_stack *a)
 	{
 		while (position > 0)
 		{
-			ra(a, true);
+			bench->op(a, b, bench, "ra\n");
 			position--;
 		}
 	}
@@ -70,7 +70,7 @@ void	bring_min_top(t_stack *a)
 	{
 		while (position < a->size)
 		{
-			rra(a, true);
+			bench->op(a, b, bench, "rra\n");
 			position++;
 		}
 	}
