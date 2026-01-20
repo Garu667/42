@@ -1,6 +1,6 @@
 - Resoudre la prise en compte du ou des flags, quelle que soit leur positions.
 - Verifier le bon affichage du bench pour chaque algo.
-- Que faire si le tiny est appele pour des listes de plus de 5 elements ? Quan exactement faire appel au tiny ?
+- Que faire si le tiny est appele pour des listes de plus de 5 elements ? Quand exactement faire appel au tiny ? Dans chaque algo,au debut si size <= 5 ?
 
 
     LISTES DE 100 VALEURS :
