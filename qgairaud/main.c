@@ -15,8 +15,13 @@ void	print_stack(t_stack *a)
 	printf("\n");
 }
 
-static void	choose_algo(t_stack *a, t_stack *b, int flag)
+static void	choose_algo(t_stack *a, t_stack *b, int flag, float disorder)
 {
+	t_bench	bench;
+
+	// bench.strats = -1;
+	// bench.op = do_op_nobench;
+	setup_benchmark(&bench, disorder, flag);
 	if (flag == FLAG_SIMPLE)
 		selection_sort(a, b);
 	else if (flag == FLAG_MEDIUM)
@@ -24,22 +29,21 @@ static void	choose_algo(t_stack *a, t_stack *b, int flag)
 	else if (flag == FLAG_COMPLEXE)
 		radix_sort(a, b);
 	else if (flag == FLAG_ADAPTIVE)
-	{
-		if (a->size <= 5)
-			tiny_sort(a, b);
-		else
-			chunk_sort(a, b);
-	}
+		tiny_sort(a, b);
+	// print_benchmark(&bench);
+
 }
 
 static void	push_swap(t_stack *a, int flag)
 {
 	t_stack	b;
+	float	disorder;
 
 	b.head = NULL;
 	b.size = 0;
+	disorder = ft_compute_disorder(*a);
 	stack_to_index(a);
-	choose_algo(a, &b, flag);
+	choose_algo(a, &b, flag, disorder);
 	free_stack(&b);
 }
 
@@ -52,11 +56,14 @@ int	main(int ac, char **av)
 	a = parsing(&ac, av);
 	if (!a.head)
 		return (write(2, "Error\n", 6));
-    printf("\nAvant tri :\n\n");
-    print_stack(&a);
-    push_swap(&a, FLAG_ADAPTIVE);
-    printf("\nAprès tri :\n\n");
-    print_stack(&a);
+    // printf("\nAvant tri :\n\n");
+    // print_stack(&a);
+    // push_swap(&a, FLAG_ADAPTIVE);
+    // push_swap(&a, FLAG_SIMPLE);
+    push_swap(&a, FLAG_MEDIUM);
+    // push_swap(&a, FLAG_COMPLEXE);
+    // printf("\nAprès tri :\n\n");
+    // print_stack(&a);
 	free_stack(&a);
 	return (0);
 }

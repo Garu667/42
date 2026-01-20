@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   benchmark.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/16 18:20:22 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/20 10:25:51 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ float	ft_compute_disorder(t_stack stack)
 	pairs = 0;
 	mistake = 0;
 	i = stack.head;
-	while (i->next != stack.head)
+	while (i)
 	{
 		j = i->next;
-		while (j != stack.head)
+		while (j)
 		{
 			pairs++;
 			if (i->value > j->value)

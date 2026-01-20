@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   chunk_sort.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/17 21:44:32 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/20 11:40:32 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static int	define_chunks_size(int size)
 {
-	if (size <= 10)
-		return (3);
-	return (5);
+	if (size <= 100)
+		return (size / 5);
+	return (size / 10);
 }
 
 void	chunk_sort(t_stack *a, t_stack *b)
