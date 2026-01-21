@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:44 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 08:23:20 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/15 16:02:44 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../header.h"
 
 static bool	is_double(t_stack *stack, int nbr)
 {
@@ -24,6 +24,8 @@ static bool	is_double(t_stack *stack, int nbr)
 		if (current->value == nbr)
 			return (true);
 		current = current->next;
+		if (current == stack->head)
+			break ;
 	}
 	return (false);
 }
@@ -38,6 +40,7 @@ static t_node	*create_node(int value)
 	new_node->value = value;
 	new_node->index = 0;
 	new_node->next = NULL;
+	new_node->prev = NULL;
 	return (new_node);
 }
 
@@ -46,13 +49,18 @@ static void	add_node_back(t_stack *stack, t_node *new_node)
 	t_node	*current;
 
 	if (!stack->head)
+	{
 		stack->head = new_node;
+		new_node->next = new_node;
+		new_node->prev = new_node;
+	}
 	else
 	{
-		current = stack->head;
-		while (current->next)
-			current = current->next;
+		current = stack->head->prev;
 		current->next = new_node;
+		new_node->prev = current;
+		new_node->next = stack->head;
+		stack->head->prev = new_node;
 	}
 	stack->size++;
 }

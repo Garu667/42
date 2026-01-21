@@ -1,45 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rotate_op.c                                        :+:      :+:    :+:   */
+/*   push_op.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 09:12:41 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 09:14:15 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header.h"
 
-int	ra(t_stack *a, bool write_switch)
+int	pa(t_stack *a, t_stack *b, bool write_switch)
 {
-	if (!a || !a->head || !a->head->next)
-		return (0);
-	a->head = a->head->next;
-	if (write_switch)
-		write(1, "ra\n", 3);
-	return (1);
-}
+	t_node	*tmp;
 
-int	rb(t_stack *b, bool write_switch)
-{
-	if (!b || !b->head || !b->head->next)
+	if (!b || !b->head || !a)
 		return (0);
+	tmp = b->head;
 	b->head = b->head->next;
+	tmp->next = a->head;
+	a->head = tmp;
+	a->size++;
+	b->size--;
 	if (write_switch)
-		write(1, "rb\n", 3);
+		write(1, "pa\n", 3);
 	return (1);
 }
 
-int	rr(t_stack *a, t_stack *b, bool write_switch)
+int	pb(t_stack *b, t_stack *a, bool write_switch)
 {
-	if (!a || !a->head || !a->head->next
-		|| !b || !b->head || !b->head->next)
+	t_node	*tmp;
+
+	if (!a || !a->head || !b)
 		return (0);
-	ra(a, false);
-	rb(b, false);
+	tmp = a->head;
+	a->head = a->head->next;
+	tmp->next = b->head;
+	b->head = tmp;
+	b->size++;
+	a->size--;
 	if (write_switch)
-		write(1, "rr\n", 3);
+		write(1, "pb\n", 3);
 	return (1);
 }

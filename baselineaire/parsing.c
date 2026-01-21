@@ -6,11 +6,11 @@
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:44 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 08:23:20 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 09:41:40 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../header.h"
 
 static bool	is_double(t_stack *stack, int nbr)
 {
@@ -24,6 +24,8 @@ static bool	is_double(t_stack *stack, int nbr)
 		if (current->value == nbr)
 			return (true);
 		current = current->next;
+		if (current == stack->head)
+			break ;
 	}
 	return (false);
 }

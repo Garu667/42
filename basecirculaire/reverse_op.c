@@ -1,63 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rotate_operations.c                                :+:      :+:    :+:   */
+/*   reverse_operations.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 09:15:54 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/17 21:51:12 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../header.h"
 
-int	ra(t_stack *a, bool write_switch)
+int	rra(t_stack *a, bool write_switch)
 {
-	t_node	*first;
-	t_node	*last;
-
 	if (!a || !a->head || !a->head->next)
 		return (0);
-	first = a->head;
-	a->head = a->head->next;
-	first->next = NULL;
-	last = a->head;
-	while (last->next)
-		last = last->next;
-	last->next = first;
+	a->head = a->head->prev;
 	if (write_switch)
-		write(1, "ra\n", 3);
+		write(1, "rra\n", 4);
 	return (1);
 }
 
-int	rb(t_stack *b, bool write_switch)
+int	rrb(t_stack *b, bool write_switch)
 {
-	t_node	*first;
-	t_node	*last;
-
 	if (!b || !b->head || !b->head->next)
 		return (0);
-	first = b->head;
-	b->head = b->head->next;
-	first->next = NULL;
-	last = b->head;
-	while (last->next)
-		last = last->next;
-	last->next = first;
+	b->head = b->head->prev;
 	if (write_switch)
-		write(1, "rb\n", 3);
+		write(1, "rrb\n", 4);
 	return (1);
 }
 
-int	rr(t_stack *a, t_stack *b, bool write_switch)
+int	rrr(t_stack *a, t_stack *b, bool write_switch)
 {
 	if (!a || !a->head || !a->head->next
 		|| !b || !b->head || !b->head->next)
 		return (0);
-	ra(a, false);
-	rb(b, false);
+	rra(a, false);
+	rrb(b, false);
 	if (write_switch)
-		write(1, "rr\n", 3);
+		write(1, "rrr\n", 4);
 	return (1);
 }

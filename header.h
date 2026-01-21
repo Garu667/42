@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:19 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/13 15:43:19 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2026/01/21 12:46:51 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ typedef struct s_bench
 int		get_position(t_stack *stack, int index);
 int		find_min_position(t_stack *a);
 void	bring_min_top(t_stack *a, t_stack *b, t_bench *bench);
-
 void	tiny_sort(t_stack *a, t_stack *b, t_bench *bench);
 void	selection_sort(t_stack *a, t_stack *b, t_bench *bench);
 void	chunk_sort(t_stack *a, t_stack *b, t_bench *bench);
@@ -77,6 +76,8 @@ char	**free_split(char **split, int indx, int flag);
 /*-------------check-------------*/
 int		ft_check_flag(char **av, int *i);
 void	free_stack(t_stack *stack);
+/*-------------index-------------*/
+void	stack_to_index(t_stack *a);
 /*-------------parsing-------------*/
 t_stack	parsing(int *ac, char **av);
 /*-------------benchmark-------------*/
