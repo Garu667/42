@@ -3,29 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   reverse_op.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 09:11:44 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 18:59:33 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 int	rra(t_stack *a, bool write_switch)
 {
-	t_node	*pre_last;
-	t_node	*last;
-
 	if (!a || !a->head || !a->head->next)
 		return (0);
-	pre_last = a->head;
-	while (pre_last->next->next)
-		pre_last = pre_last->next;
-	last = pre_last->next;
-	pre_last->next = NULL;
-	last->next = a->head;
-	a->head = last;
+	a->head = a->head->prev;
 	if (write_switch)
 		write(1, "rra\n", 4);
 	return (1);
@@ -33,18 +24,9 @@ int	rra(t_stack *a, bool write_switch)
 
 int	rrb(t_stack *b, bool write_switch)
 {
-	t_node	*pre_last;
-	t_node	*last;
-
 	if (!b || !b->head || !b->head->next)
 		return (0);
-	pre_last = b->head;
-	while (pre_last->next->next)
-		pre_last = pre_last->next;
-	last = pre_last->next;
-	pre_last->next = NULL;
-	last->next = b->head;
-	b->head = last;
+	b->head = b->head->prev;
 	if (write_switch)
 		write(1, "rrb\n", 4);
 	return (1);

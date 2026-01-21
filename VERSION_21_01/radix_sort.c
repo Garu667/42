@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   radix_sort.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 11:13:58 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 18:59:29 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 static void	radix_pass(t_stack *a, t_stack *b, int bit_to_study, t_bench *bench)
 {
 	int	i;
 	int	size;
-	
+
 	i = 0;
 	size = a->size;
 	while (i < size)
@@ -37,8 +37,7 @@ void	radix_sort(t_stack *a, t_stack *b, t_bench *bench)
 	int	max_bits;
 	int	index_max;
 
-	bench->strats |= FLAG_COMPLEXE;
-	printf("\n\t -> Radix sort <- \n");
+	bench->strats |= FLAG_COMPLEX;
 	if (!a || is_sorted(a) || !b)
 		return ;
 	index_max = (a->size) - 1;

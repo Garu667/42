@@ -3,20 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   select_sort.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 09:29:00 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 18:59:39 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 void	selection_sort(t_stack *a, t_stack *b, t_bench *bench)
 {
-	// int	pos;
-
-	// bench->strats |= FLAG_SIMPLE;
+	bench->strats |= FLAG_SIMPLE;
 	if (!a || is_sorted(a) || !b)
 		return ;
 	while (a->size)

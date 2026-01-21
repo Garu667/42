@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   swap_op.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 12:36:33 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 18:59:42 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
-int sa(t_stack *a, bool write_switch)
+int	sa(t_stack *a, bool write_switch)
 {
-	t_node *first;
-	t_node *second;
-	t_node *third;
-	t_node *last;
+	t_node	*first;
+	t_node	*second;
+	t_node	*third;
+	t_node	*last;
 
 	if (!a || !a->head || a->head->next == a->head)
 		return (0);

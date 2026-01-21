@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   tiny_sort.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 12:42:20 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 18:59:46 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 static void	sort_two(t_stack *a, t_stack *b, t_bench *bench)
 {
@@ -53,32 +53,28 @@ static void	sort_four(t_stack *a, t_stack *b, t_bench *bench)
 	bench->op(a, b, bench, "pa\n");
 }
 
-// static void	sort_five(t_stack *a, t_stack *b, t_bench *bench)
-// {
-// 	bring_min_top(a, b, bench);
-// 	bench->op(a, b, bench, "pb\n");
-// 	bring_min_top(a, b, bench);
-// 	bench->op(a, b, bench, "pb\n");
-// 	sort_three(a, b, bench);
-// 	bench->op(a, b, bench, "pa\n");
-// 	bench->op(a, b, bench, "pa\n");
-// }
+static void	sort_five(t_stack *a, t_stack *b, t_bench *bench)
+{
+	bring_min_top(a, b, bench);
+	bench->op(a, b, bench, "pb\n");
+	bring_min_top(a, b, bench);
+	bench->op(a, b, bench, "pb\n");
+	sort_three(a, b, bench);
+	bench->op(a, b, bench, "pa\n");
+	bench->op(a, b, bench, "pa\n");
+}
 
 void	tiny_sort(t_stack *a, t_stack *b, t_bench *bench)
 {
 	bench->strats |= FLAG_SIMPLE;
-
-	printf("\n\t -> Tiny sort <- \n");
-	if (!a || !b)
+	if (!a || is_sorted(a) || !b)
 		return ;
-	if (is_sorted(a))
-	printf("IS_SORTED RETURNED TRUE\n");
 	if (a->size == 2)
 		sort_two(a, b, bench);
 	else if (a->size == 3)
 		sort_three(a, b, bench);
 	else if (a->size == 4)
 		sort_four(a, b, bench);
-	// else if (a->size == 5)
-		// sort_five(a, b, bench);
+	else if (a->size == 5)
+		sort_five(a, b, bench);
 }

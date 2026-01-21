@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   chunk_sort.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 11:13:20 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 18:58:59 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 static int	define_chunks_size(int size)
 {
-	if (size <= 5)
-		return (1);
-	else if (size <= 100)
-		return (size / 5);
-	return (size / 10);
+	if (size <= 10)
+		return (size / 3);
+	if (size <= 100)
+		return (size / 10);
+	return (size / 20);
 }
 
 static int	find_max_one(t_stack *b)
@@ -57,50 +57,42 @@ static void	chunk_pa(t_stack *a, t_stack *b, t_bench *bench)
 	bench->op(a, b, bench, "pa\n");
 }
 
-static void	chunk_pb(t_stack *a, t_stack *b,
-	t_bench *bench, int min)
+static void	chunk_pb(t_stack *a, t_stack *b, t_bench *bench, t_chunk *chunk)
 {
-	int	chunk_size;
-	int	max;
-	int	rotations;
-	int	targets;
+	int	to_push;
+	int	pushed;
 
-	chunk_size = define_chunks_size(a->size + b->size);
-	max = min + chunk_size - 1;
-	if (max >= a->size + b->size)
-		max = a->size + b->size - 1;
-
-	targets = max - min + 1;
-	rotations = 0;
-	while (rotations < a->size && targets > 0)
+	to_push = chunk->max - chunk->min;
+	pushed = 0;
+	while (pushed <= to_push)
 	{
-		if (a->head->index >= min && a->head->index <= max)
+		if (a->head->index >= chunk->min && a->head->index <= chunk->max)
 		{
 			bench->op(a, b, bench, "pb\n");
-			targets--;
+			pushed++;
 		}
 		else
 			bench->op(a, b, bench, "ra\n");
-		rotations++;
 	}
 }
 
-
 void	chunk_sort(t_stack *a, t_stack *b, t_bench *bench)
 {
-	int	min;
-	int	chunk_size;
+	int			chunks_size;
+	t_chunk		chunk;
 
-	if (!a || !b || is_sorted(a))
+	if (!a || is_sorted(a) || !b)
 		return ;
-	bench->strats |= FLAG_MEDIUM;
-	printf("\n\t -> Chunk sort <- \n");
-	chunk_size = define_chunks_size(a->size);
-	min = 0;
+	chunks_size = define_chunks_size(a->size);
+	chunk.min = 0;
+	chunk.max = chunks_size - 1;
 	while (a->size > 0)
 	{
-		chunk_pb(a, b, bench, min);
-		min += chunk_size;
+		chunk_pb(a, b, bench, &chunk);
+		chunk.min = chunk.min + chunks_size;
+		chunk.max = chunk.max + chunks_size;
+		if (chunk.max >= a->size + b->size)
+			chunk.max = a->size + b->size - 1;
 	}
 	while (b->size > 0)
 		chunk_pa(a, b, bench);

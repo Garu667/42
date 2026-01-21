@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   benchmark.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/15 16:02:06 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2026/01/21 19:27:18 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 float	ft_compute_disorder(t_stack stack)
 {
@@ -95,8 +95,8 @@ void	print_benchmark(t_bench *bench)
 		ft_safe_write(2, "Simple / O(n²)\n", 16);
 	else if (bench->strats & FLAG_MEDIUM)
 		ft_safe_write(2, "Medium / O(n√n)\n", 16);
-	else if (bench->strats & FLAG_COMPLEXE)
-		ft_safe_write(2, "Complexe / O(n log n)\n", 22);
+	else if (bench->strats & FLAG_COMPLEX)
+		ft_safe_write(2, "Complex / O(n log n)\n", 22);
 	else if (bench->strats & FLAG_ADAPTIVE)
 		ft_safe_write(2, "Adaptive / O(n log n)\n", 22);
 	total_ops = bench->ops[0] + bench->ops[1] + bench->ops[2] + bench->ops[3]
@@ -117,8 +117,8 @@ void	setup_benchmark(t_bench *bench, float disorder, int flag)
 		bench->strats |= FLAG_SIMPLE;
 	else if (flag & FLAG_MEDIUM)
 		bench->strats |= FLAG_MEDIUM;
-	else if (flag & FLAG_COMPLEXE)
-		bench->strats |= FLAG_COMPLEXE;
+	else if (flag & FLAG_COMPLEX)
+		bench->strats |= FLAG_COMPLEX;
 	else if (flag & FLAG_ADAPTIVE)
 		bench->strats |= FLAG_ADAPTIVE;
 	bench->disorder = disorder;

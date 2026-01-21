@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_op.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:25 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/15 16:02:25 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2026/01/21 18:59:03 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op)
 {

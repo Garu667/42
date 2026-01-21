@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   push_op.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 10:58:26 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 18:59:26 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 t_node	*pop_head(t_stack *stack)
 {
@@ -30,6 +30,7 @@ t_node	*pop_head(t_stack *stack)
 	stack->size--;
 	return (node);
 }
+
 void	push_head(t_stack *stack, t_node *node)
 {
 	if (!stack || !node)
@@ -50,6 +51,7 @@ void	push_head(t_stack *stack, t_node *node)
 	}
 	stack->size++;
 }
+
 int	pa(t_stack *a, t_stack *b, bool write_switch)
 {
 	t_node	*node;
@@ -64,6 +66,7 @@ int	pa(t_stack *a, t_stack *b, bool write_switch)
 		write(1, "pa\n", 3);
 	return (1);
 }
+
 int	pb(t_stack *a, t_stack *b, bool write_switch)
 {
 	t_node	*node;

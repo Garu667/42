@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   check.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:13 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/15 16:02:13 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2026/01/21 19:05:01 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 static void	ft_check2(int *flag, int *count, int flag_bits)
 {
@@ -20,7 +20,7 @@ static void	ft_check2(int *flag, int *count, int flag_bits)
 		(*count)++;
 		return ;
 	}
-	if ((*flag) & (FLAG_SIMPLE | FLAG_MEDIUM | FLAG_COMPLEXE | FLAG_ADAPTIVE))
+	if ((*flag) & (FLAG_SIMPLE | FLAG_MEDIUM | FLAG_COMPLEX | FLAG_ADAPTIVE))
 		exit(write(2, "Error\n", 6));
 	(*flag) |= flag_bits;
 	(*count)++;
@@ -37,8 +37,8 @@ static int	ft_check(char *str, int *flag)
 		ft_check2(flag, &count, FLAG_SIMPLE);
 	else if (ft_strncmp(str, "--medium", 8) == 0)
 		ft_check2(flag, &count, FLAG_MEDIUM);
-	else if (ft_strncmp(str, "--complexe", 10) == 0)
-		ft_check2(flag, &count, FLAG_COMPLEXE);
+	else if (ft_strncmp(str, "--complex", 10) == 0)
+		ft_check2(flag, &count, FLAG_COMPLEX);
 	else if (ft_strncmp(str, "--adaptive", 10) == 0)
 		ft_check2(flag, &count, FLAG_ADAPTIVE);
 	else

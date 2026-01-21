@@ -3,35 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   main_push_swap.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:39 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 09:03:57 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/21 19:26:12 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
-void	print_stack(t_stack *a)
-{
-	t_node	*current;
-
-	if (!a || !a->head)
-		return;
-	current = a->head;
-	while (current->next != a->head)
-	{
-		printf("%d ", current->value);
-		current = current->next;
-	}
-	printf("\n");
-}
 void	choose_algo(t_stack *a, t_stack *b, int flag, float disorder)
 {
 	t_bench	bench;
 
-	(void)a;
-	(void)b;
 	bench.strats = -1;
 	bench.op = do_op_nobench;
 	if (flag & FLAG_BENCH)
@@ -40,13 +24,13 @@ void	choose_algo(t_stack *a, t_stack *b, int flag, float disorder)
 		selection_sort(a, b, &bench);
 	else if (flag & FLAG_MEDIUM)
 		chunk_sort(a, b, &bench);
-	else if (flag & FLAG_COMPLEXE)
+	else if (flag & FLAG_COMPLEX)
 		radix_sort(a, b, &bench);
-	else if (flag & FLAG_ADAPTIVE || !flag)
+	else if ((flag & FLAG_ADAPTIVE) || !flag || (flag & FLAG_BENCH))
 	{
-		if (disorder < 0.2 || a->size <= 5)
+		if (disorder < 0.2 && a->size <= 5)
 			tiny_sort(a, b, &bench);
-		else if (disorder < 0.2f)
+		else if (disorder < 0.2f && a->size > 5)
 			selection_sort(a, b, &bench);
 		else if (disorder >= 0.2f && disorder < 0.5f)
 			chunk_sort(a, b, &bench);
@@ -63,6 +47,7 @@ void	push_swap(t_stack *a, int flag, float disorder)
 
 	b.head = NULL;
 	b.size = 0;
+	stack_to_index(a);
 	choose_algo(a, &b, flag, disorder);
 	free_stack(&b);
 }
@@ -70,14 +55,15 @@ void	push_swap(t_stack *a, int flag, float disorder)
 int	main(int ac, char **av)
 {
 	t_stack	a;
+	float	disorder;
 
 	if (ac < 2)
 		return (write(2, "Error\n", 6));
 	a = parsing(&ac, av);
 	if (!a.head)
 		return (write(2, "Error\n", 6));
-	push_swap(&a, ac, ft_compute_disorder(a));
-	print_stack(&a);
+	disorder = ft_compute_disorder(a);
+	push_swap(&a, ac, disorder);
 	free_stack(&a);
 	return (0);
 }
