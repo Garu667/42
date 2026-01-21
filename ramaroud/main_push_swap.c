@@ -23,21 +23,22 @@ void	choose_algo(t_stack *a, t_stack *b, int flag, float disorder)
 	if (flag & FLAG_BENCH)
 		setup_benchmark(&bench, disorder, flag);
 	if (flag & FLAG_SIMPLE)
-		ft_putstr_fd("Bubble Sort a faire\n", 1);
+		selection_sort(a, b, &bench);
 	else if (flag & FLAG_MEDIUM)
-		ft_putstr_fd("Bucket Sort a faire\n", 1);
+		chunk_sort(a, b, &bench);
 	else if (flag & FLAG_COMPLEXE)
-		ft_putstr_fd("Radix Sort a faire\n", 1);
-	else if (flag & FLAG_ADAPTIVE)
-		write(1, "Adaptive a faire\n", 17);
-	else if (disorder < 0.2f)
-		ft_putstr_fd("Bubble Sort a faire\n", 1);
-	else if (disorder >= 0.2f && disorder < 0.5f)
-		ft_putstr_fd("Bucket Sort a faire\n", 1);
-	else if (disorder >= 0.5f)
-		ft_putstr_fd("Radix Sort a faire\n", 1);
-	else
-		write(1, "Adaptive a faire\n", 17);
+		radix_sort(a, b, &bench);
+	else if (flag & FLAG_ADAPTIVE || !flag)
+	{
+		if (disorder < 0.2 || a->size <= 5)
+			tiny_sort(a, b, &bench);
+		else if (disorder < 0.2f)
+			selection_sort(a, b, &bench);
+		else if (disorder >= 0.2f && disorder < 0.5f)
+			chunk_sort(a, b, &bench);
+		else if (disorder >= 0.5f)
+			radix_sort(a, b, &bench);
+	}
 	if (flag & FLAG_BENCH)
 		print_benchmark(&bench);
 }

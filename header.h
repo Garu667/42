@@ -50,6 +50,15 @@ typedef struct s_bench
 	void	(*op)(t_stack *a, t_stack *b, struct s_bench *bench, char *op);
 }	t_bench;
 
+/*-------------algo-------------*/
+int		get_position(t_stack *stack, int index);
+int		find_min_position(t_stack *a);
+void	bring_min_top(t_stack *a, t_stack *b, t_bench *bench);
+
+void	tiny_sort(t_stack *a, t_stack *b, t_bench *bench);
+void	selection_sort(t_stack *a, t_stack *b, t_bench *bench);
+void	chunk_sort(t_stack *a, t_stack *b, t_bench *bench);
+void	radix_sort(t_stack *a, t_stack *b, t_bench *bench);
 /*-------------operation-------------*/
 int		sa(t_stack *a, bool write_switch);
 int		sb(t_stack *b, bool write_switch);

@@ -12,20 +12,6 @@
 
 #include "../../header.h"
 
-void	print_stack(t_stack *stack)
-{
-	t_node *start = stack->head;
-	t_node *node = start;
-
-	if (!node)
-		return ;
-	do {
-		printf("%d ", node->value);
-		node = node->next;
-	} while (node != start);
-	printf("\n");
-}
-
 static int	do_op(t_stack *a, t_stack *b, char *op)
 {
 	if (ft_strncmp(op, "sa\n", 3) == 0)
@@ -73,7 +59,6 @@ static int	checker(t_stack *a)
 			free(line);
 			exit(write(2, "Error\n", 6));
 		}
-		print_stack(a);
 		free(line);
 	}
 	if (is_sorted(a) && b.size == 0)

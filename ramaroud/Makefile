@@ -20,7 +20,12 @@ SRCS	= check.c		\
 		ft_split.c		\
 		benchmark.c		\
 		rotate_op.c		\
+		tiny_sort.c		\
+		chunk_sort.c	\
+		algo_utils.c	\
+		radix_sort.c	\
 		reverse_op.c	\
+		select_sort.c	\
 		main_push_swap.c
 OBJS	= $(SRCS:.c=.o)
 
@@ -40,7 +45,7 @@ BONUS_OBJS = $(BONUS:.c=.o)
 
 CC				= cc
 RM				= rm -f
-CFLAGS			= -Wall -Wextra -Werror
+CFLAGS			= #-Wall -Wextra -Werror
 SRC_INCLUDES	= header.h
 NAME			= push_swap
 BONUS_NAME		= checker
