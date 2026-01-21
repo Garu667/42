@@ -33,7 +33,7 @@ typedef	struct s_node
 	int				value;
 	unsigned int	index;
 	struct s_node	*next;
-	struct s_node	*previous;
+	struct s_node	*prev;
 }					t_node;
 
 typedef struct s_stack
@@ -76,6 +76,12 @@ void	print_benchmark(t_bench *bench);
 void	setup_benchmark(t_bench *bench, float disorder, int flag);
 void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op);
 void	do_op_nobench(t_stack *a, t_stack *b, t_bench *bench, char *op);
+
+/*-------------gnl-------------*/
+char	*get_next_line(int fd);
+char	*ft_strjoin(char *s1, char s2[]);
+int	ft_check_line(char *line);
+void	ft_format(char **line, char buffer[]);
 /*-------------utils-------------*/
 void	ft_safe_write(int fd, char *str, int len);
 size_t	ft_strlen(char *str);

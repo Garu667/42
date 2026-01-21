@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../../header.h"
 
 static char	*ft_free(char *to_free)
 {

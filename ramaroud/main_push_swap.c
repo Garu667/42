@@ -16,6 +16,8 @@ void	choose_algo(t_stack *a, t_stack *b, int flag, float disorder)
 {
 	t_bench	bench;
 
+	(void)a;
+	(void)b;
 	bench.strats = -1;
 	bench.op = do_op_nobench;
 	if (flag & FLAG_BENCH)

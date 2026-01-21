@@ -40,7 +40,7 @@ static t_node	*create_node(int value)
 	new_node->value = value;
 	new_node->index = 0;
 	new_node->next = NULL;
-	new_node->previous = NULL;
+	new_node->prev = NULL;
 	return (new_node);
 }
 
@@ -52,15 +52,15 @@ static void	add_node_back(t_stack *stack, t_node *new_node)
 	{
 		stack->head = new_node;
 		new_node->next = new_node;
-		new_node->previous = new_node;
+		new_node->prev = new_node;
 	}
 	else
 	{
-		current = stack->head->previous;
+		current = stack->head->prev;
 		current->next = new_node;
-		new_node->previous = current;
+		new_node->prev = current;
 		new_node->next = stack->head;
-		stack->head->previous = new_node;
+		stack->head->prev = new_node;
 	}
 	stack->size++;
 }
@@ -94,27 +94,29 @@ static void	parse_multiple(char **split, t_stack *a)
 t_stack	parsing(int *ac, char **av)
 {
 	t_stack	a;
+	char	**split;
 	int		count;
 	int		flag;
 	int		i;
 
-	i = 0;
+	i = 1;
 	count = 0;
 	a.size = 0;
 	a.head = NULL;
 	flag = ft_check_flag(av, &i);
 	if (flag == -1)
 		exit(write(2, "Error\n", 6));
-	while (++i != (*ac))
+	while (i != (*ac))
 	{
 		split = ft_split(av[i], ' ');
 		if (!split)
-			return ;
+			exit(write(2, "Error\n", 6));
 		count = 0;
 		while (split[count])
 			count++;
 		parse_multiple(split, &a);
 		free_split(split, count, 2);
+		i++;
 	}
 	(*ac) = flag;
 	return (a);

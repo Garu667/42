@@ -10,13 +10,17 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	= algo.c		\
-		check.c			\
+SRCS	= check.c		\
+		ft_op.c			\
 		utils.c			\
 		utils2.c		\
 		parsing.c		\
+		swap_op.c		\
+		push_op.c		\
 		ft_split.c		\
 		benchmark.c		\
+		rotate_op.c		\
+		reverse_op.c	\
 		main_push_swap.c
 OBJS	= $(SRCS:.c=.o)
 
@@ -25,7 +29,11 @@ BONUS	= bonus/gnl.c		\
 		utils.c				\
 		utils2.c			\
 		parsing.c			\
+		swap_op.c			\
+		push_op.c			\
 		ft_split.c			\
+		rotate_op.c			\
+		reverse_op.c		\
 		bonus/gnl_utils.c	\
 		bonus/main_checker.c
 BONUS_OBJS = $(BONUS:.c=.o)
