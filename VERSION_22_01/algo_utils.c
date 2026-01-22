@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   algo_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/20 20:02:24 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/22 17:21:57 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,20 @@
 
 int	get_position(t_stack *stack, int index)
 {
-	int		position;
 	t_node	*current;
+	int		pos;
+	int		i;
 
+	i = 0;
+	pos = 0;
 	current = stack->head;
-	position = 0;
-	while (current)
+	while (i < stack->size)
 	{
 		if (current->index == index)
-			return (position);
+			return (pos);
 		current = current->next;
-		position++;
+		pos++;
+		i++;
 	}
 	return (-1);
 }
@@ -32,46 +35,41 @@ int	get_position(t_stack *stack, int index)
 int	find_min_position(t_stack *a)
 {
 	t_node	*current;
+	int		min;
+	int		pos;
 	int		i;
-	int		min_value;
-	int		position;
 
-	current = a->head;
-	min_value = current->value;
-	position = 0;
 	i = 0;
-	while (current)
+	pos = 0;
+	current = a->head;
+	min = current->value;
+	while (i < a->size)
 	{
-		if (current->value < min_value)
+		if (current->value < min)
 		{
-			min_value = current->value;
-			position = i;
+			min = current->value;
+			pos = i;
 		}
 		current = current->next;
 		i++;
 	}
-	return (position);
+	return (pos);
 }
 
 void	bring_min_top(t_stack *a, t_stack *b, t_bench *bench)
 {
-	int	position;
+	int	pos;
 
-	position = find_min_position(a);
-	if (position <= a->size / 2)
+	pos = find_min_position(a);
+	if (pos <= (a->size / 2))
 	{
-		while (position > 0)
-		{
+		while (pos-- > 0)
 			bench->op(a, b, bench, "ra\n");
-			position--;
-		}
 	}
 	else
 	{
-		while (position < a->size)
-		{
+		pos = a->size - pos;
+		while (pos-- > 0)
 			bench->op(a, b, bench, "rra\n");
-			position++;
-		}
 	}
 }

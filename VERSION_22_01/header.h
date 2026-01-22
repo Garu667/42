@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:19 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 18:25:54 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/22 18:53:47 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,21 @@
 # define HEADER_H
 
 # define BUFFER_SIZE	1
-# define FLAG_BENCH		1	// 00001
-# define FLAG_SIMPLE	2	// 00010
-# define FLAG_MEDIUM	4	// 00100
-# define FLAG_COMPLEX	8	// 01000
-# define FLAG_ADAPTIVE	16	// 10000
+# define FLAG_BENCH		1
+# define FLAG_SIMPLE	2
+# define FLAG_MEDIUM	4
+# define FLAG_COMPLEX	8
+# define FLAG_ADAPTIVE	16
 
 # include <unistd.h>
 # include <stdlib.h>
-# include <stdarg.h>
-# include <string.h>
 # include <stdbool.h>
 # include <limits.h>
 
-# include <stdio.h>
-
-typedef	struct s_node
+typedef struct s_node
 {
 	int				value;
-	unsigned int	index;
+	int				index;
 	struct s_node	*next;
 	struct s_node	*prev;
 }					t_node;

@@ -6,42 +6,44 @@
 #    By: quentin <quentin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/12 18:08:48 by ramaroud          #+#    #+#              #
-#    Updated: 2026/01/21 12:45:40 by quentin          ###   ########.fr        #
+#    Updated: 2026/01/22 18:35:01 by quentin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS	= check.c		\
-		ft_op.c			\
-		index.c			\
-		utils.c			\
-		utils2.c		\
-		parsing.c		\
-		swap_op.c		\
-		push_op.c		\
-		ft_split.c		\
-		benchmark.c		\
-		rotate_op.c		\
-		tiny_sort.c		\
-		chunk_sort.c	\
-		algo_utils.c	\
-		radix_sort.c	\
-		reverse_op.c	\
-		select_sort.c	\
-		main_push_swap.c
+SRCS	= algo_utils.c			\
+		benchmark.c				\
+		check.c					\
+		chunk_sort.c			\
+		ft_op.c					\
+		ft_split.c				\
+		index.c					\
+		main_push_swap.c		\
+		parsing.c				\
+		push_op.c				\
+		radix_sort.c			\
+		reverse_op.c			\
+		rotate_op.c				\
+		selection_sort.c		\
+		swap_op.c				\
+		tiny_sort.c				\
+		utils.c					\
+		utils2.c
+
 OBJS	= $(SRCS:.c=.o)
 
-BONUS	= bonus/gnl.c		\
-		check.c				\
-		utils.c				\
-		utils2.c			\
-		parsing.c			\
-		swap_op.c			\
-		push_op.c			\
-		ft_split.c			\
-		rotate_op.c			\
-		reverse_op.c		\
-		bonus/gnl_utils.c	\
-		bonus/main_checker.c
+BONUS	= bonus/gnl.c			\
+		bonus/gnl_utils.c		\
+		bonus/main_checker.c	\
+		check.c					\
+		ft_split.c				\
+		parsing.c				\
+		push_op.c				\
+		rotate_op.c				\
+		reverse_op.c			\
+		swap_op.c				\
+		utils.c					\
+		utils2.c
+		
 BONUS_OBJS = $(BONUS:.c=.o)
 
 CC				= cc
@@ -64,7 +66,7 @@ fclean:		clean
 
 re:		fclean all
 
-bonus:	.bonus
+bonus:		.bonus
 
 .bonus:		$(BONUS_OBJS)
 			$(CC) $(BONUS_OBJS) -o $(BONUS_NAME)
