@@ -6,20 +6,49 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:39 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/23 16:14:46 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:42:14 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-void	choose_algo(t_stack *a, t_stack *b, int flag, float disorder)
+float	ft_compute_disorder(t_stack stack)
+{
+	int		mistake;
+	int		pairs;
+	t_node	*i;
+	t_node	*j;
+
+	if (!stack.head || stack.size <= 1)
+		return (0);
+	pairs = 0;
+	mistake = 0;
+	i = stack.head;
+	while (i->next != stack.head)
+	{
+		j = i->next;
+		while (j != stack.head)
+		{
+			pairs++;
+			if (i->value > j->value)
+				mistake++;
+			j = j->next;
+		}
+		i = i->next;
+	}
+	if (pairs == 0)
+		return (0);
+	return ((float)mistake / (float)pairs);
+}
+
+void	choose_algo(t_stack *a, t_stack *b, int flag)
 {
 	t_bench	bench;
 
 	bench.strats = -1;
 	bench.op = do_op_nobench;
 	if (flag & FLAG_BENCH)
-		setup_benchmark(&bench, disorder, flag);
+		setup_benchmark(&bench, a->disorder, flag);
 	if (flag & FLAG_SIMPLE)
 		selection_sort(a, b, &bench);
 	else if (flag & FLAG_MEDIUM)
@@ -28,34 +57,33 @@ void	choose_algo(t_stack *a, t_stack *b, int flag, float disorder)
 		radix_sort(a, b, &bench);
 	else if ((flag & FLAG_ADAPTIVE) || !flag || (flag & FLAG_BENCH))
 	{
-		if (disorder < 0.2 && a->size <= 5)
+		if (a->disorder < 0.2f && a->size <= 5)
 			tiny_sort(a, b, &bench);
-		else if (disorder < 0.2f && a->size > 5)
+		else if (a->disorder < 0.2f && a->size > 5)
 			selection_sort(a, b, &bench);
-		else if (disorder >= 0.2f && disorder < 0.5f)
+		else if (a->disorder >= 0.2f && a->disorder < 0.5f)
 			chunk_sort(a, b, &bench);
-		else if (disorder >= 0.5f)
+		else if (a->disorder >= 0.5f)
 			radix_sort(a, b, &bench);
 	}
 	if (flag & FLAG_BENCH)
-		print_benchmark(&bench);
+		print_benchmark(&bench, a);
 }
 
-void	push_swap(t_stack *a, int flag, float disorder)
+void	push_swap(t_stack *a, int flag)
 {
 	t_stack	b;
 
 	b.size = 0;
 	b.head = NULL;
 	stack_to_index(a);
-	choose_algo(a, &b, flag, disorder);
+	choose_algo(a, &b, flag);
 	free_stack(&b);
 }
 
 int	main(int ac, char **av)
 {
 	t_stack	a;
-	float	disorder;
 	int		flag;
 	int		i;
 
@@ -70,8 +98,8 @@ int	main(int ac, char **av)
 	parsing(&a, &ac, av, i);
 	if (!a.head)
 		return (write(2, "Error\n", 6));
-	disorder = ft_compute_disorder(a);
-	push_swap(&a, flag, disorder);
+	a.disorder = ft_compute_disorder(a);
+	push_swap(&a, flag);
 	free_stack(&a);
 	return (0);
 }

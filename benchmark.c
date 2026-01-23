@@ -6,40 +6,11 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/23 16:14:07 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:43:59 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
-
-float	ft_compute_disorder(t_stack stack)
-{
-	int		mistake;
-	int		pairs;
-	t_node	*i;
-	t_node	*j;
-
-	if (!stack.head || stack.size <= 1)
-		return (0);
-	pairs = 0;
-	mistake = 0;
-	i = stack.head;
-	while (i->next != stack.head)
-	{
-		j = i->next;
-		while (j != stack.head)
-		{
-			pairs++;
-			if (i->value > j->value)
-				mistake++;
-			j = j->next;
-		}
-		i = i->next;
-	}
-	if (pairs == 0)
-		return (0);
-	return ((float)mistake / (float)pairs);
-}
 
 static void	print_disorder(t_bench *bench)
 {
@@ -85,7 +56,17 @@ static void	print_ops(t_bench *bench)
 	ft_safe_write(2, "\n", 1);
 }
 
-void	print_benchmark(t_bench *bench)
+static void	strategy_choose(t_stack *a)
+{
+	if (a->disorder < 0.2f)
+		ft_safe_write(2, "O(n²)\n", 7);
+	else if (a->disorder >= 0.2f && a->disorder < 0.5f)
+		ft_safe_write(2, "O(n√n)\n", 9);
+	else if (a->disorder >= 0.5f)
+		ft_safe_write(2, "O(n log n)\n", 11);
+}
+
+void	print_benchmark(t_bench *bench, t_stack *a)
 {
 	int	total_ops;
 
@@ -94,11 +75,14 @@ void	print_benchmark(t_bench *bench)
 	if (bench->strats & FLAG_SIMPLE)
 		ft_safe_write(2, "Simple / O(n²)\n", 16);
 	else if (bench->strats & FLAG_MEDIUM)
-		ft_safe_write(2, "Medium / O(n√n)\n", 16);
+		ft_safe_write(2, "Medium / O(n√n)\n", 19);
 	else if (bench->strats & FLAG_COMPLEX)
 		ft_safe_write(2, "Complex / O(n log n)\n", 22);
-	else if (bench->strats & FLAG_ADAPTIVE)
-		ft_safe_write(2, "Adaptive / O(n log n)\n", 22);
+	else if (bench->strats & FLAG_ADAPTIVE || FLAG_BENCH)
+	{
+		ft_safe_write(2, "Adaptive / ", 11);
+		strategy_choose(a);
+	}
 	total_ops = bench->ops[0] + bench->ops[1] + bench->ops[2] + bench->ops[3]
 		+ bench->ops[4] + bench->ops[5] + bench->ops[6] + bench->ops[7]
 		+ bench->ops[8] + bench->ops[9] + bench->ops[10];

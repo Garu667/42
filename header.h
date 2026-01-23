@@ -6,7 +6,7 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:19 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/23 16:14:37 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:43:55 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_chunk
 typedef struct s_stack
 {
 	t_node	*head;
+	float	disorder;
 	int		size;
 }			t_stack;
 
@@ -87,7 +88,7 @@ void	parsing(t_stack *a, int *ac, char **av, int i);
 float	ft_compute_disorder(t_stack stack);
 void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op);
 void	do_op_nobench(t_stack *a, t_stack *b, t_bench *bench, char *op);
-void	print_benchmark(t_bench *bench);
+void	print_benchmark(t_bench *bench, t_stack *a);
 void	setup_benchmark(t_bench *bench, float disorder, int flag);
 /*-----------------------------gnl--------------------------------*/
 char	*ft_strjoin(char *s1, char s2[]);
