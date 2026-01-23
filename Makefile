@@ -24,13 +24,14 @@ MANDATORY_SRCS	= algo_utils.c			\
 				tiny_sort.c				\
 				utils.c					\
 				utils2.c
+
 MANDATORY_OBJS	= $(MANDATORY_SRCS:%.c=$(OBJDIR)/%.o)
 
-BONUS_SRCS		= main_checker.c 	\
-				gnl.c 				\
-				bonus/gnl_utils.c	\
-				check.c 			\
+BONUS_SRCS		= check.c 			\
 				ft_split.c 			\
+				gnl.c 				\
+				gnl_utils.c			\
+				main_checker.c		\
 				parsing.c 			\
 				push_op.c		 	\
 				reverse_op.c 		\
@@ -38,6 +39,7 @@ BONUS_SRCS		= main_checker.c 	\
 				swap_op.c 			\
 				utils.c				\
 				utils2.c
+
 BONUS_OBJS		= $(BONUS_SRCS:%.c=$(OBJDIR)/%.o)
 
 DEPS			= $(OBJS:.o=.d) $(BONUS_OBJS:.o=.d)
