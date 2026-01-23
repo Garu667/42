@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   gnl.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/17 14:47:45 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/22 18:51:48 by quentin          ###   ########.fr       */
+/*   Created: 2026/01/23 01:39:54 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/01/23 01:39:54 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 static char	*ft_free(char *to_free)
 {

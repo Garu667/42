@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main_checker.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/12 19:42:04 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/22 18:51:30 by quentin          ###   ########.fr       */
+/*   Created: 2026/01/23 01:40:25 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/01/23 01:40:25 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 static int	do_op(t_stack *a, t_stack *b, char *op)
 {
@@ -46,8 +46,8 @@ static int	checker(t_stack *a)
 	char	*line;
 	t_stack	b;
 
-	b.head = NULL;
 	b.size = 0;
+	b.head = NULL;
 	while (1)
 	{
 		line = get_next_line(0);
