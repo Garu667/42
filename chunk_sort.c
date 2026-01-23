@@ -84,8 +84,8 @@ void	chunk_sort(t_stack *a, t_stack *b, t_bench *bench)
 	if (!a || is_sorted(a) || !b)
 		return ;
 	chunks_size = define_chunks_size(a->size);
-	chunk.min = 0;
 	chunk.max = chunks_size - 1;
+	chunk.min = 0;
 	while (a->size > 0)
 	{
 		chunk_pb(a, b, bench, &chunk);

@@ -91,21 +91,12 @@ static void	parse_multiple(char **split, t_stack *a)
 	}
 }
 
-t_stack	parsing(int *ac, char **av)
+void	parsing(t_stack *a, int *ac, char **av, int i)
 {
-	t_stack	a;
 	char	**split;
 	int		count;
-	int		flag;
-	int		i;
 
-	i = 1;
 	count = 0;
-	a.size = 0;
-	a.head = NULL;
-	flag = ft_check_flag(av, &i);
-	if (flag == -1)
-		exit(write(2, "Error\n", 6));
 	while (i != (*ac))
 	{
 		split = ft_split(av[i], ' ');
@@ -114,10 +105,8 @@ t_stack	parsing(int *ac, char **av)
 		count = 0;
 		while (split[count])
 			count++;
-		parse_multiple(split, &a);
+		parse_multiple(split, a);
 		free_split(split, count, 2);
 		i++;
 	}
-	(*ac) = flag;
-	return (a);
 }

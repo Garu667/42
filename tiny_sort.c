@@ -6,11 +6,11 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/20 20:08:31 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/21 18:59:46 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../header.h"
+#include "header.h"
 
 static void	sort_two(t_stack *a, t_stack *b, t_bench *bench)
 {
@@ -55,24 +55,12 @@ static void	sort_four(t_stack *a, t_stack *b, t_bench *bench)
 
 static void	sort_five(t_stack *a, t_stack *b, t_bench *bench)
 {
-	int		position;
-	t_node	*current;
-
 	bring_min_top(a, b, bench);
 	bench->op(a, b, bench, "pb\n");
-	current = a->head;
-	position = 0;
-	while (current && current->index != a->size)
-	{
-		current = current->next;
-		position++;
-	}
-	while (position--)
-		bench->op(a, b, bench, "ra\n");
+	bring_min_top(a, b, bench);
 	bench->op(a, b, bench, "pb\n");
 	sort_three(a, b, bench);
 	bench->op(a, b, bench, "pa\n");
-	bench->op(a, b, bench, "ra\n");
 	bench->op(a, b, bench, "pa\n");
 }
 

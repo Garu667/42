@@ -45,8 +45,8 @@ void	push_swap(t_stack *a, int flag, float disorder)
 {
 	t_stack	b;
 
-	b.head = NULL;
 	b.size = 0;
+	b.head = NULL;
 	stack_to_index(a);
 	choose_algo(a, &b, flag, disorder);
 	free_stack(&b);
@@ -56,14 +56,22 @@ int	main(int ac, char **av)
 {
 	t_stack	a;
 	float	disorder;
+	int		flag;
+	int		i;
 
+	i = 1;
+	a.size = 0;
+	a.head = NULL;
 	if (ac < 2)
 		return (write(2, "Error\n", 6));
-	a = parsing(&ac, av);
+	flag = ft_check_flag(av, &i);
+	if (flag == -1)
+		exit(write(2, "Error\n", 6));
+	parsing(&a, &ac, av, i);
 	if (!a.head)
 		return (write(2, "Error\n", 6));
 	disorder = ft_compute_disorder(a);
-	push_swap(&a, ac, disorder);
+	push_swap(&a, flag, disorder);
 	free_stack(&a);
 	return (0);
 }

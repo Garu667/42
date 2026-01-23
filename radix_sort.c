@@ -37,7 +37,6 @@ void	radix_sort(t_stack *a, t_stack *b, t_bench *bench)
 	int	max_bits;
 	int	index_max;
 
-	bench->strats |= FLAG_COMPLEX;
 	if (!a || is_sorted(a) || !b)
 		return ;
 	index_max = (a->size) - 1;
