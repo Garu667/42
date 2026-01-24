@@ -44,7 +44,7 @@ MANDATORY_OBJS	= $(MANDATORY_SRCS:%.c=$(OBJDIR)/%.o)
 
 BONUS_OBJS		= $(BONUS_SRCS:%.c=$(OBJDIR)/%.o)
 
-DEPS			= $(MANDATORY_OBJS:.o=.d) $(BONUS_OBJS:.o=.d)
+DEPFILES		= $(MANDATORY_OBJS:.o=.d) $(BONUS_OBJS:.o=.d)
 
 all: $(NAME)
 
@@ -62,12 +62,13 @@ $(OBJDIR)/%.o: %.c
 
 clean:
 	rm -rf $(OBJDIR)
+	rm -f $(DEPFILES)
 
 fclean: clean
 	rm -f $(NAME) $(BONUS_NAME)
 
 re: fclean all
 
--include $(DEPS)
+-include $(DEPFILES)
 
 .PHONY: all clean fclean re bonus
