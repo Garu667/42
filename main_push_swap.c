@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_push_swap.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:39 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/23 21:42:14 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/24 08:31:32 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	push_swap(t_stack *a, int flag)
 	t_stack	b;
 
 	b.size = 0;
+	b.disorder = 0.0f;
 	b.head = NULL;
 	stack_to_index(a);
 	choose_algo(a, &b, flag);
