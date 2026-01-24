@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   gnl_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 01:40:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/23 16:14:31 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/24 09:08:07 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../header.h"
 
 char	*ft_strjoin(char *s1, char s2[])
 {

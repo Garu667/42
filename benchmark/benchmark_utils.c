@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_op.c                                            :+:      :+:    :+:   */
+/*   benchmark_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:25 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/21 18:59:03 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/24 09:07:38 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../header.h"
 
 void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op)
 {

@@ -6,43 +6,45 @@ OBJDIR			= objs
 CC				= gcc
 CFLAGS			= -Wall -Werror -Wextra -MMD -MP
 
-MANDATORY_SRCS	= algo_utils.c			\
-				benchmark.c				\
-				check.c 				\
-				chunk_sort.c 			\
-				ft_op.c 				\
-				ft_split.c 				\
-				index.c 				\
-				main_push_swap.c		\
-				parsing.c 				\
-				push_op.c		 		\
-				radix_sort.c 			\
-				reverse_op.c 			\
-				rotate_op.c 			\
-				selection_sort.c 		\
-				swap_op.c 				\
-				tiny_sort.c				\
-				utils.c					\
-				utils2.c
+ALGO_SRCS		= algorithms/algo_utils.c	\
+				algorithms/chunk_sort.c		\
+				algorithms/index.c			\
+				algorithms/radix_sort.c		\
+				algorithms/selection_sort.c	\
+				algorithms/tiny_sort.c
+
+BENCHMARK_SRCS	= benchmark/benchmark.c		\
+				benchmark/benchmark_utils.c
+
+OP_SRCS			= operations/push_op.c		\
+				operations/reverse_op.c		\
+				operations/rotate_op.c		\
+				operations/swap_op.c
+
+PARSING_SRCS	= parsing/check.c			\
+				parsing/parsing.c			\
+				parsing/split.c				\
+				parsing/utils.c				\
+				parsing/utils2.c
+
+MANDATORY_SRCS	= main_push_swap.c			\
+				$(ALGO_SRCS)				\
+				$(BENCHMARK_SRCS)			\
+				$(OP_SRCS)					\
+				$(PARSING_SRCS)
+
+BONUS_SRCS		= bonus/main_checker.c		\
+				bonus/gnl.c					\
+				bonus/gnl_utils.c			\
+				$(OP_SRCS)					\
+				$(PARSING_SRCS)
+
 
 MANDATORY_OBJS	= $(MANDATORY_SRCS:%.c=$(OBJDIR)/%.o)
 
-BONUS_SRCS		= check.c 			\
-				ft_split.c 			\
-				gnl.c 				\
-				gnl_utils.c			\
-				main_checker.c		\
-				parsing.c 			\
-				push_op.c		 	\
-				reverse_op.c 		\
-				rotate_op.c 		\
-				swap_op.c 			\
-				utils.c				\
-				utils2.c
-
 BONUS_OBJS		= $(BONUS_SRCS:%.c=$(OBJDIR)/%.o)
 
-DEPS			= $(OBJS:.o=.d) $(BONUS_OBJS:.o=.d)
+DEPS			= $(MANDATORY_OBJS:.o=.d) $(BONUS_OBJS:.o=.d)
 
 all: $(NAME)
 
@@ -52,7 +54,7 @@ $(NAME): $(MANDATORY_OBJS)
 bonus: $(BONUS_NAME)
 
 $(BONUS_NAME): $(BONUS_OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(BONUS_OBJS) -o $(BONUS_NAME)
+	$(CC) $(CFLAGS) $(BONUS_OBJS) -o $(BONUS_NAME)
 
 $(OBJDIR)/%.o: %.c
 	mkdir -p $(dir $@)

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   algo_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/23 16:14:01 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/24 09:06:40 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../header.h"
 
 int	get_position(t_stack *stack, int index)
 {

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   benchmark.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/23 21:43:59 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/24 09:07:57 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header.h"
+#include "../header.h"
 
 static void	print_disorder(t_bench *bench)
 {
