@@ -21,11 +21,11 @@ OP_SRCS			= operations/push_op.c		\
 				operations/rotate_op.c		\
 				operations/swap_op.c
 
-PARSING_SRCS	= parsing/check.c			\
+PARSING_SRCS	= parsing/check_flags.c		\
 				parsing/parsing.c			\
 				parsing/split.c				\
 				parsing/utils.c				\
-				parsing/utils2.c
+				parsing/utils_str.c
 
 MANDATORY_SRCS	= main_push_swap.c			\
 				$(ALGO_SRCS)				\
