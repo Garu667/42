@@ -6,13 +6,13 @@
 /*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/24 09:08:41 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/25 18:29:27 by quentin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header.h"
 
-t_node	*pop_head(t_stack *stack)
+static t_node	*extract_head(t_stack *stack)
 {
 	t_node	*node;
 
@@ -31,7 +31,7 @@ t_node	*pop_head(t_stack *stack)
 	return (node);
 }
 
-void	push_head(t_stack *stack, t_node *node)
+static void	insert_head(t_stack *stack, t_node *node)
 {
 	if (!stack || !node)
 		return ;
@@ -58,10 +58,10 @@ int	pa(t_stack *a, t_stack *b, bool write_switch)
 
 	if (!a || !b)
 		return (0);
-	node = pop_head(b);
+	node = extract_head(b);
 	if (!node)
 		return (0);
-	push_head(a, node);
+	insert_head(a, node);
 	if (write_switch)
 		write(1, "pa\n", 3);
 	return (1);
@@ -73,10 +73,10 @@ int	pb(t_stack *a, t_stack *b, bool write_switch)
 
 	if (!a || !b)
 		return (0);
-	node = pop_head(a);
+	node = extract_head(a);
 	if (!node)
 		return (0);
-	push_head(b, node);
+	insert_head(b, node);
 	if (write_switch)
 		write(1, "pb\n", 3);
 	return (1);
