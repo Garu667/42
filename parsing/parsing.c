@@ -29,7 +29,6 @@ static bool	is_double(t_stack *stack, int nbr)
 	}
 	return (false);
 }
-#include <stdio.h>
 
 static t_node	*create_node(int value)
 {
@@ -81,7 +80,6 @@ static int	parse_multiple(char **split, t_stack *a)
 		return (0);
 	while (i < count)
 	{
-		printf("%s\n", split[i]);
 		if (ft_atoi(split[i], &value) <= 0
 			|| !(value <= INT_MAX && value >= INT_MIN) || is_double(a, value))
 			return (1);

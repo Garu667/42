@@ -16,7 +16,8 @@ static void	ft_check2(int *flag, int flag_bits)
 {
 	if (flag_bits & FLAG_BENCH && !((*flag) & (FLAG_BENCH)))
 		(*flag) |= flag_bits;
-	else if (flag_bits > 1 && !((*flag) & (FLAG_SIMPLE | FLAG_MEDIUM | FLAG_COMPLEX | FLAG_ADAPTIVE)))
+	else if (flag_bits > 1 && !((*flag)
+			& (FLAG_SIMPLE | FLAG_MEDIUM | FLAG_COMPLEX | FLAG_ADAPTIVE)))
 		(*flag) |= flag_bits;
 	else
 		exit(write(2, "Error\n", 6));
@@ -45,12 +46,10 @@ int	ft_check_flag(char **av, int ac)
 
 	i = 1;
 	flag = 0;
-	while ((i - 1) < 2 && (i + 1) < ac)
+	while (i < ac)
 	{
 		if (av[i][0] == '-' && av[i][1] == '-')
 			ft_check(av[i], &flag);
-		if (ac != 2 && av[ac - i][0] == '-' && av[ac - i][1] == '-')
-			ft_check(av[ac - i], &flag);
 		i++;
 	}
 	return (flag);
