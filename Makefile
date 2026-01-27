@@ -4,7 +4,7 @@ BONUS_NAME		= checker
 OBJDIR			= objs
 
 CC				= gcc
-CFLAGS			= -Wall -Werror -Wextra -MMD -MP -g3
+CFLAGS			= -Wall -Werror -Wextra -MMD -MP
 
 ALGO_SRCS		= algorithms/algo_utils.c	\
 				algorithms/chunk_sort.c		\

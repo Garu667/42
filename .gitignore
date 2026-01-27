@@ -1,3 +1,6 @@
 .DS_Store
 **/.o
+**/.d
 *.o
+*.d
+push_swap
