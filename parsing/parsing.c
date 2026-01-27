@@ -108,6 +108,7 @@ int	parsing(t_stack *a, int *ac, char **av, int i)
 		if (parse_multiple(split, a))
 		{
 			free_split(split, 0, 3);
+			free_stack(a);
 			return (1);
 		}
 		else
