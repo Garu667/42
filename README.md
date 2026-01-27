@@ -170,13 +170,6 @@ Run the program as follows:
 Only valid integers separated by spaces are accepted.
 Floating-point numbers or invalid characters will result in an error.
 
-#### Flag parsing policy
-
-Our program follows a POSIX-like option parsing approach:
-
-- Flags must come before any non-option argument (integers).  
-- Once a positional operand is encountered, option parsing stops.  
-- This is consistent with the behavior of standard utilities and libraries such as `getopt(3)` and the POSIX Utility Syntax Guidelines.  
 
 #### Flags
 
@@ -299,6 +292,5 @@ Some of the most useful references include:
 - https://medium.com/
 - https://www.w3schools.com/dsa/index.php
 - POSIX Utility Syntax Guidelines: https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
-- getopt(3) manual: https://man7.org/linux/man-pages/man3/getopt.3.html
 
 _Finally, IA (ChatGPT) was used as a language support tool to improve clarity and refine this documentation._
