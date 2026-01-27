@@ -57,7 +57,7 @@ static int	checker(t_stack *a)
 		{
 			free_stack(&b);
 			free(line);
-			exit(write(2, "Error\n", 6));
+			return (1);
 		}
 		free(line);
 	}
@@ -77,8 +77,13 @@ int	main(int ac, char **av)
 	a.head = NULL;
 	if (ac < 2)
 		return (0);
-	parsing(&a, &ac, av, 1);
-	checker(&a);
+	if (parsing(&a, &ac, av, 1))
+		return (write(2, "Error\n", 6));
+	if (checker(&a))
+	{
+		free_stack(&a);
+		return (write(2, "Error\n", 6));
+	}
 	free_stack(&a);
 	return (0);
 }

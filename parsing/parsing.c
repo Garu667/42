@@ -67,17 +67,17 @@ static void	add_node_back(t_stack *stack, t_node *new_node)
 
 static int	parse_multiple(char **split, t_stack *a)
 {
+	t_node	*new_node;
 	int		value;
 	int		count;
 	int		i;
-	t_node	*new_node;
 
+	i = 0;
 	count = 0;
 	while (split[count])
 		count++;
 	if (count == 0)
 		return (0);
-	i = 0;
 	while (i < count)
 	{
 		if (!ft_atoi(split[i], &value)
@@ -92,18 +92,17 @@ static int	parse_multiple(char **split, t_stack *a)
 	return (0);
 }
 
-void	parsing(t_stack *a, int *ac, char **av, int i)
+int	parsing(t_stack *a, int *ac, char **av, int i)
 {
 	char	**split;
 	int		count;
 
-	count = 0;
 	while (i != (*ac))
 	{
+		count = 0;
 		split = ft_split(av[i], ' ');
 		if (!split)
-			exit(write(2, "Error\n", 6));
-		count = 0;
+			return (1);
 		while (split[count])
 			count++;
 		if (parse_multiple(split, a))
@@ -112,4 +111,5 @@ void	parsing(t_stack *a, int *ac, char **av, int i)
 			free_split(split, count, 2);
 		i++;
 	}
+	return (0);
 }

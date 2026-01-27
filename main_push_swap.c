@@ -96,8 +96,7 @@ int	main(int ac, char **av)
 	flag = ft_check_flag(av, &i);
 	if (flag == -1)
 		exit(write(2, "Error\n", 6));
-	parsing(&a, &ac, av, i);
-	if (!a.head)
+	if (parsing(&a, &ac, av, i) || !a.head)
 		return (write(2, "Error\n", 6));
 	a.disorder = ft_compute_disorder(a);
 	push_swap(&a, flag);

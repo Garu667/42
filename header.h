@@ -83,7 +83,7 @@ void	free_stack(t_stack *stack);
 /*----------------------------index-------------------------------*/
 void	stack_to_index(t_stack *a);
 /*---------------------------parsing------------------------------*/
-void	parsing(t_stack *a, int *ac, char **av, int i);
+int		parsing(t_stack *a, int *ac, char **av, int i);
 /*---------------------------benchmark----------------------------*/
 float	ft_compute_disorder(t_stack stack);
 void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op);
