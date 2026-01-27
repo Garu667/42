@@ -65,7 +65,7 @@ static void	add_node_back(t_stack *stack, t_node *new_node)
 	stack->size++;
 }
 
-static void	parse_multiple(char **split, t_stack *a)
+static int	parse_multiple(char **split, t_stack *a)
 {
 	int		value;
 	int		count;
@@ -76,19 +76,20 @@ static void	parse_multiple(char **split, t_stack *a)
 	while (split[count])
 		count++;
 	if (count == 0)
-		return ;
+		return (0);
 	i = 0;
 	while (i < count)
 	{
 		if (!ft_atoi(split[i], &value)
 			|| !(value <= INT_MAX && value >= INT_MIN) || is_double(a, value))
-			exit(write(2, "Error\n", 6));
+			return (1);
 		new_node = create_node(value);
 		if (!new_node)
-			exit(write(2, "Error\n", 6));
+			return (1);
 		add_node_back(a, new_node);
 		i++;
 	}
+	return (0);
 }
 
 void	parsing(t_stack *a, int *ac, char **av, int i)
@@ -105,8 +106,10 @@ void	parsing(t_stack *a, int *ac, char **av, int i)
 		count = 0;
 		while (split[count])
 			count++;
-		parse_multiple(split, a);
-		free_split(split, count, 2);
+		if (parse_multiple(split, a))
+			free_split(split, 0, 3);
+		else
+			free_split(split, count, 2);
 		i++;
 	}
 }

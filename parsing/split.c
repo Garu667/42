@@ -50,6 +50,15 @@ char	**free_split(char **split, int indx, int flag)
 		}
 		free(split);
 	}
+	if (flag == 3)
+	{
+		while (split[indx])
+		{
+			free(split[indx]);
+			indx++;
+		}
+		free(split);
+	}
 	return (NULL);
 }
 
