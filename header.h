@@ -6,7 +6,7 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:19 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/23 21:43:55 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/27 14:57:03 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ char	**ft_split(char const *s, char c);
 int		ft_check_flag(char **av, int *i);
 void	free_stack(t_stack *stack);
 /*----------------------------index-------------------------------*/
+bool	is_sorted(t_stack *a);
 void	stack_to_index(t_stack *a);
 /*---------------------------parsing------------------------------*/
 int		parsing(t_stack *a, int *ac, char **av, int i);
@@ -96,7 +97,6 @@ char	*get_next_line(int fd);
 int		ft_check_line(char *line);
 void	ft_format(char **line, char buffer[]);
 /*----------------------------utils-------------------------------*/
-bool	is_sorted(t_stack *a);
 char	*ft_strtrim(char *s1, char *set);
 int		ft_atoi(const char *str, int *nbr);
 int		ft_putstr_fd(char *s, int fd);

@@ -8,7 +8,6 @@ CFLAGS			= -Wall -Werror -Wextra -MMD -MP -g3
 
 ALGO_SRCS		= algorithms/algo_utils.c	\
 				algorithms/chunk_sort.c		\
-				algorithms/index.c			\
 				algorithms/radix_sort.c		\
 				algorithms/selection_sort.c	\
 				algorithms/tiny_sort.c
@@ -22,6 +21,7 @@ OP_SRCS			= operations/push_op.c		\
 				operations/swap_op.c
 
 PARSING_SRCS	= parsing/check_flags.c		\
+				parsing/index.c				\
 				parsing/parsing.c			\
 				parsing/split.c				\
 				parsing/utils.c				\

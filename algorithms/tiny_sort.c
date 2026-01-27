@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tiny_sort.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: quentin <quentin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/24 09:07:25 by quentin          ###   ########.fr       */
+/*   Updated: 2026/01/27 14:48:24 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	sort_three(t_stack *a, t_stack *b, t_bench *bench)
 
 	first = a->head->index;
 	second = a->head->next->index;
-	third = a->head->next->next->index;
+	third = a->head->prev->index;
 	if (first > second && second < third && first < third)
 		bench->op(a, b, bench, "sa\n");
 	else if (first > second && second > third)
@@ -47,10 +47,27 @@ static void	sort_three(t_stack *a, t_stack *b, t_bench *bench)
 
 static void	sort_four(t_stack *a, t_stack *b, t_bench *bench)
 {
-	bring_min_top(a, b, bench);
-	bench->op(a, b, bench, "pb\n");
-	sort_three(a, b, bench);
-	bench->op(a, b, bench, "pa\n");
+	int	first;
+	int	second;
+	int	third;
+	int	fourth;
+
+	first = a->head->index;
+	second = a->head->next->index;
+	third = a->head->next->next->index;
+	fourth = a->head->prev->index;
+	while (!(is_sorted(a) && b->size == 0))
+	{
+		if (first > second && first < third && third < fourth)
+		{
+			bench->op(a, b, bench, "sa\n");
+			return ;
+		}
+		bring_min_top(a, b, bench);
+		bench->op(a, b, bench, "pb\n");
+		sort_three(a, b, bench);
+		bench->op(a, b, bench, "pa\n");
+	}
 }
 
 static void	sort_five(t_stack *a, t_stack *b, t_bench *bench)
@@ -66,7 +83,7 @@ static void	sort_five(t_stack *a, t_stack *b, t_bench *bench)
 
 void	tiny_sort(t_stack *a, t_stack *b, t_bench *bench)
 {
-	if (!a || is_sorted(a) || !b)
+	if (!a || !b || is_sorted(a))
 		return ;
 	if (a->size == 2)
 		sort_two(a, b, bench);
