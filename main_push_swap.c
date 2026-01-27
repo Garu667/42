@@ -6,7 +6,7 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:39 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/27 14:37:25 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/24 15:38:40 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,9 @@ void	choose_algo(t_stack *a, t_stack *b, int flag)
 		radix_sort(a, b, &bench);
 	else if ((flag & FLAG_ADAPTIVE) || !flag || (flag & FLAG_BENCH))
 	{
-		if (a->disorder < 0.2f)
+		if (a->disorder < 0.2f && a->size <= 5)
+			tiny_sort(a, b, &bench);
+		else if (a->disorder < 0.2f && a->size > 5)
 			selection_sort(a, b, &bench);
 		else if (a->disorder >= 0.2f && a->disorder < 0.5f)
 			chunk_sort(a, b, &bench);
@@ -84,17 +86,15 @@ int	main(int ac, char **av)
 {
 	t_stack	a;
 	int		flag;
-	int		i;
 
-	i = 1;
 	a.size = 0;
 	a.head = NULL;
 	if (ac < 2)
 		return (write(2, "Error\n", 6));
-	flag = ft_check_flag(av, &i);
+	flag = ft_check_flag(av, ac);
 	if (flag == -1)
 		exit(write(2, "Error\n", 6));
-	if (parsing(&a, &ac, av, i) || !a.head)
+	if (parsing(&a, ac, av) || !a.head)
 		return (write(2, "Error\n", 6));
 	a.disorder = ft_compute_disorder(a);
 	push_swap(&a, flag);

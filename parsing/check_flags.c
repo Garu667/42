@@ -6,66 +6,53 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:13 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/27 14:54:29 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/24 15:38:17 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header.h"
 
-static void	ft_check2(int *flag, int *count, int flag_bits)
+static void	ft_check2(int *flag, int flag_bits)
 {
-	if (flag_bits == FLAG_BENCH)
-	{
+	if (flag_bits & FLAG_BENCH && !((*flag) & (FLAG_BENCH)))
 		(*flag) |= flag_bits;
-		(*count)++;
-		return ;
-	}
-	if ((*flag) & (FLAG_SIMPLE | FLAG_MEDIUM | FLAG_COMPLEX | FLAG_ADAPTIVE))
-		exit(write(2, "Error\n", 6));
-	(*flag) |= flag_bits;
-	(*count)++;
-}
-
-static int	ft_check(char *str, int *flag)
-{
-	int	count;
-
-	count = 0;
-	if (ft_strncmp(str, "--bench", 7) == 0)
-		ft_check2(flag, &count, FLAG_BENCH);
-	else if (ft_strncmp(str, "--simple", 8) == 0)
-		ft_check2(flag, &count, FLAG_SIMPLE);
-	else if (ft_strncmp(str, "--medium", 8) == 0)
-		ft_check2(flag, &count, FLAG_MEDIUM);
-	else if (ft_strncmp(str, "--complex", 10) == 0)
-		ft_check2(flag, &count, FLAG_COMPLEX);
-	else if (ft_strncmp(str, "--adaptive", 10) == 0)
-		ft_check2(flag, &count, FLAG_ADAPTIVE);
+	else if (flag_bits > 1 && !((*flag) & (FLAG_SIMPLE | FLAG_MEDIUM | FLAG_COMPLEX | FLAG_ADAPTIVE)))
+		(*flag) |= flag_bits;
 	else
 		exit(write(2, "Error\n", 6));
-	return (count);
 }
 
-int	ft_check_flag(char **av, int *i)
+static void	ft_check(char *str, int *flag)
+{
+	if (ft_strncmp(str, "--bench", 7) == 0)
+		ft_check2(flag, FLAG_BENCH);
+	else if (ft_strncmp(str, "--simple", 8) == 0)
+		ft_check2(flag, FLAG_SIMPLE);
+	else if (ft_strncmp(str, "--medium", 8) == 0)
+		ft_check2(flag, FLAG_MEDIUM);
+	else if (ft_strncmp(str, "--complex", 10) == 0)
+		ft_check2(flag, FLAG_COMPLEX);
+	else if (ft_strncmp(str, "--adaptive", 10) == 0)
+		ft_check2(flag, FLAG_ADAPTIVE);
+	else
+		exit(write(2, "Error\n", 6));
+}
+
+int	ft_check_flag(char **av, int ac)
 {
 	int	flag;
-	int	ret;
-	int	j;
+	int	i;
 
-	if (av[*i][0] != '-' && av[*i][1] != '-')
-		return (0);
+	i = 1;
 	flag = 0;
-	ret = 0;
-	j = 0;
-	while (av[*i + j] && j < 2)
+	while ((i - 1) < 2 && (i + 1) < ac)
 	{
-		if (av[*i + j][0] == '-' && av[*i + j][1] == '-')
-			ret += ft_check(av[(*i) + j], &flag);
-		else
-			break ;
-		j++;
+		if (av[i][0] == '-' && av[i][1] == '-')
+			ft_check(av[i], &flag);
+		if (ac != 2 && av[ac - i][0] == '-' && av[ac - i][1] == '-')
+			ft_check(av[ac - i], &flag);
+		i++;
 	}
-	(*i) += ret;
 	return (flag);
 }
 

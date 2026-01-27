@@ -77,7 +77,7 @@ int	main(int ac, char **av)
 	a.head = NULL;
 	if (ac < 2)
 		return (0);
-	if (parsing(&a, &ac, av, 1))
+	if (parsing(&a, ac, av))
 		return (write(2, "Error\n", 6));
 	if (checker(&a))
 	{
