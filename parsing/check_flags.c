@@ -25,15 +25,15 @@ static void	ft_check2(int *flag, int flag_bits)
 
 static void	ft_check(char *str, int *flag)
 {
-	if (ft_strncmp(str, "--bench", 7) == 0)
+	if (ft_strncmp(str, "--bench\0", 8) == 0)
 		ft_check2(flag, FLAG_BENCH);
-	else if (ft_strncmp(str, "--simple", 8) == 0)
+	else if (ft_strncmp(str, "--simple\0", 9) == 0)
 		ft_check2(flag, FLAG_SIMPLE);
-	else if (ft_strncmp(str, "--medium", 8) == 0)
+	else if (ft_strncmp(str, "--medium\0", 9) == 0)
 		ft_check2(flag, FLAG_MEDIUM);
-	else if (ft_strncmp(str, "--complex", 10) == 0)
+	else if (ft_strncmp(str, "--complex\0", 11) == 0)
 		ft_check2(flag, FLAG_COMPLEX);
-	else if (ft_strncmp(str, "--adaptive", 10) == 0)
+	else if (ft_strncmp(str, "--adaptive\0", 11) == 0)
 		ft_check2(flag, FLAG_ADAPTIVE);
 	else
 		exit(write(2, "Error\n", 6));
