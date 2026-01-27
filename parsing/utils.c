@@ -21,25 +21,6 @@ void	ft_safe_write(int fd, char *str, int len)
 	}
 }
 
-bool	is_sorted(t_stack *a)
-{
-	t_node	*current;
-	int		i;
-
-	if (!a || !a->head || a->size <= 1)
-		return (true);
-	current = a->head;
-	i = 0;
-	while (i < (a->size - 1))
-	{
-		if (current->value > current->next->value)
-			return (false);
-		current = current->next;
-		i++;
-	}
-	return (true);
-}
-
 int	ft_putstr_fd(char *s, int fd)
 {
 	size_t	i;
@@ -77,6 +58,13 @@ void	ft_putnbr_fd(int n, int fd)
 	}
 }
 
+static bool	check_int_min(int sign, long nb)
+{
+	if ((sign == 1 && nb > INT_MAX) || (sign == -1 && nb > ((long)INT_MAX + 1)))
+		return (0);
+	return (1);
+}
+
 int	ft_atoi(const char *str, int *nbr)
 {
 	long	nb;
@@ -93,14 +81,15 @@ int	ft_atoi(const char *str, int *nbr)
 			sign *= -1;
 	while (*str >= '0' && *str <= '9')
 	{
+		if (check_int_min(sign, nb) == 0)
+			return (0);
 		nb = nb * 10 + (*str++ - 48);
 		i++;
 	}
 	while ((*str >= 9 && *str <= 13) || *str == 32)
 		str++;
-	if (i == 0 || (sign == 1 && nb > INT_MAX)
-		|| (sign == -1 && nb > ((long)INT_MAX + 1)) || *str != 0)
-		exit(write(2, "Error\n", 6));
+	if (i == 0 || check_int_min(sign, nb) == 0 || *str != 0)
+		return (0);
 	*nbr = (int)(nb * sign);
 	return (i);
 }

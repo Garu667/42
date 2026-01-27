@@ -80,7 +80,7 @@ static int	parse_multiple(char **split, t_stack *a)
 		return (0);
 	while (i < count)
 	{
-		if (!ft_atoi(split[i], &value)
+		if (ft_atoi(split[i], &value) <= 0
 			|| !(value <= INT_MAX && value >= INT_MIN) || is_double(a, value))
 			return (1);
 		new_node = create_node(value);
@@ -106,7 +106,10 @@ int	parsing(t_stack *a, int *ac, char **av, int i)
 		while (split[count])
 			count++;
 		if (parse_multiple(split, a))
+		{
 			free_split(split, 0, 3);
+			return (1);
+		}
 		else
 			free_split(split, count, 2);
 		i++;

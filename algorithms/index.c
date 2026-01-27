@@ -92,3 +92,22 @@ void	stack_to_index(t_stack *a)
 	}
 	free(array);
 }
+
+bool	is_sorted(t_stack *a)
+{
+	t_node	*current;
+	int		i;
+
+	if (!a || !a->head || a->size <= 1)
+		return (true);
+	current = a->head;
+	i = 0;
+	while (i < (a->size - 1))
+	{
+		if (current->value > current->next->value)
+			return (false);
+		current = current->next;
+		i++;
+	}
+	return (true);
+}
