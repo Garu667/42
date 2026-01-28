@@ -6,26 +6,26 @@ OBJDIR			= objs
 CC				= gcc
 CFLAGS			= -Wall -Werror -Wextra -MMD -MP
 
-ALGO_SRCS		= algorithms/algo_utils.c	\
-				algorithms/chunk_sort.c		\
-				algorithms/radix_sort.c		\
-				algorithms/selection_sort.c	\
-				algorithms/tiny_sort.c
+ALGO_SRCS		= algo_utils.c				\
+				chunk_sort.c				\
+				radix_sort.c				\
+				selection_sort.c			\
+				tiny_sort.c
 
-BENCHMARK_SRCS	= benchmark/benchmark.c		\
-				benchmark/benchmark_utils.c
+BENCHMARK_SRCS	= benchmark.c				\
+				benchmark_utils.c
 
-OP_SRCS			= operations/push_op.c		\
-				operations/reverse_op.c		\
-				operations/rotate_op.c		\
-				operations/swap_op.c
+OP_SRCS			= push_op.c					\
+				reverse_op.c				\
+				rotate_op.c					\
+				swap_op.c
 
-PARSING_SRCS	= parsing/check_flags.c		\
-				parsing/index.c				\
-				parsing/parsing.c			\
-				parsing/split.c				\
-				parsing/utils.c				\
-				parsing/utils_str.c
+PARSING_SRCS	= check_flags.c				\
+				index.c						\
+				parsing.c					\
+				split.c						\
+				utils.c						\
+				utils_str.c
 
 MANDATORY_SRCS	= main_push_swap.c			\
 				$(ALGO_SRCS)				\
@@ -33,9 +33,9 @@ MANDATORY_SRCS	= main_push_swap.c			\
 				$(OP_SRCS)					\
 				$(PARSING_SRCS)
 
-BONUS_SRCS		= bonus/main_checker.c		\
-				bonus/gnl.c					\
-				bonus/gnl_utils.c			\
+BONUS_SRCS		= main_checker.c			\
+				gnl.c						\
+				gnl_utils.c					\
 				$(OP_SRCS)					\
 				$(PARSING_SRCS)
 
