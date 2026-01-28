@@ -75,3 +75,10 @@ void	free_stack(t_stack *stack)
 	stack->head = NULL;
 	stack->size = 0;
 }
+
+int	free_all(t_stack *stack, char **split)
+{
+	free_split(split, 0, 3);
+	free_stack(stack);
+	return (1);
+}

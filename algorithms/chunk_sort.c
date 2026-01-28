@@ -14,11 +14,12 @@
 
 static int	define_chunks_size(int size)
 {
-	if (size <= 10)
-		return (size / 3);
-	if (size <= 100)
-		return (size / 10);
-	return (size / 20);
+	int		x;
+
+	x = 1;
+	while ((x * x) < size)
+		x++;
+	return (x);
 }
 
 static int	find_max_one(t_stack *b)

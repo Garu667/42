@@ -98,10 +98,10 @@ int	parsing(t_stack *a, int ac, char **av)
 	int		count;
 	int		i;
 
-	i = 1;
+	i = 0;
 	while (av[ac - 1][0] == '-' && av[ac - 1][1] == '-')
 		ac--;
-	while (i < ac)
+	while (++i < ac)
 	{
 		count = 0;
 		while (av[i][0] == '-' && av[i][1] == '-')
@@ -112,14 +112,8 @@ int	parsing(t_stack *a, int ac, char **av)
 		while (split[count])
 			count++;
 		if (parse_multiple(split, a))
-		{
-			free_split(split, 0, 3);
-			free_stack(a);
-			return (1);
-		}
-		else
-			free_split(split, count, 2);
-		i++;
+			return (free_all(a, split));
+		free_split(split, 0, 3);
 	}
 	return (0);
 }

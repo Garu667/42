@@ -80,6 +80,7 @@ char	**ft_split(char const *s, char c);
 /*----------------------------check-------------------------------*/
 int		ft_check_flag(char **av, int ac);
 void	free_stack(t_stack *stack);
+int		free_all(t_stack *stack, char **split);
 /*----------------------------index-------------------------------*/
 void	stack_to_index(t_stack *a);
 /*---------------------------parsing------------------------------*/
