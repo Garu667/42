@@ -34,9 +34,6 @@ int	rrb(t_stack *b, bool write_switch)
 
 int	rrr(t_stack *a, t_stack *b, bool write_switch)
 {
-	if (!a || !a->head || !a->head->next
-		|| !b || !b->head || !b->head->next)
-		return (0);
 	rra(a, false);
 	rrb(b, false);
 	if (write_switch)

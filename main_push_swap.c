@@ -6,7 +6,7 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:39 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/24 15:38:40 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/30 16:10:58 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	main(int ac, char **av)
 	a.size = 0;
 	a.head = NULL;
 	if (ac < 2)
-		return (write(2, "Error\n", 6));
+		return (0);
 	flag = ft_check_flag(av, ac);
 	if (flag == -1)
 		exit(write(2, "Error\n", 6));
