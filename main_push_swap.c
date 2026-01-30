@@ -6,7 +6,7 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:02:39 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/30 16:10:58 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/01/30 20:46:42 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,7 @@ void	choose_algo(t_stack *a, t_stack *b, int flag)
 		radix_sort(a, b, &bench);
 	else if ((flag & FLAG_ADAPTIVE) || !flag || (flag & FLAG_BENCH))
 	{
-		if (a->disorder < 0.2f && a->size <= 5)
-			tiny_sort(a, b, &bench);
-		else if (a->disorder < 0.2f && a->size > 5)
+		if (a->disorder < 0.2f)
 			selection_sort(a, b, &bench);
 		else if (a->disorder >= 0.2f && a->disorder < 0.5f)
 			chunk_sort(a, b, &bench);
