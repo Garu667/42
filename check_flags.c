@@ -76,9 +76,16 @@ void	free_stack(t_stack *stack)
 	stack->size = 0;
 }
 
-int	free_all(t_stack *stack, char **split)
+int	free_all(t_stack *stack, char **split, int flag)
 {
-	free_split(split, 0, 3);
-	free_stack(stack);
+	if (flag == 1)
+	{
+		free_split(split, 0, 3);
+		free_stack(stack);
+	}
+	else if (flag == 2)
+		free_split(split, 0, 3);
+	else if (flag == 3)
+		free_stack(stack);
 	return (1);
 }

@@ -108,12 +108,12 @@ int	parsing(t_stack *a, int ac, char **av)
 			i++;
 		split = ft_split(av[i], ' ');
 		if (!split)
-			return (1);
+			return (free_all(a, split, 3));
 		while (split[count])
 			count++;
 		if (parse_multiple(split, a))
-			return (free_all(a, split));
-		free_split(split, 0, 3);
+			return (free_all(a, split, 1));
+		free_all(a, split, 2);
 	}
 	return (0);
 }

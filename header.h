@@ -3,6 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   header.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/01 12:17:08 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/02/01 12:17:08 by ramaroud         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   header.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:19 by ramaroud          #+#    #+#             */
@@ -69,7 +80,7 @@ void	print_benchmark(t_bench *bench, t_stack *a);
 void	setup_benchmark(t_bench *bench, float disorder, int flag);
 /*---------------------------------check--------------------------------------*/
 int		ft_check_flag(char **av, int ac);
-int		free_all(t_stack *stack, char **split);
+int		free_all(t_stack *stack, char **split, int flag);
 void	free_stack(t_stack *stack);
 /*---------------------------------gnl----------------------------------------*/
 char	*ft_strjoin(char *s1, char s2[]);
