@@ -6,7 +6,7 @@
 /*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 15:43:19 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/23 21:43:55 by qgairaud         ###   ########.fr       */
+/*   Updated: 2026/02/01 10:21:21 by qgairaud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_bench
 	void	(*op)(t_stack *a, t_stack *b, struct s_bench *bench, char *op);
 }	t_bench;
 
-/*--------------------------algorithms----------------------------*/
+/*---------------------------------algorithms---------------------------------*/
 int		find_min_position(t_stack *a);
 int		get_position(t_stack *stack, int index);
 void	bring_min_top(t_stack *a, t_stack *b, t_bench *bench);
@@ -62,7 +62,28 @@ void	chunk_sort(t_stack *a, t_stack *b, t_bench *bench);
 void	radix_sort(t_stack *a, t_stack *b, t_bench *bench);
 void	tiny_sort(t_stack *a, t_stack *b, t_bench *bench);
 void	selection_sort(t_stack *a, t_stack *b, t_bench *bench);
-/*--------------------------operations----------------------------*/
+/*---------------------------------benchmark----------------------------------*/
+void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op);
+void	do_op_nobench(t_stack *a, t_stack *b, t_bench *bench, char *op);
+void	print_benchmark(t_bench *bench, t_stack *a);
+void	setup_benchmark(t_bench *bench, float disorder, int flag);
+/*---------------------------------check--------------------------------------*/
+int		ft_check_flag(char **av, int ac);
+int		free_all(t_stack *stack, char **split);
+void	free_stack(t_stack *stack);
+/*---------------------------------gnl----------------------------------------*/
+char	*ft_strjoin(char *s1, char s2[]);
+char	*get_next_line(int fd);
+int		ft_check_line(char *line);
+void	ft_format(char **line, char buffer[]);
+/*---------------------------------index--------------------------------------*/
+bool	is_sorted(t_stack *a);
+void	stack_to_index(t_stack *a);
+/*---------------------------------main---------------------------------------*/
+float	ft_compute_disorder(t_stack stack);
+void	choose_algo(t_stack *a, t_stack *b, int flag);
+void	push_swap(t_stack *a, int flag);
+/*---------------------------------operations---------------------------------*/
 int		pa(t_stack *a, t_stack *b, bool write_switch);
 int		pb(t_stack *a, t_stack *b, bool write_switch);
 int		ra(t_stack *b, bool write_switch);
@@ -74,30 +95,12 @@ int		rrr(t_stack *a, t_stack *b, bool write_switch);
 int		sa(t_stack *a, bool write_switch);
 int		sb(t_stack *b, bool write_switch);
 int		ss(t_stack *a, t_stack *b, bool write_switch);
-/*----------------------------split-------------------------------*/
+/*---------------------------------parsing------------------------------------*/
+int		parsing(t_stack *a, int ac, char **av);
+/*---------------------------------split--------------------------------------*/
 char	**free_split(char **split, int indx, int flag);
 char	**ft_split(char const *s, char c);
-/*----------------------------check-------------------------------*/
-int		ft_check_flag(char **av, int ac);
-void	free_stack(t_stack *stack);
-int		free_all(t_stack *stack, char **split);
-/*----------------------------index-------------------------------*/
-void	stack_to_index(t_stack *a);
-/*---------------------------parsing------------------------------*/
-int		parsing(t_stack *a, int ac, char **av);
-/*---------------------------benchmark----------------------------*/
-float	ft_compute_disorder(t_stack stack);
-void	do_op_bench(t_stack *a, t_stack *b, t_bench *bench, char *op);
-void	do_op_nobench(t_stack *a, t_stack *b, t_bench *bench, char *op);
-void	print_benchmark(t_bench *bench, t_stack *a);
-void	setup_benchmark(t_bench *bench, float disorder, int flag);
-/*-----------------------------gnl--------------------------------*/
-char	*ft_strjoin(char *s1, char s2[]);
-char	*get_next_line(int fd);
-int		ft_check_line(char *line);
-void	ft_format(char **line, char buffer[]);
-/*----------------------------utils-------------------------------*/
-bool	is_sorted(t_stack *a);
+/*---------------------------------utils--------------------------------------*/
 char	*ft_strtrim(char *s1, char *set);
 int		ft_atoi(const char *str, int *nbr);
 int		ft_putstr_fd(char *s, int fd);

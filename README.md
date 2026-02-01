@@ -25,7 +25,7 @@ Below is a brief overview of the sorting algorithms studied during the developme
 
 ### Simple algorithm
 
-Direct comparisons with progressive extraction → O(n²)
+Direct comparisons with progressive extraction → **O(n²)**
 
 These algorithms rely on explicit comparisons between elements and progressively move values toward their final positions. They are easier to understand and implement but generate a large number of operations on large input sizes.
 
@@ -50,7 +50,7 @@ Placing two elements per iteration reduces the size of the unsorted zone more qu
 
 ### Medium algorithm
 
-Search space reduction by ranks → O(n√n)
+Search space reduction by ranks → **O(n√n)**
 
 These strategies reduce the number of operations by processing values in groups or ranges rather than individually. They require a preliminary partitioning step to limit unnecessary movements.
 
@@ -79,7 +79,7 @@ Only the values belonging to this range are moved at each step.
 
 ### Complex algorithm
 
-Non-comparative or global partition-based strategies → O(n log n)
+Non-comparative or global partition-based strategies → **O(n log n)**
 
 These algorithms significantly reduce the number of operations by exploiting global properties of the data. They generally require a preparation phase or more advanced partitioning logic.
 
@@ -170,12 +170,18 @@ Run the program as follows:
     ./push_swap [flags] [arguments]
 
 Only valid integers separated by spaces are accepted.
+
 Floating-point numbers or invalid characters will result in an error.
+
+According to subject, if no parameters are specified, the program must not display anything and give the prompt back.
+
 
 
 #### Flags
 
-Four algorithms are available:
+Four algorithms are available.
+
+You can directly choose three of them with appropriated flags:
 
     --simple
     --medium
@@ -185,6 +191,8 @@ They explicitly select, respectively:
 - `selection_sort`
 - `chunk_sort`
 - `radix_sort`
+
+Facing small input sizes (**≤ 5 elements**), `selection_sort` will refere to `tiny_sort` to optimize sorting.
 
 If no algorithm flag is specified, or if `--adaptive` is used, the program automatically selects the most appropriate algorithm based on the computed disorder rate of the input.
 
