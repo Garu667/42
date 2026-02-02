@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_checker.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/23 01:40:25 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/28 17:46:12 by qgairaud         ###   ########.fr       */
+/*   Created: 2026/02/01 12:32:43 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/02/01 12:32:43 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static int	checker(t_stack *a)
 			break ;
 		if (do_op(a, &b, line) == -1)
 		{
-			free_stack(&b);
+			free_all(&b, NULL, 3);
 			free(line);
 			return (1);
 		}
@@ -65,7 +65,7 @@ static int	checker(t_stack *a)
 		ft_safe_write(1, "\033[0;32mOK\n\033[0m", 14);
 	else
 		ft_safe_write(1, "\033[0;31mKO\n\033[0m", 14);
-	free_stack(&b);
+	free_all(&b, NULL, 3);
 	return (0);
 }
 
@@ -81,9 +81,9 @@ int	main(int ac, char **av)
 		return (write(2, "Error\n", 6));
 	if (checker(&a))
 	{
-		free_stack(&a);
+		free_all(&a, NULL, 3);
 		return (write(2, "Error\n", 6));
 	}
-	free_stack(&a);
+	free_all(&a, NULL, 3);
 	return (0);
 }

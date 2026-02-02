@@ -3,60 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/15 16:02:54 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/28 17:46:56 by qgairaud         ###   ########.fr       */
+/*   Created: 2026/02/01 12:33:39 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/02/01 12:33:39 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
-
-void	ft_safe_write(int fd, char *str, int len)
-{
-	if (write(fd, str, len) == -1)
-	{
-		write(2, "Error\n", 6);
-		exit(EXIT_FAILURE);
-	}
-}
-
-int	ft_putstr_fd(char *s, int fd)
-{
-	size_t	i;
-
-	i = -1;
-	while (s[++i])
-		write(fd, &s[i], 1);
-	return (i);
-}
-
-void	ft_putnbr_fd(int n, int fd)
-{
-	char	c;
-
-	if (n == -2147483648)
-	{
-		ft_safe_write(fd, "-2147483648", 11);
-		return ;
-	}
-	if (n < 0)
-	{
-		ft_safe_write(fd, "-", 1);
-		n = -n;
-	}
-	if (n < 10)
-	{
-		c = (n + 48);
-		ft_safe_write(fd, &c, 1);
-	}
-	if (n > 9)
-	{
-		ft_putnbr_fd((n / 10), fd);
-		c = ((n % 10) + 48);
-		ft_safe_write(fd, &c, 1);
-	}
-}
 
 static bool	check_int_min(int sign, long nb)
 {
@@ -92,4 +46,49 @@ int	ft_atoi(const char *str, int *nbr)
 		return (0);
 	*nbr = (int)(nb * sign);
 	return (i);
+}
+
+static void	free_stack(t_stack *stack)
+{
+	t_node	*current;
+	t_node	*next;
+	int		i;
+
+	if (!stack || !stack->head)
+		return ;
+	i = 0;
+	current = stack->head;
+	while (i < stack->size)
+	{
+		next = current->next;
+		free(current);
+		current = next;
+		i++;
+	}
+	stack->head = NULL;
+	stack->size = 0;
+}
+
+static void	free_split(char **split, int indx)
+{
+	while (split[indx])
+	{
+		free(split[indx]);
+		indx++;
+	}
+	free(split);
+}
+
+int	free_all(t_stack *stack, char **split, int flag)
+{
+	if (flag == 1)
+	{
+		free_split(split, 0);
+		free_stack(stack);
+	}
+	else if (flag == 2)
+		free_split(split, 0);
+	else if (flag == 3)
+		free_stack(stack);
+	return (1);
 }

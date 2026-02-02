@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/15 16:02:31 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/28 17:46:40 by qgairaud         ###   ########.fr       */
+/*   Created: 2026/02/01 12:33:27 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/02/01 12:33:27 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,31 +35,6 @@ static void	ft_strcpy(char *dest, char const *s, char c)
 	while (s[++i] != c && s[i] != 0)
 		dest[i] = s[i];
 	dest[i] = 0;
-}
-
-char	**free_split(char **split, int indx, int flag)
-{
-	if (flag == 1)
-		free(split);
-	if (flag == 2)
-	{
-		while (indx > 0)
-		{
-			indx--;
-			free(split[indx]);
-		}
-		free(split);
-	}
-	if (flag == 3)
-	{
-		while (split[indx])
-		{
-			free(split[indx]);
-			indx++;
-		}
-		free(split);
-	}
-	return (NULL);
 }
 
 static int	alloc_split(char **split, char const *s, char c)
@@ -103,7 +78,10 @@ char	**ft_split(char const *s, char c)
 		return (NULL);
 	ret = alloc_split(split, s, c);
 	if (ret != -1)
-		return (free_split(split, ret, 2));
+	{
+		free_all(NULL, split, 2);
+		return (NULL);
+	}
 	split[words] = 0;
 	return (split);
 }

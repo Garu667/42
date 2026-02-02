@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   benchmark_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/15 16:02:25 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/28 17:45:41 by qgairaud         ###   ########.fr       */
+/*   Created: 2026/02/01 12:31:44 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/02/01 12:31:44 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 

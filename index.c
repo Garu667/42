@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   index.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/15 16:02:06 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/28 17:46:08 by qgairaud         ###   ########.fr       */
+/*   Created: 2026/02/01 12:32:35 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/02/01 12:32:35 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,23 +91,4 @@ void	stack_to_index(t_stack *a)
 		i++;
 	}
 	free(array);
-}
-
-bool	is_sorted(t_stack *a)
-{
-	t_node	*current;
-	int		i;
-
-	if (!a || !a->head || a->size <= 1)
-		return (true);
-	current = a->head;
-	i = 0;
-	while (i < (a->size - 1))
-	{
-		if (current->value > current->next->value)
-			return (false);
-		current = current->next;
-		i++;
-	}
-	return (true);
 }

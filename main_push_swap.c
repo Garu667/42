@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_push_swap.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/15 16:02:39 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/30 20:46:42 by qgairaud         ###   ########.fr       */
+/*   Created: 2026/02/01 12:32:47 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/02/01 12:32:47 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	push_swap(t_stack *a, int flag)
 	b.head = NULL;
 	stack_to_index(a);
 	choose_algo(a, &b, flag);
-	free_stack(&b);
+	free_all(&b, NULL, 3);
 }
 
 int	main(int ac, char **av)
@@ -88,7 +88,7 @@ int	main(int ac, char **av)
 	a.size = 0;
 	a.head = NULL;
 	if (ac < 2)
-		return (0);
+		return (1);
 	flag = ft_check_flag(av, ac);
 	if (flag == -1)
 		exit(write(2, "Error\n", 6));
@@ -96,6 +96,6 @@ int	main(int ac, char **av)
 		return (write(2, "Error\n", 6));
 	a.disorder = ft_compute_disorder(a);
 	push_swap(&a, flag);
-	free_stack(&a);
+	free_all(&a, NULL, 3);
 	return (0);
 }

@@ -6,38 +6,40 @@ OBJDIR			= objs
 CC				= cc
 CFLAGS			= -Wall -Werror -Wextra -MMD -MP
 
-ALGO_SRCS		= algo_utils.c		\
+SRCS			= selection_sort.c	\
+				algo_utils.c		\
 				chunk_sort.c		\
 				radix_sort.c		\
-				selection_sort.c	\
 				tiny_sort.c
 
-BENCHMARK_SRCS	= benchmark.c		\
+SRCS			+= check_flags.c	\
+				utils_str.c			\
+				parsing.c			\
+				index.c				\
+				split.c				\
+				utils.c
+
+SRCS			+= benchmark.c		\
 				benchmark_utils.c
 
-OP_SRCS			= push_op.c		\
-				reverse_op.c	\
-				rotate_op.c		\
+OP_SRCS			= reverse_op.c		\
+				rotate_op.c			\
+				push_op.c			\
 				swap_op.c
 
-PARSING_SRCS	= check_flags.c		\
-				index.c				\
+MANDATORY_SRCS	= main_push_swap.c	\
+				$(OP_SRCS)			\
+				$(SRCS)
+
+BONUS_SRCS		= main_checker.c	\
+				utils_str.c			\
+				algo_utils.c		\
 				parsing.c			\
 				split.c				\
 				utils.c				\
-				utils_str.c
-
-MANDATORY_SRCS	= main_push_swap.c	\
-				$(ALGO_SRCS)		\
-				$(BENCHMARK_SRCS)	\
-				$(OP_SRCS)			\
-				$(PARSING_SRCS)
-
-BONUS_SRCS		= main_checker.c	\
 				gnl.c				\
 				gnl_utils.c			\
 				$(OP_SRCS)			\
-				$(PARSING_SRCS)
 
 
 MANDATORY_OBJS	= $(MANDATORY_SRCS:%.c=$(OBJDIR)/%.o)

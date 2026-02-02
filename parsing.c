@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qgairaud <qgairaud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/15 16:02:44 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/01/30 20:23:53 by qgairaud         ###   ########.fr       */
+/*   Created: 2026/02/01 12:32:52 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/02/01 12:32:52 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,12 +108,12 @@ int	parsing(t_stack *a, int ac, char **av)
 			i++;
 		split = ft_split(av[i], ' ');
 		if (!split)
-			return (free_all(a, split, 3));
+			return (free_all(a, NULL, 3));
 		while (split[count])
 			count++;
 		if (parse_multiple(split, a))
 			return (free_all(a, split, 1));
-		free_all(a, split, 2);
+		free_all(NULL, split, 2);
 	}
 	return (0);
 }
