@@ -1,19 +1,17 @@
-#! /usr/bin/env python3
-
 class Plant:
-    def __init__(self, name, height, old):
-        self.name = name
-        self.height = height
-        self.old = old
+    def __init__(self, name: str, height: int, age: int) -> None:
+        self.__name: str = name
+        self.__height: int = height
+        self.__old: int = age
 
-    def grow(self, length):
-        self.height += length
+    def grow(self, length) -> None:
+        self.__height += length
 
-    def age(self, days):
-        self.old += days
+    def age(self, days) -> None:
+        self.__old += days
 
-    def get_info(self):
-        print(f"{self.name}: {self.height}cm, {self.old} days old")
+    def get_info(self) -> None:
+        print(f"{self.__name}: {self.__height}cm, {self.__old} days old")
 
 
 if __name__ == "__main__":
