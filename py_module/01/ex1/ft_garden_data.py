@@ -11,5 +11,5 @@ if __name__ == "__main__":
     print(f"{rose.name}: {rose.height}cm, {rose.old} days old")
     sunflower = Plant("Sunflower", 80, 45)
     print(f"{sunflower.name}: {sunflower.height}cm, {sunflower.old} days old")
-    cactus= Plant("Cactus", 15, 120)
+    cactus = Plant("Cactus", 15, 120)
     print(f"{cactus.name}: {cactus.height}cm, {cactus.old} days old")

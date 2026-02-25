@@ -183,12 +183,16 @@ class GardenManager:
         def garden_tests(manager) -> None:
             score: int = 0
             h: bool = False
+            all_valid: bool = True
             print("Height validation test:", end="")
             for garden in manager.get_gardens():
                 h = GardenManager.GardenStats.height_test(garden.get_plants())
                 if h is False:
-                    print(" False")
-            print(" True")
+                    all_valid = False
+            if all_valid is False:
+                print(" False")
+            else:
+                print(" True")
             print("Garden scores -", end="")
             first: bool = True
             for garden in manager.get_gardens():
