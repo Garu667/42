@@ -15,7 +15,7 @@ class SecurePlant:
         print(f"Current plant: {self.__name} ({self.__height}cm, \
 {self.__old} days)")
 
-    def set_height(self, height) -> None:
+    def add_height(self, height) -> None:
         if (height < 0):
             print(f"Invalid operation attempted: height {height}cm [REJECTED]")
             print("Security: Negative height rejected")
@@ -35,9 +35,9 @@ class SecurePlant:
 if __name__ == "__main__":
     print("=== Garden Security System ===")
     rose = SecurePlant("Rose")
-    rose.set_height(25)
+    rose.add_height(25)
     rose.set_age(30)
     print()
-    rose.set_height(-5)
+    rose.add_height(-5)
     print()
     rose.get_info()
