@@ -39,7 +39,7 @@ class FloweringPlant(Plant):
         self._color: str = color
         self._bloom: bool = 0
 
-    def get_color(self) -> None:
+    def get_color(self) -> str:
         return self._color
 
     def bloom(self) -> None:
