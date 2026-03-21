@@ -147,7 +147,7 @@ class GardenManager:
         self._gardens.append(garden)
 
     @classmethod
-    def create_garden_network(cls, name: str) -> GardenManager:
+    def create_garden_network(cls, name: str):
         manager = cls()
         manager.add_garden(Garden(name))
         return manager

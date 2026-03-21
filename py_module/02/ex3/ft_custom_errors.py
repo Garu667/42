@@ -3,24 +3,29 @@ class GardenError(Exception):
     """Base class for garden-related exceptions"""
     pass
 
+
 class PlantError(GardenError):
     """Exception raised for plant-related problems"""
     pass
+
 
 class WaterError(GardenError):
     """Exception raised for watering-related problems"""
     pass
 
+
 def plant_check(name: str) -> None:
     """ test the PlantError() """
     raise PlantError(f"The {name} plant is wilting!")
 
+
 def water_check(liter: int) -> None:
     """ test the WaterError() """
     if liter > 10:
-        raise WaterError(f"Not enough water in the tank")
+        raise WaterError("Not enough water in the tank!")
 
-if __name__ == "__main__":
+
+def main() -> None:
     """ use plant_check and water_check to show custom errors """
     print("=== Custom Garden Errors Demo ===\n")
 
@@ -40,10 +45,14 @@ if __name__ == "__main__":
     try:
         plant_check("tomato")
     except GardenError as ge:
-        print(f"Caught a garden error: {ge}")
+        print(f"Caught GardenError: {ge}")
     try:
         water_check(11)
     except GardenError as ge:
-        print(f"Caught a garden error: {ge}")
+        print(f"Caught GardenError: {ge}")
 
-    print("All custom error types work correctly!")
+    print("\nAll custom error types work correctly!")
+
+
+if __name__ == "__main__":
+    main()
