@@ -13,12 +13,12 @@ def garden_operations(operation_number: int) -> None:
         - other: success case
     """
     if operation_number == 0:
-        x: float = 40
         try:
             int("abc")
         except ValueError as ve:
             print(f"Caught ValueError: {ve}\n")
     elif operation_number == 1:
+        x: float = 40
         try:
             x /= 0
         except ZeroDivisionError as zde:
