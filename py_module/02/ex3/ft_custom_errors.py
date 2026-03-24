@@ -15,18 +15,36 @@ class WaterError(GardenError):
 
 
 def plant_check(name: str) -> None:
-    """ test the PlantError() """
+    """
+    Simulate a plant-related failure.
+
+    Args:
+        name (str): Name of the plant.
+
+    Raises:
+        PlantError: Always raised to simulate plant failure.
+    """
     raise PlantError(f"The {name} plant is wilting!")
 
 
 def water_check(liter: int) -> None:
-    """ test the WaterError() """
+    """
+    Validate water quantity.
+
+    Args:
+        liter (int): Amount of water in liters.
+
+    Raises:
+        WaterError: If the water amount exceeds allowed threshold.
+    """
     if liter > 10:
         raise WaterError("Not enough water in the tank!")
 
 
 def main() -> None:
-    """ use plant_check and water_check to show custom errors """
+    """
+    Demonstrate usage of custom exceptions and exception hierarchy.
+    """
     print("=== Custom Garden Errors Demo ===\n")
 
     print("Testing PlantError...")

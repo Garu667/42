@@ -1,9 +1,21 @@
 def garden_operations(operation_number: int) -> None:
-    x: int = 40
-    tmp: str = "test"
+    """
+    Execute different operations to demonstrate various Python exceptions.
+
+    Args:
+        operation_number (int): Determines which error scenario to trigger.
+
+    Behavior:
+        - 0: ValueError
+        - 1: ZeroDivisionError
+        - 2: FileNotFoundError
+        - 3: TypeError
+        - other: success case
+    """
     if operation_number == 0:
+        x: float = 40
         try:
-            x = int("abc")
+            int("abc")
         except ValueError as ve:
             print(f"Caught ValueError: {ve}\n")
     elif operation_number == 1:
@@ -13,11 +25,12 @@ def garden_operations(operation_number: int) -> None:
             print(f"Caught ZeroDivisionError: {zde}\n")
     elif operation_number == 2:
         try:
-            x = open("/non/existent/file")
+            open("/non/existent/file")
         except FileNotFoundError as fnfe:
             print(f"Caught FileNotFoundError: {fnfe}\n")
     elif operation_number == 3:
         try:
+            tmp: str = "test"
             tmp += 5
         except TypeError as te:
             print(f"Caught TypeError: {te}\n")
@@ -27,6 +40,9 @@ def garden_operations(operation_number: int) -> None:
 
 
 def test_error_types() -> None:
+    """
+    Test all predefined error scenarios in garden_operations.
+    """
     print("Testing operation 0...")
     garden_operations(0)
 
