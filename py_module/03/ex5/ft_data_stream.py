@@ -16,8 +16,8 @@ def consume_event(
     while len(events) > 0:
         event = random.choice(events)
         events.remove(event)
-        yield event
         print(f"Remains in list: {events}")
+        yield event
 
 
 def main() -> None:

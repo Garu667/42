@@ -46,7 +46,7 @@ def main() -> None:
     common = p[0].intersection(p[1], p[2])
     print(f"\nCommon achievements: {common}\n")
 
-    print(f"Only Alice unique has: {p[0].difference(p[1], p[2], p[3])}")
+    print(f"Only Alice has: {p[0].difference(p[1], p[2], p[3])}")
     print(f"Only Bob has: {p[1].difference(p[0], p[2], p[3])}")
     print(f"Only Charlie has: {p[2].difference(p[0], p[1], p[3])}")
     print(f"Only Dylan has: {p[3].difference(p[0], p[1], p[2])}")

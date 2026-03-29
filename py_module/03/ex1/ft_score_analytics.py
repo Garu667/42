@@ -4,6 +4,7 @@ import sys
 def get_stats(nbrs: list[int]):
     print(f"Scores processed: {nbrs}")
     print(f"Total players: {len(nbrs)}")
+    print(f"Total score: {sum(nbrs)}")
     print(f"Average score: {sum(nbrs) / len(nbrs)}")
     print(f"High score: {max(nbrs)}")
     print(f"Low score: {min(nbrs)}")
