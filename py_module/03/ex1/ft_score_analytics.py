@@ -36,5 +36,8 @@ def main(ac: int, av: list[str]) -> None:
 
 
 if __name__ == "__main__":
-    print("=== Player Score Analytics ===")
-    main(len(sys.argv), sys.argv)
+    try:
+        print("=== Player Score Analytics ===")
+        main(len(sys.argv), sys.argv)
+    except Exception as e:
+        print(f"Error as {e}")

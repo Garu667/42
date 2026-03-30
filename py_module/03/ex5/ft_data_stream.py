@@ -35,5 +35,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    print("=== Game Data Stream Processor ===")
-    main()
+    try:
+        print("=== Game Data Stream Processor ===")
+        main()
+    except Exception as e:
+        print(f"Error: {e}")

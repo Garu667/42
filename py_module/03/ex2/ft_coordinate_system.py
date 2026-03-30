@@ -60,5 +60,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    print("=== Game Coordinate System ===\n")
-    main()
+    try:
+        print("=== Game Coordinate System ===\n")
+        main()
+    except Exception as e:
+        print(f"Error: {e}")

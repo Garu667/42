@@ -7,14 +7,14 @@ def main() -> None:
         "Gregory", "john", "kevin", "Liam"
     ]
 
-    all_capitalized: list[str] = [p.capitalize() for p in players]
-    already_capitalized: list[str] = [p for p in players if p[0].isupper()]
+    all_capital: list[str] = [p.capitalize() for p in players]
+    already_capital: list[str] = [p for p in players if p[0].isupper()]
 
     print(f"Initial list of players: {players}")
-    print(f"New list with all names capitalized: {all_capitalized}")
-    print(f"New list of capitalized names only: {already_capitalized}")
+    print(f"New list with all names capitalized: {all_capital}")
+    print(f"New list of capitalized names only: {already_capital}")
 
-    scores: dict[str, int] = {p: random.randint(0, 1000) for p in all_capitalized}
+    scores: dict[str, int] = {p: random.randint(0, 1000) for p in all_capital}
     average: float = round(sum(scores.values()) / len(scores), 2)
 
     high_scores: dict[str, int] = {
@@ -27,5 +27,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    print("=== Game Data Alchemist ===\n")
-    main()
+    try:
+        print("=== Game Data Alchemist ===\n")
+        main()
+    except Exception as e:
+        print(f"Error: {e}")

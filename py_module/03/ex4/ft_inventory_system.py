@@ -1,9 +1,6 @@
 import sys
 
 
-usage: str = f"Usage: python3 {sys.argv[0]} <item:value> <item:value> ..."
-
-
 def parsing(av: list[str]) -> dict[str, int]:
     av_dict: dict[str, int] = {}
     for item in av[1:]:
@@ -39,6 +36,7 @@ def inventory_stats(inventory: dict[str, int]) -> None:
 
 
 def main(ac: int, av: list[str]) -> None:
+    usage: str = f"Usage: python3 {sys.argv[0]} <item:value> <item:value> ..."
     if ac == 1:
         print(usage)
         return
@@ -49,5 +47,8 @@ def main(ac: int, av: list[str]) -> None:
 
 
 if __name__ == "__main__":
-    print("=== Inventory System Analysis ===")
-    main(len(sys.argv), sys.argv)
+    try:
+        print("=== Inventory System Analysis ===")
+        main(len(sys.argv), sys.argv)
+    except Exception as e:
+        print(f"Error: {e}")
