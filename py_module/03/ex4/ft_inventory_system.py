@@ -13,9 +13,8 @@ def parsing(av: list[str]) -> dict[str, int]:
             continue
         try:
             quantity: int = int(parse[1])
-        except ValueError:
-            print(f"Quantity error for '{parse[0]}': "
-                  f"invalid literal for int() with base 10: '{parse[1]}'")
+        except ValueError as ve:
+            print(f"Quantity error for '{parse[0]}': {ve}")
             continue
         av_dict[parse[0]] = quantity
     return av_dict
@@ -41,6 +40,9 @@ def main(ac: int, av: list[str]) -> None:
         print(usage)
         return
     inventory: dict[str, int] = parsing(av)
+    if not inventory:
+        print(f"\n{usage}")
+        return
     inventory_stats(inventory)
     inventory.update({"magic_item": 1})
     print(f"Updated inventory: {inventory}")
