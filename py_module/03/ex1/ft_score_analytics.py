@@ -23,16 +23,25 @@ def check(av: list[str]) -> int:
 
 
 def parsing(av: list[str]) -> list[int]:
-    return [int(arg) for arg in av[1:]]
+    def is_valid(s: str) -> bool:
+        try:
+            int(s)
+        except ValueError:
+            return False
+        return True
+    return [int(arg) for arg in av[1:] if is_valid(arg)]
 
 
 def main(ac: int, av: list[str]) -> None:
-    if ac == 1 or check(av) != 0:
-        print("No scores provided.", end=" ")
-        print(f"Usage: python3 {av[0]} <score1> <score2> ...")
+    usage: str = "Usage: python3 {av[0]} <score1> <score2> ..."
+    if ac == 1:
+        print(f"No scores provided. {usage}")
         return
-    score: list[int] = parsing(av)
-    get_stats(score)
+    scores: list[int] = parsing(av)
+    if not scores:
+        print(f"No scores provided. {usage}")
+        return
+    get_stats(scores)
 
 
 if __name__ == "__main__":
