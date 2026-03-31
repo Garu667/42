@@ -7,6 +7,7 @@ def create_entry() -> list[str]:
             ]
     return entries
 
+
 def main() -> None:
     filename: str = "new_discovery.txt"
 
@@ -23,8 +24,11 @@ def main() -> None:
         fd.close()
         print("\nData inscription complete. Storage unit sealed.")
         print(f"Archive '{filename}' ready for long term preservation")
- 
+
 
 if __name__ == "__main__":
-    print("=== CYBER ARCHIVES - PRESERVATION SYSTEM ===\n")
-    main()
+    try:
+        print("=== CYBER ARCHIVES - PRESERVATION SYSTEM ===\n")
+        main()
+    except Exception as e:
+        print(f"Error: {e}")

@@ -20,5 +20,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    print("=== CYBER ARCHIVES - DATA RECOVERY SYSTEM ===\n")
-    main()
+    try:
+        print("=== CYBER ARCHIVES - DATA RECOVERY SYSTEM ===\n")
+        main()
+    except Exception as e:
+        print(f"Error: {e}")

@@ -19,5 +19,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    print("=== CYBER ARCHIVES - COMMUNICATION SYSTEM ===\n")
-    main()
+    try:
+        print("=== CYBER ARCHIVES - COMMUNICATION SYSTEM ===\n")
+        main()
+    except Exception as e:
+        print(f"Error: {e}")

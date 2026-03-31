@@ -1,5 +1,3 @@
-
-
 def main() -> None:
     print("Initiating secure vault access...")
     print("Vault connection established with failsafe protocols\n")
@@ -23,5 +21,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    print("=== CYBER ARCHIVES - VAULT SECURITY SYSTEM ===\n")
-    main()
+    try:
+        print("=== CYBER ARCHIVES - VAULT SECURITY SYSTEM ===\n")
+        main()
+    except Exception as e:
+        print(f"Error: {e}")
