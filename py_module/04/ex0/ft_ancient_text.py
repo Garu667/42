@@ -13,10 +13,10 @@ def main() -> None:
         content: str = fd.read()
 
         print("RECOVERED DATA:")
-        print(content + "\n")
+        print(content)
 
         fd.close()
-        print("Data recovery complete. Storage unit disconnected.")
+        print("\nData recovery complete. Storage unit disconnected.")
 
 
 if __name__ == "__main__":

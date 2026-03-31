@@ -10,20 +10,20 @@ def create_entry() -> list[str]:
 
 def main() -> None:
     filename: str = "new_discovery.txt"
+    entries: list[str] = create_entry()
 
     print(f"Initializing new storage unit: {filename}")
     fd = open(filename, "w")
     if fd:
-        print("Storage unit created successfully...\n")
-        print("Inscribing preservation data...")
-        entries: list[str] = create_entry()
+        print("Storage unit created successfully...\n\n"
+              "Inscribing preservation data...")
         for line in entries:
             fd.write(f"{line}\n")
             print(line)
 
         fd.close()
         print("\nData inscription complete. Storage unit sealed.")
-        print(f"Archive '{filename}' ready for long term preservation")
+        print(f"Archive '{filename}' ready for long-term preservation")
 
 
 if __name__ == "__main__":

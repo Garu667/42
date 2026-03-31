@@ -5,7 +5,8 @@ def main() -> None:
     input_stream: str = "Input Stream active."
     try:
         archivist_id: str = input(input_stream + " Enter archivist ID: ")
-        status_report: str = input(input_stream + " Enter status report: ")
+        print(input_stream + " Enter status report: ", end="", flush=True)
+        status_report: str = sys.stdin.readline().rstrip("\n")
     except (KeyboardInterrupt, EOFError):
         print("\nQuitting...")
     else:
