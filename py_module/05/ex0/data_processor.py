@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, List, Tuple, Union
+from typing import Any, List, Tuple
 
 
 class DataProcessor(ABC):
@@ -35,7 +35,7 @@ class NumericProcessor(DataProcessor):
     def ingest(self, data: Any) -> None:
         if not self.validate(data):
             raise ValueError("Improper numeric data")
-        
+
         items = data if isinstance(data, list) else [data]
         for item in items:
             self._storage.append((self._global_counter, str(item)))
@@ -53,7 +53,7 @@ class TextProcessor(DataProcessor):
     def ingest(self, data: Any) -> None:
         if not self.validate(data):
             raise ValueError("Improper text data")
-        
+
         items = data if isinstance(data, list) else [data]
         for item in items:
             self._storage.append((self._global_counter, item))
@@ -63,8 +63,9 @@ class TextProcessor(DataProcessor):
 class LogProcessor(DataProcessor):
     def validate(self, data: Any) -> bool:
         def is_log_dict(d: Any) -> bool:
-            return (isinstance(d, dict) and 
-                    all(isinstance(k, str) and isinstance(v, str) for k, v in d.items()))
+            return (isinstance(d, dict) and
+                    all(isinstance(k, str) and
+                    isinstance(v, str) for k, v in d.items()))
 
         if is_log_dict(data):
             return True
@@ -78,33 +79,35 @@ class LogProcessor(DataProcessor):
 
         items = data if isinstance(data, list) else [data]
         for item in items:
-            log_str = f"{item.get('log_level', '')}: {item.get('log_message', '')}"
+            log_str = f"{item.get('log_level', '')}:"
+            f"{item.get('log_message', '')}"
             self._storage.append((self._global_counter, log_str))
             self._global_counter += 1
 
 
-def main():
+def main() -> None:
     num_proc = NumericProcessor()
-    print(f"Testing Numeric Processor.")
+    print("Testing Numeric Processor...")
     print(f"Trying to validate input '42': {num_proc.validate(42)}")
     print(f"Trying to validate input 'Hello': {num_proc.validate('Hello')}")
-    
+
     try:
-        print("Test invalid ingestion of string 'foo' without prior validation:")
+        print("Test invalid ingestion of string 'foo'"
+              " without prior validation:")
         num_proc.ingest("foo")
     except Exception as e:
         print(f"Got exception: {e}")
 
     print("Processing data: [1, 2, 3, 4, 5]")
     num_proc.ingest([1, 2, 3, 4, 5])
-    
+
     print("Extracting 3 values...")
     for _ in range(3):
         rank, val = num_proc.output()
         print(f"Numeric value {rank}: ", end="")
         print(val)
 
-    print("\nTesting Text Processor")
+    print("\nTesting Text Processor...")
     text_proc = TextProcessor()
     print(f"Trying to validate input '42': {text_proc.validate(42)}")
     print("Processing data: ['Hello', 'Nexus', 'World']")
@@ -112,7 +115,7 @@ def main():
     rank, val = text_proc.output()
     print(f"Extracting 1 value...\nText value {rank}: {val}")
 
-    print("\nTesting Log Processor.")
+    print("\nTesting Log Processor...")
     log_proc = LogProcessor()
     print(f"Trying to validate input 'Hello': {log_proc.validate('Hello')}")
     log_data = [
@@ -129,7 +132,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        print("=== Code Nexus Data Processor ===\n")
+        print("=== Code Nexus - Data Processor ===\n")
         main()
     except Exception as e:
         print(f"Error: {e}")
