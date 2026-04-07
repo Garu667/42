@@ -1,2 +1,2 @@
-from .spellbook import record_spell
-from .validator import validate_ingredients
+from .light_spellbook import light_spell_record
+from .light_validator import validate_light_ingredients
