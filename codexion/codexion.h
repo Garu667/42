@@ -128,13 +128,13 @@ typedef struct s_sim
 
 /* ─── Prototypes utils.c ─────────────────────────────────────── */
 
-long    get_time_ms(void);
-long    get_elapsed_ms(t_sim *sim);
-void    ft_msleep(long ms);
-int     is_valid_number(const char *str);
-long    parse_positive_long(const char *str);
-int     is_valid_scheduler(const char *str);
-int     sim_should_stop(t_sim *sim);
-int     all_coders_done(t_sim *sim);
+long	get_time_ms(void);
+long	get_elapsed_ms(t_sim *sim);
+void	ft_msleep(long ms);
+int		is_valid_number(const char *str);
+long	parse_positive_long(const char *str);
+int		is_valid_scheduler(const char *str);
+int		sim_should_stop(t_sim *sim);
+int		all_coders_done(t_sim *sim);
 
 #endif
