@@ -1,0 +1,46 @@
+[project]
+name = "a_maze_ing"
+description = "The a_maze_ing project from 42 school"
+version = "0.0.1"
+authors = [
+	{ name = "hhamidi, ramaroud" },
+]
+
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    # ...
+]
+
+
+[project.optional-dependencies]
+lint = [
+	"flake8",
+    "mypy"
+]
+
+# https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+exclude = [
+	".mypy_cache",
+	"__pycache__",
+	".venv",
+	".git"
+]
+[[tool.mypy.overrides]]
+module = [
+	"..."
+]
+ignore_missing_imports = true
+
+# https://github.com/microsoft/vscode-flake8/issues/135
+[tool.flake8]
+exclude= [ 
+	".mypy_cache",
+	"__pycache__",
+	".venv",
+	".git"
+]
