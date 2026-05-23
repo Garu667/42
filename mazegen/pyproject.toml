@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "mazegen"
+version = "1.0.0"
+description = "Reusable maze generator"
+authors = ["hhamidi", "ramaroud"]
+packages = [{ include = "mazegen", from = ".." }]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
