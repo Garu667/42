@@ -2,8 +2,8 @@ VENV        := .venv
 POETRY      := $(VENV)/bin/poetry
 PYTHON      := $(VENV)/bin/python
 PIP         := $(VENV)/bin/pip
-MAZEGEN		:= ./mazegen-1.0.0-py3-none-any.whl
-MLX			:= ./mlx/mlx-2.2-py3-none-any.whl
+MAZEGEN		:= ./lib/mazegen-1.0.0-py3-none-any.whl
+MLX			:= ./lib/mlx-2.2-py3-none-any.whl
 CONFIG      ?= ./config.txt
 
 $(VENV):
@@ -11,7 +11,7 @@ $(VENV):
 
 $(MAZEGEN): $(VENV)
 	$(PIP) install build
-	$(PYTHON) -m build --wheel --outdir .
+	$(PYTHON) -m build mazegen/ --wheel --outdir ./lib
 
 $(POETRY): $(VENV) $(MAZEGEN)
 	$(PIP) install --upgrade pip
