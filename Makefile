@@ -43,4 +43,10 @@ lint-strict: install
 	$(POETRY) run flake8 . --exclude=.venv
 	$(POETRY) run mypy . --exclude .venv --strict
 
-.PHONY: install run debug clean lint lint-strict
+test: install
+	$(POETRY) run pytest tests/ -v
+
+test-cov: install
+	$(POETRY) run pytest tests/ -v --cov=mazegen --cov-report=term-missing
+
+.PHONY: install run debug clean lint lint-strict test test-cov

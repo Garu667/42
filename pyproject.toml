@@ -18,6 +18,10 @@ lint = [
 	"flake8",
     "mypy"
 ]
+dev = [
+	"pytest",
+	"pytest-cov"
+]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
 [tool.mypy]
