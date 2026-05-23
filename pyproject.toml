@@ -1,27 +1,23 @@
-[project]
+[tool.poetry]
 name = "a_maze_ing"
-description = "The a_maze_ing project from 42 school"
 version = "0.0.1"
-authors = [
-	{ name = "hhamidi, ramaroud" },
-]
-
+description = "The a_maze_ing project from 42 school"
+authors = ["hhamidi", "ramaroud"]
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = [
-    # ...
+packages = [
+	{ include = "mazegen"},
+	{ include = "src"},
 ]
 
 
-[project.optional-dependencies]
-lint = [
-	"flake8",
-    "mypy"
-]
-dev = [
-	"pytest",
-	"pytest-cov"
-]
+[tool.poetry.dependencies]
+python = ">=3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest-cov = "*"
+flake8 = "*"
+pytest= "*"
+mypy = "*"
 
 # https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
 [tool.mypy]
@@ -48,3 +44,7 @@ exclude= [
 	".venv",
 	".git"
 ]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
