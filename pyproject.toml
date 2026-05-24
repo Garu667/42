@@ -14,6 +14,7 @@ packages = [
 python = ">=3.10"
 
 [tool.poetry.group.dev.dependencies]
+pydantic = "*"
 flake8 = "*"
 pynput = "*"
 pytest = "*"

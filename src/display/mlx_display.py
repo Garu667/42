@@ -2,7 +2,8 @@ from __future__ import annotations
 from typing import Optional
 from mlx import Mlx
 from mazegen.maze import Maze, MazeState
-from mazegen.algo.base import BaseGenerator, BaseSolver 
+from mazegen.algo.base import BaseGenerator
+from mazegen.algo.a_star import A_Star
 from pynput import keyboard
 from pynput.keyboard import Key, KeyCode
 
@@ -29,13 +30,6 @@ WALL_PALETTES: list[int] = [
     0xFFFF6B6B,   # rouge corail
     0xFF9B59B6,   # violet
 ]
-
-# Codes touches X11
-KEY_ESCAPE: int = 65307
-KEY_R:      int = 114
-KEY_P:      int = 112
-KEY_C:      int = 99
-
 # Événement X11 — fermeture fenêtre
 X_EVENT_CLOSE: int = 33
 
@@ -82,21 +76,17 @@ class MlxDisplay:
         self._listener: Optional[keyboard.Listener] = None
 
     def run(self) -> None:
-        """Initialise MLX, enregistre les hooks et lance la boucle.
-
-        Bloquant jusqu'à fermeture de la fenêtre ou appui sur Escape.
-        """
         self._setup()
         self._maze.generate(self._algo_class)
 
-        self._mlx.mlx_loop_hook(self._mlx_ptr, self._on_frame, self)   # type: ignore[union-attr]
-        self._mlx.mlx_key_hook(self._win_ptr, self._on_key, self)       # type: ignore[union-attr]
-        self._mlx.mlx_hook(                                             # type: ignore[union-attr]
+        self._mlx.mlx_loop_hook(self._mlx_ptr, self._on_frame, self)
+        self._mlx.mlx_hook(
             self._win_ptr, X_EVENT_CLOSE, 0, self._on_close, self
         )
 
-        self._mlx.mlx_loop(self._mlx_ptr)  # type: ignore[union-attr]
+        self._mlx.mlx_loop(self._mlx_ptr)
         self._cleanup()
+
 
     def _on_frame(self, app: MlxDisplay) -> None:
         """ Step one frame on the generation and draw """
@@ -107,7 +97,7 @@ class MlxDisplay:
         # Résoudre automatiquement une fois la génération terminée
         if app._maze.state == MazeState.GENERATED and not app._maze._solution:
             try:
-                app._maze.solve(BaseSolver)
+                app._maze.solve(A_Star)
             except ValueError:
                 pass  # pas de chemin — rare mais on ne crash pas
         app._draw()
@@ -123,7 +113,7 @@ class MlxDisplay:
         self._pending_keys.clear()
 
         for key in keys:
-            if key == Key.esc:
+            if key == Key.esc or key == KeyCode.from_char('q'):
                 self._mlx.mlx_loop_exit(self._mlx_ptr)
             elif key == KeyCode.from_char('r'):
                 self._regenerate()

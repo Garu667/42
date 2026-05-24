@@ -33,9 +33,15 @@ class BaseSolver(ABC):
         self,
         grid: list[list[int]],
         width: int,
+        height: int,
+        entry: tuple[int, int],
+        exit_: tuple[int, int],
     ) -> None:
         self.grid = grid
         self.width = width
+        self.height = height
+        self.entry = entry
+        self.exit_ = exit_
 
     @abstractmethod
     def solve(self) -> None:
