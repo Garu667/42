@@ -203,7 +203,12 @@ class Maze:
         self._42_cells = set()
         self._solution = []
         self._iterator = None
+        self._seed = self._rng_seed()
         self.initialize()
+
+    def _rng_seed(self) -> int:
+        import random
+        return random.randint(0, 2**32 - 1)
 
     def is_done(self) -> bool:
         return self._state == MazeState.GENERATED

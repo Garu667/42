@@ -39,13 +39,6 @@ class MlxDisplay:
         maze:       Instance de ``Maze`` déjà initialisée.
         algo_class: Classe de génération héritant de ``BaseGenerator``.
         title:      Titre de la fenêtre.
-
-    Example::
-
-        maze = Maze(20, 15, (0, 0), (19, 14), seed=42)
-        maze.initialize()
-        display = MlxDisplay(maze, PrimGenerator)
-        display.run()
     """
 
     def __init__(

@@ -44,5 +44,5 @@ class BaseSolver(ABC):
         self.exit_ = exit_
 
     @abstractmethod
-    def solve(self) -> None:
+    def solve(self) -> list[str]:
         ...
