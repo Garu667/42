@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from mazegen.generator import BaseGenerator
+from mazegen.algo.base import BaseGenerator
 
 class FakeGenerator(BaseGenerator):
     """Algo factice pour les tests — ouvre tous les murs sans logique."""
