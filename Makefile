@@ -28,12 +28,11 @@ run: install
 	$(POETRY) run python ./a_maze_ing.py $(CONFIG)
 
 debug: install
-	$(POETRY) run python -m pdb ./a_maze_ing.py $(CONFIG)
+	$(POETRY) run python -m pdb ./a_maze_ing.py
 
 clean:
 	find . -type d -name __pycache__ -exec rm -fr {} +
-	rm -rf .mypy_cache $(VENV)
-	rm -fr $(VENV)
+	rm -rf .mypy_cache $(VENV) poetry.lock
 
 lint: install
 	$(POETRY) run flake8 . --exclude=.venv
@@ -43,10 +42,4 @@ lint-strict: install
 	$(POETRY) run flake8 . --exclude=.venv
 	$(POETRY) run mypy . --exclude .venv --strict
 
-test: install
-	$(POETRY) run pytest tests/ -v
-
-test-cov: install
-	$(POETRY) run pytest tests/ -v --cov=mazegen --cov-report=term-missing
-
-.PHONY: install run debug clean lint lint-strict test test-cov
+.PHONY: install run debug clean lint lint-strict
