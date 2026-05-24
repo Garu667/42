@@ -14,9 +14,9 @@ packages = [
 python = ">=3.10"
 
 [tool.poetry.group.dev.dependencies]
-pytest-cov = "*"
 flake8 = "*"
-pytest= "*"
+pynput = "*"
+pytest = "*"
 mypy = "*"
 
 # https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
