@@ -6,7 +6,7 @@ from src.display.mlx_display import MlxDisplay
 def main() -> None:
     print("Hello World")
     try:
-        maze = Maze(20, 15, (0, 0), (19, 14), seed=42)
+        maze = Maze(50, 50, (0, 0), (49, 49), seed=42)
         maze.initialize()
         display = MlxDisplay(maze, Prim)
         display.run()

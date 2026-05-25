@@ -85,7 +85,9 @@ class MlxDisplay:
         """ Step one frame on the generation and draw """
         app._process_keys() # Check the key buffer
         if app._maze.state == MazeState.GENERATING:
-            app._maze.tick()
+            for _ in range(10):
+                if not app._maze.tick():
+                    break
 
         # Résoudre automatiquement une fois la génération terminée
         if app._maze.state == MazeState.GENERATED and not app._maze._solution:
@@ -144,10 +146,10 @@ class MlxDisplay:
 
     def _fill_background(self) -> None:
         """Remplit toute l'image avec la couleur de fond."""
-        total = self._img_sl * self._win_h
-        color_bytes = COLOR_BACKGROUND.to_bytes(4, 'little')
-        for offset in range(0, total, 4):
-            self._img_data[offset:offset + 4] = color_bytes  # type: ignore[index]
+        color_bytes = COLOR_BACKGROUND.to_bytes(4, 'little') * self._win_w
+        for row in range(self._win_h):
+            offset = row * self._img_sl
+            self._img_data[offset:offset + self._win_w * 4] = color_bytes  # type: ignore[index]
 
     def _draw_cells(self) -> None:
         """Dessine chaque cellule du labyrinthe avec ses murs."""
@@ -156,8 +158,7 @@ class MlxDisplay:
 
         for y in range(self._maze.height):
             for x in range(self._maze.width):
-                cell_val = grid[y][x]
-                self._draw_cell(x, y, cell_val, (x, y) in forty_two)
+                self._draw_cell(x, y, grid[y][x], (x, y) in forty_two)
 
     def _draw_cell(
         self,
@@ -174,6 +175,7 @@ class MlxDisplay:
             cell_val: Valeur hex encodant les murs fermés.
             is_42:    Si True, colorie la cellule en couleur "42".
         """
+
         px = cx * CELL_SIZE   # pixel top-left de la cellule
         py = cy * CELL_SIZE
 
@@ -214,6 +216,7 @@ class MlxDisplay:
         if cell_val & EAST:
             self._fill_rect(px + CELL_SIZE - WALL_SIZE, py, WALL_SIZE, CELL_SIZE, wall)
 
+
     def _draw_path(self) -> None:
         """Dessine le chemin solution par-dessus les cellules."""
         try:
@@ -228,28 +231,39 @@ class MlxDisplay:
             'W': (-1, 0),
         }
 
+        direction_to_wall = {
+            'N': NORTH,
+            'S': SOUTH,
+            'E': EAST,
+            'W': WEST,
+        }
+
+        grid = self._maze.grid
         x, y = self._maze.entry
+        entry = self._maze.entry
+        exit_ = self._maze.exit
+
+        positions = [(x, y)]
         for step in path:
-            # Centre de la cellule courante
-            self._fill_rect(
-                x * CELL_SIZE + CELL_SIZE // 4,
-                y * CELL_SIZE + CELL_SIZE // 4,
-                CELL_SIZE // 2,
-                CELL_SIZE // 2,
-                COLOR_PATH,
-            )
             dx, dy = direction_to_delta[step]
             x += dx
             y += dy
+            positions.append((x, y))
 
-        # Colorier la dernière cellule (exit)
-        self._fill_rect(
-            x * CELL_SIZE + CELL_SIZE // 4,
-            y * CELL_SIZE + CELL_SIZE // 4,
-            CELL_SIZE // 2,
-            CELL_SIZE // 2,
-            COLOR_PATH,
-        )
+        for cx, cy in positions[1:-1]:
+            cell_val = grid[cy][cx]
+            off_n = WALL_SIZE if (cell_val & NORTH) else 0
+            off_s = WALL_SIZE if (cell_val & SOUTH) else 0
+            off_w = WALL_SIZE if (cell_val & WEST)  else 0
+            off_e = WALL_SIZE if (cell_val & EAST)  else 0
+
+            self._fill_rect(
+                cx * CELL_SIZE + off_w,
+                cy * CELL_SIZE + off_n,
+                CELL_SIZE - off_w - off_e,
+                CELL_SIZE - off_n - off_s,
+                COLOR_PATH,
+            )
 
     def _fill_rect(
         self,
@@ -268,17 +282,24 @@ class MlxDisplay:
             h:     Hauteur en pixels.
             color: Couleur 0xAARRGGBB.
         """
-        color_bytes = color.to_bytes(4, 'little')
-        for row in range(h):
-            py = y + row
-            if py < 0 or py >= self._win_h:
-                continue
-            for col in range(w):
-                px = x + col
-                if px < 0 or px >= self._win_w:
-                    continue
-                offset = py * self._img_sl + px * 4
-                self._img_data[offset:offset + 4] = color_bytes  # type: ignore[index]
+        if w <= 0 or h <= 0:
+            return
+
+        x1 = max(x, 0)
+        y1 = max(y, 0)
+        x2 = min (x + w, self._win_w)
+        y2 = min (y + h, self._win_h)
+
+        if x1 >= x2 or y1 >= y2:
+            return
+
+        # A precalculated line of pixels reused every row
+        color_bytes = color.to_bytes(4, 'little') * (x2 - x1)
+        row_len = len(color_bytes)
+        for row in range(y1, y2):
+            offset = row * self._img_sl + x1 * 4
+            self._img_data[offset:offset + row_len] = color_bytes
+
 
     def _put_pixel(self, x: int, y: int, color: int) -> None:
         """Écrit un pixel à ``(x, y)`` dans l'image en mémoire.
