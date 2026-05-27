@@ -7,7 +7,9 @@ from mazegen.algo.a_star import A_Star
 from pynput import keyboard
 from pynput.keyboard import Key, KeyCode
 
-CELL_SIZE: int = 20       # taille d'une cellule en pixels
+WIN_W: int = 1600
+WIN_H: int = 900
+
 WALL_SIZE: int = 2        # épaisseur des murs en pixels
 
 NORTH: int = 0x1
@@ -55,8 +57,11 @@ class MlxDisplay:
         self._wall_color_idx: int = 0
         self._wall_color: int = WALL_PALETTES[0]
         # Calculer la taille de la fenêtre
-        self._win_w: int = maze.width  * CELL_SIZE + WALL_SIZE
-        self._win_h: int = maze.height * CELL_SIZE + WALL_SIZE
+        cell_w = (WIN_W - WALL_SIZE) // maze.width
+        cell_h = (WIN_H - WALL_SIZE) // maze.height
+        self._cell_size = max(4, min(cell_w, cell_h))
+        self._win_w: int = maze.width  * self._cell_size + WALL_SIZE
+        self._win_h: int = maze.height * self._cell_size + WALL_SIZE
         # Pointeurs MLX — initialisés dans _setup()
         self._mlx: Optional[Mlx] = None
         self._mlx_ptr = None
@@ -110,6 +115,8 @@ class MlxDisplay:
         for key in keys:
             if key == Key.esc or key == KeyCode.from_char('q'):
                 self._mlx.mlx_loop_exit(self._mlx_ptr)
+            elif key == KeyCode.from_char('s'):
+                self._skip_animation()
             elif key == KeyCode.from_char('r'):
                 self._regenerate()
             elif key == KeyCode.from_char('p'):
@@ -119,6 +126,13 @@ class MlxDisplay:
                     (self._wall_color_idx + 1) % len(WALL_PALETTES)
                 )
                 self._wall_color = WALL_PALETTES[self._wall_color_idx]
+
+    def _skip_animation(self) -> None:
+        """Skip l'animation et génère le maze d'un coup."""
+        if self._maze.state == MazeState.GENERATING:
+            self._maze.run_all()
+
+
     def _on_close(self, app: MlxDisplay) -> None:
         """Appelé quand l'utilisateur clique sur la croix de la fenêtre."""
         app._mlx.mlx_loop_exit(app._mlx_ptr)   # type: ignore[union-attr]
@@ -127,7 +141,8 @@ class MlxDisplay:
         """Réinitialise et relance la génération du labyrinthe."""
         self._show_path = False
         self._maze.reset()
-        self._maze.generate(self._algo_class)
+        if self._maze.state == MazeState.INITIALIZED:
+            self._maze.generate(self._algo_class)
 
     def _draw(self) -> None:
         """Redessine l'image complète et l'affiche dans la fenêtre."""
@@ -176,8 +191,8 @@ class MlxDisplay:
             is_42:    Si True, colorie la cellule en couleur "42".
         """
 
-        px = cx * CELL_SIZE   # pixel top-left de la cellule
-        py = cy * CELL_SIZE
+        px = cx * self._cell_size   # pixel top-left de la cellule
+        py = cy * self._cell_size
 
         entry = self._maze.entry
         exit_ = self._maze.exit
@@ -196,8 +211,8 @@ class MlxDisplay:
         self._fill_rect(
             px + WALL_SIZE,
             py + WALL_SIZE,
-            CELL_SIZE - WALL_SIZE,
-            CELL_SIZE - WALL_SIZE,
+            self._cell_size - WALL_SIZE,
+            self._cell_size - WALL_SIZE,
             cell_color,
         )
 
@@ -205,16 +220,36 @@ class MlxDisplay:
 
         # Mur Nord
         if cell_val & NORTH:
-            self._fill_rect(px, py, CELL_SIZE, WALL_SIZE, wall)
+            self._fill_rect(px, py, self._cell_size, WALL_SIZE, wall)
         # Mur Ouest
         if cell_val & WEST:
-            self._fill_rect(px, py, WALL_SIZE, CELL_SIZE, wall)
+            self._fill_rect(px, py, WALL_SIZE, self._cell_size, wall)
         # Mur Sud (bord bas de la cellule)
         if cell_val & SOUTH:
-            self._fill_rect(px, py + CELL_SIZE - WALL_SIZE, CELL_SIZE, WALL_SIZE, wall)
+            self._fill_rect(px, py + self._cell_size - WALL_SIZE, self._cell_size, WALL_SIZE, wall)
         # Mur Est (bord droit de la cellule)
         if cell_val & EAST:
-            self._fill_rect(px + CELL_SIZE - WALL_SIZE, py, WALL_SIZE, CELL_SIZE, wall)
+            self._fill_rect(px + self._cell_size - WALL_SIZE, py, WALL_SIZE, self._cell_size, wall)
+
+    def _lerp_color(self, c1: int, c2: int, t: float) -> int:
+        """Interpolation linéaire entre deux couleurs 0xAARRGGBB.
+
+        Args:
+            c1: Couleur de départ.
+            c2: Couleur d'arrivée.
+            t:  Facteur 0.0 → 1.0.
+
+        Returns:
+            Couleur interpolée.
+        """
+        r1, g1, b1 = (c1 >> 16) & 0xFF, (c1 >> 8) & 0xFF, c1 & 0xFF
+        r2, g2, b2 = (c2 >> 16) & 0xFF, (c2 >> 8) & 0xFF, c2 & 0xFF
+
+        r = int(r1 + (r2 - r1) * t)
+        g = int(g1 + (g2 - g1) * t)
+        b = int(b1 + (b2 - b1) * t)
+
+        return 0xFF000000 | (r << 16) | (g << 8) | b
 
 
     def _draw_path(self) -> None:
@@ -250,7 +285,12 @@ class MlxDisplay:
             y += dy
             positions.append((x, y))
 
-        for cx, cy in positions[1:-1]:
+        inner = positions[1:]
+        total = max(len(inner) -1, 1)
+        for i, (cx, cy) in enumerate(inner):
+            t = i / total
+            color = self._lerp_color(0xFF00BFFF, 0xFFFF6B6B, t)
+
             cell_val = grid[cy][cx]
             off_n = WALL_SIZE if (cell_val & NORTH) else 0
             off_s = WALL_SIZE if (cell_val & SOUTH) else 0
@@ -258,11 +298,11 @@ class MlxDisplay:
             off_e = WALL_SIZE if (cell_val & EAST)  else 0
 
             self._fill_rect(
-                cx * CELL_SIZE + off_w,
-                cy * CELL_SIZE + off_n,
-                CELL_SIZE - off_w - off_e,
-                CELL_SIZE - off_n - off_s,
-                COLOR_PATH,
+                cx * self._cell_size + off_w,
+                cy * self._cell_size + off_n,
+                self._cell_size - off_w - off_e,
+                self._cell_size - off_n - off_s,
+                color,
             )
 
     def _fill_rect(
