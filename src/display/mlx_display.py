@@ -7,8 +7,8 @@ from mazegen.algo.a_star import A_Star
 from pynput import keyboard
 from pynput.keyboard import Key, KeyCode
 
-WIN_W: int = 1600
-WIN_H: int = 900
+WIN_W: int = 1900
+WIN_H: int = 1000
 
 WALL_SIZE: int = 2        # épaisseur des murs en pixels
 
