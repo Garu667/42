@@ -1,4 +1,4 @@
-from .config_parser import Parsing, MissingKeyError
-from .config_parser import PositionError, FileNameError
+from .parsing import Parsing, MissingKeyError
+from .parsing import PositionError, FileNameError
 
 __all__ = ["Parsing", "MissingKeyError", "PositionError", "FileNameError"]
