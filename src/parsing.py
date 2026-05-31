@@ -24,7 +24,6 @@ class Parsing(BaseModel):
     animation: bool = True
     seed: int = Field(ge=0)
 
-
     @model_validator(mode='before')
     @classmethod
     def dict_validator(cls, data: dict[str, Any]) -> dict[str, Any]:
@@ -63,10 +62,9 @@ class Parsing(BaseModel):
                 "animation": animation_value == "true",
                 "seed": data["SEED"]}
 
-
     @model_validator(mode='after')
     def config_validator(self) -> 'Parsing':
-        if self.entry[0] < 0 or self.entry[1] < 0 :
+        if self.entry[0] < 0 or self.entry[1] < 0:
             raise PositionError("Entry position coordinates must be non-negative")
         if self.entry[0] >= self.width or self.entry[1] >= self.height:
             raise PositionError(f"Entry position {self.entry} is out of "

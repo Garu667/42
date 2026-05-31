@@ -1,8 +1,8 @@
-import pytest
-from mazegen.maze import Maze, MazeState
+from mazegen.maze import Maze
 from mazegen.algo.prim import Prim
 from src.display.mlx_display import MlxDisplay
 from src.parsing import Parsing, MissingKeyError, PositionError, FileNameError
+
 
 def load_config(path: str) -> Parsing:
     data = {}
@@ -17,7 +17,6 @@ def load_config(path: str) -> Parsing:
 
 
 def main() -> None:
-
     try:
         config = load_config("config.txt")
     except MissingKeyError as e:
@@ -46,13 +45,14 @@ def main() -> None:
             display = MlxDisplay(maze, Prim)
             display.run()
         else:
-            maze.generate(PrimGenerator)
+            maze.generate(Prim)
             maze.run_all()
     except Exception as e:
         print(f"Error: {e}")
 
+
 if __name__ == "__main__":
     try:
         main()
-    except Error as e:
+    except Exception as e:
         print(f"Error: {e}")

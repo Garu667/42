@@ -7,12 +7,12 @@ EAST:  int = 0x2
 SOUTH: int = 0x4
 WEST:  int = 0x8
 COLOR_BACKGROUND: int = 0xFF1A1A2E
-COLOR_WALL: int       = 0xFFE0E0E0
-COLOR_ENTRY: int      = 0xFF00FF88
-COLOR_EXIT: int       = 0xFFFF4444
-COLOR_42: int         = 0xFF444466
+COLOR_WALL: int = 0xFFE0E0E0
+COLOR_ENTRY: int = 0xFF00FF88
+COLOR_EXIT: int = 0xFFFF4444
+COLOR_42: int = 0xFF444466
 COLOR_PATH_START: int = 0xFF00BFFF
-COLOR_PATH_END: int   = 0xFFFF6B6B
+COLOR_PATH_END: int = 0xFFFF6B6B
 WALL_PALETTES: list[int] = [
     0xFFE0E0E0,
     0xFFFFD700,
@@ -24,11 +24,11 @@ WALL_PALETTES: list[int] = [
 
 class MlxRenderer:
     def _draw(self) -> None:
-        if self._img_data is None: # type: ignore[attr-defined]
+        if self._img_data is None:  # type: ignore[attr-defined]
             return
         self._fill_background()
         self._draw_cells()
-        if self._show_path and self._maze.state == MazeState.GENERATED: # type: ignore[attr-defined]
+        if self._show_path and self._maze.state == MazeState.GENERATED:  # type: ignore[attr-defined]
             self._draw_path()
         self._mlx.mlx_put_image_to_window(  # type: ignore[attr-defined]
             self._mlx_ptr,  # type: ignore[attr-defined]
@@ -37,13 +37,11 @@ class MlxRenderer:
             0, 0
         )
 
-
     def _fill_background(self) -> None:
-        color_bytes = COLOR_BACKGROUND.to_bytes(4, 'little') * self._win_w # type: ignore[attr-defined]
+        color_bytes = COLOR_BACKGROUND.to_bytes(4, 'little') * self._win_w  # type: ignore[attr-defined]
         for row in range(self._win_h):  # type: ignore[attr-defined]
             offset = row * self._img_sl  # type: ignore[attr-defined]
             self._img_data[offset:offset + self._win_w * 4] = color_bytes  # type: ignore[attr-defined]
-
 
     def _draw_cells(self) -> None:
         grid = self._maze.grid  # type: ignore[attr-defined]
@@ -51,7 +49,6 @@ class MlxRenderer:
         for y in range(self._maze.height):  # type: ignore[attr-defined]
             for x in range(self._maze.width):  # type: ignore[attr-defined]
                 self._draw_cell(x, y, grid[y][x], (x, y) in forty_two)
-
 
     def _draw_cell(
         self,
@@ -89,7 +86,6 @@ class MlxRenderer:
         if cell_val & EAST:
             self._fill_rect(px + self._cell_size - WALL_SIZE, py, WALL_SIZE, self._cell_size, wall)  # type: ignore[attr-defined]
 
-
     def _draw_path(self) -> None:
         try:
             path = self._maze.solution  # type: ignore[attr-defined]
@@ -117,8 +113,8 @@ class MlxRenderer:
             cell_val = grid[cy][cx]
             off_n = WALL_SIZE if (cell_val & NORTH) else 0
             off_s = WALL_SIZE if (cell_val & SOUTH) else 0
-            off_w = WALL_SIZE if (cell_val & WEST)  else 0
-            off_e = WALL_SIZE if (cell_val & EAST)  else 0
+            off_w = WALL_SIZE if (cell_val & WEST) else 0
+            off_e = WALL_SIZE if (cell_val & EAST) else 0
             self._fill_rect(
                 cx * self._cell_size + off_w,  # type: ignore[attr-defined]
                 cy * self._cell_size + off_n,  # type: ignore[attr-defined]
@@ -127,7 +123,6 @@ class MlxRenderer:
                 color,
             )
 
-
     def _lerp_color(self, c1: int, c2: int, t: float) -> int:
         r1, g1, b1 = (c1 >> 16) & 0xFF, (c1 >> 8) & 0xFF, c1 & 0xFF
         r2, g2, b2 = (c2 >> 16) & 0xFF, (c2 >> 8) & 0xFF, c2 & 0xFF
@@ -135,7 +130,6 @@ class MlxRenderer:
         g = int(g1 + (g2 - g1) * t)
         b = int(b1 + (b2 - b1) * t)
         return 0xFF000000 | (r << 16) | (g << 8) | b
-
 
     def _fill_rect(self, x: int, y: int, w: int, h: int, color: int) -> None:
         if w <= 0 or h <= 0:
@@ -151,7 +145,6 @@ class MlxRenderer:
         for row in range(y1, y2):
             offset = row * self._img_sl + x1 * 4  # type: ignore[attr-defined]
             self._img_data[offset:offset + row_len] = color_bytes  # type: ignore[attr-defined]
-
 
     def _put_pixel(self, x: int, y: int, color: int) -> None:
         if 0 <= x < self._win_w and 0 <= y < self._win_h:  # type: ignore[attr-defined]

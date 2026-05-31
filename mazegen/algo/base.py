@@ -28,6 +28,7 @@ class BaseGenerator(ABC):
     def run(self) -> None:
         ...
 
+
 class BaseSolver(ABC):
     def __init__(
         self,

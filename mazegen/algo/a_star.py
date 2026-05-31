@@ -94,7 +94,6 @@ class A_Star(BaseSolver):
                     heappush(open_list, (f, g_new, neighbor))
         return []
 
-
     def solve_animated(self) -> Generator[list[str], None, None]:
         open_list: list[tuple[int, int, tuple[int, int]]] = []
         heappush(open_list, (0, 0, self.entry))

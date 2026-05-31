@@ -33,7 +33,7 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
         cell_w = (WIN_W - WALL_SIZE) // maze.width
         cell_h = (WIN_H - WALL_SIZE) // maze.height
         self._cell_size: int = max(4, min(cell_w, cell_h))
-        self._win_w: int = maze.width  * self._cell_size + WALL_SIZE
+        self._win_w: int = maze.width * self._cell_size + WALL_SIZE
         self._win_h: int = maze.height * self._cell_size + WALL_SIZE
         # Pointeurs MLX — initialisés dans _setup()
         self._mlx: Optional[Mlx] = None
@@ -46,18 +46,15 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
         self._pending_keys: set = set()
         self._listener: Optional[keyboard.Listener] = None
 
-
     def run(self) -> None:
         self._setup()
         self._maze.generate(self._algo_class)
-
         self._mlx.mlx_loop_hook(self._mlx_ptr, self._on_frame, self)   # type: ignore[union-attr]
         self._mlx.mlx_hook(                                             # type: ignore[union-attr]
             self._win_ptr, X_EVENT_CLOSE, 0, self._on_close, self
         )
         self._mlx.mlx_loop(self._mlx_ptr)  # type: ignore[union-attr]
         self._cleanup()
-
 
     def _on_frame(self, app: MlxDisplay) -> None:
         app._process_keys()
@@ -75,10 +72,8 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
             app._maze.tick_solve()
         app._draw()
 
-
     def _on_close(self, app: MlxDisplay) -> None:
         app._mlx.mlx_loop_exit(app._mlx_ptr)   # type: ignore[union-attr]
-
 
     def _setup(self) -> None:
         try:
@@ -103,7 +98,6 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
         )
         self._listener = keyboard.Listener(on_press=self._on_key)
         self._listener.start()
-
 
     def _cleanup(self) -> None:
         if self._mlx is None:

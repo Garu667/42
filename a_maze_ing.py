@@ -1,7 +1,7 @@
 from sys import argv
 from pydantic import ValidationError
 from src.parsing import Parsing, MissingKeyError
-from src.parsing import PositionError, FileNotFoundError
+from src.parsing import PositionError, FileNameError
 
 
 def list_to_dict(data: list[str]) -> dict[str, str]:

@@ -43,12 +43,13 @@ _DIGIT_2: list[list[int]] = [
 _PATTERN_W: int = 7
 _PATTERN_H: int = 5
 
+
 class MazeState(IntEnum):
-    BLANK       = 0   # Objet créé, aucune grille allouée
+    BLANK = 0   # Objet créé, aucune grille allouée
     INITIALIZED = 1   # Grille à 0xF, pattern "42" placé
-    GENERATING  = 2   # Algorithme en cours (yields intermédiaires)
-    GENERATED   = 3   # Labyrinthe complet et valide
-    ERROR       = -1  # Paramètres invalides ou génération échouée
+    GENERATING = 2   # Algorithme en cours (yields intermédiaires)
+    GENERATED = 3   # Labyrinthe complet et valide
+    ERROR = -1  # Paramètres invalides ou génération échouée
 
 
 class Maze:
@@ -77,7 +78,6 @@ class Maze:
         self._42_cells: set[tuple[int, int]] = set()
         self._solution: list[str] = []
         self._iterator: Optional[Generator[None, None, None]] = None
-
 
     @property
     def state(self) -> MazeState:
@@ -117,11 +117,9 @@ class Maze:
             )
         return list(self._solution)
 
-
     @property
     def is_solving(self) -> bool:
         return self._solve_iterator is not None
-
 
     def initialize(self) -> None:
         try:
@@ -143,7 +141,6 @@ class Maze:
             self._state = MazeState.ERROR
             raise RuntimeError(f"Initialization failed: {e}") from e
 
-
     def generate(self, algo: Type[BaseGenerator]) -> None:
         self._require_state(MazeState.INITIALIZED, "generate()")
         try:
@@ -164,7 +161,6 @@ class Maze:
             self._state = MazeState.ERROR
             raise RuntimeError(f"Generation failed: {e}") from e
 
-
     def tick(self) -> bool:
         self._require_state(MazeState.GENERATING, "tick()")
         try:
@@ -175,12 +171,10 @@ class Maze:
             self._iterator = None
             return False
 
-
     def run_all(self) -> None:
         self._require_state(MazeState.GENERATING, "run_all()")
         while self.tick():
             pass
-
 
     def solve(self, solver: Type[BaseSolver]) -> None:
         self._require_state(MazeState.GENERATED, "solve()")
@@ -198,7 +192,6 @@ class Maze:
             )
         self._solution = result
 
-
     def reset(self) -> None:
         self._state = MazeState.BLANK
         self._grid = []
@@ -208,39 +201,31 @@ class Maze:
         self._seed = self._rng_seed()
         self.initialize()
 
-
     def _rng_seed(self) -> int:
         import random
         return random.randint(0, 2**32 - 1)
 
-
     def is_done(self) -> bool:
         return self._state == MazeState.GENERATED
-
 
     def can_fit_42(self) -> bool:
         min_w, min_h = self.MIN_SIZE_FOR_42
         return self._width >= min_w and self._height >= min_h
 
-
     def carve(self, x: int, y: int, direction: int) -> None:
         dx, dy = DELTA[direction]
         nx, ny = x + dx, y + dy
-        self._grid[y][x]   &= ~direction
+        self._grid[y][x] &= ~direction
         self._grid[ny][nx] &= ~OPPOSITE[direction]
-
 
     def has_wall(self, x: int, y: int, direction: int) -> bool:
         return bool(self._grid[y][x] & direction)
 
-
     def in_bounds(self, x: int, y: int) -> bool:
         return 0 <= x < self._width and 0 <= y < self._height
 
-
     def is_blocked(self, x: int, y: int) -> bool:
         return (x, y) in self._42_cells
-
 
     def get_neighbors(
         self, x: int, y: int
@@ -251,7 +236,6 @@ class Maze:
             if self.in_bounds(nx, ny) and not self.is_blocked(nx, ny):
                 result.append((nx, ny, direction))
         return result
-
 
     @staticmethod
     def _validate(
@@ -275,14 +259,12 @@ class Maze:
         if entry == exit_:
             raise ValueError("Entry and Exit must be on separated cells")
 
-
     def _require_state(self, expected: MazeState, action: str) -> None:
         if self._state != expected:
             raise RuntimeError(
                 f"'{action}' requiert the state {expected.name}, "
                 f"actuel state: {self._state.name}."
             )
-
 
     def _require_state_gte(self, minimum: MazeState, prop: str) -> None:
         if self._state < minimum:
@@ -291,9 +273,8 @@ class Maze:
                 f"(minimum required : {minimum.name})."
             )
 
-
     def _place_42(self) -> None:
-        start_x = (self._width  - _PATTERN_W) // 2
+        start_x = (self._width - _PATTERN_W) // 2
         start_y = (self._height - _PATTERN_H) // 2
         for row, bits in enumerate(_DIGIT_4):
             for col, on in enumerate(bits):
@@ -305,13 +286,11 @@ class Maze:
                 if on:
                     self._42_cells.add((x_off + col, start_y + row))
 
-
     def _validate_pos_42(self) -> None:
         if self._entry in self._42_cells or self._exit in self._42_cells:
             raise ValueError(
                 "Entry or exit in locked cells"
             )
-
 
     def solve_animated(self, solver: Type[BaseSolver]) -> None:
         self._require_state(MazeState.GENERATED, "solve_animated()")
@@ -324,7 +303,6 @@ class Maze:
         )
         self._solve_iterator: Optional[Generator] = instance.solve_animated()
         self._solution = []
-
 
     def tick_solve(self) -> bool:
         if self._solve_iterator is None:
