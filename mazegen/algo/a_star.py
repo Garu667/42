@@ -15,7 +15,6 @@ def can_move(grid: list[list[int]], cell: tuple[int, int],
              neighbor: tuple[int, int]) -> bool:
     cx, cy = cell
     nx, ny = neighbor
-
     if ny == cy + 1:
         return not (grid[cy][cx] & SOUTH)
     elif ny == cy - 1:
@@ -40,7 +39,6 @@ def get_accessible_neighbors(grid: list[list[int]], cell: tuple[int, int],
         neighbors.append((x, y - 1))
     if y < height - 1:
         neighbors.append((x, y + 1))
-
     return [neighbor
             for neighbor in neighbors
             if can_move(grid, cell, neighbor)]
@@ -50,12 +48,10 @@ def reconstruct_path(came_from: dict[tuple[int, int], tuple[int, int]],
                      entry_cell: tuple[int, int], exit_cell: tuple[int, int]) -> list[str]:
     path = []
     current = exit_cell
-
     while current != entry_cell:
         previous = came_from[current]
         cx, cy = current
         px, py = previous
-
         if cy == py + 1:
             path.append('S')
         elif cy == py - 1:
@@ -64,11 +60,10 @@ def reconstruct_path(came_from: dict[tuple[int, int], tuple[int, int]],
             path.append('E')
         else:
             path.append('W')
-
         current = previous
-
     path.reverse()
     return path
+
 
 class A_Star(BaseSolver):
     """A* solver"""
@@ -80,19 +75,14 @@ class A_Star(BaseSolver):
         """
         open_list: list[tuple[int, int, tuple[int, int]]] = []
         heappush(open_list, (0, 0, self.entry))
-
         came_from: dict[tuple[int, int], tuple[int, int]] = {}
         g_score: dict[tuple[int, int], int] = {self.entry: 0}
-
         while open_list:
             _, g, current = heappop(open_list)
-
             if current == self.exit_:
                 return reconstruct_path(came_from, self.entry, self.exit_)
-
             if g > g_score.get(current, float('inf')):
                 continue
-
             for neighbor in get_accessible_neighbors(self.grid, current,
                                                      self.width, self.height):
                 g_new = g + 1

@@ -113,7 +113,7 @@ class Maze:
     def solution(self) -> list[str]:
         if not self._solution:
             raise RuntimeError(
-                "Appelez solve() avant d'accéder à la solution."
+                "Call solve() before accessing to the solution."
             )
         return list(self._solution)
 
@@ -124,25 +124,23 @@ class Maze:
             self._42_cells = set()
             self._solution = []
             self._iterator = None
-
             if self.can_fit_42():
                 self._place_42()
+                self._validate_pos_42()
             else:
                 print(
-                    f"[Warning] Trop petit pour le pattern '42' "
+                    f"[!] Too small for the 42 pattern "
                     f"(minimum {self.MIN_SIZE_FOR_42[0]}×"
                     f"{self.MIN_SIZE_FOR_42[1]})."
                 )
-
             self._state = MazeState.INITIALIZED
-
         except Exception as e:
             self._state = MazeState.ERROR
-            raise RuntimeError(f"Échec de l'initialisation : {e}") from e
+            raise RuntimeError(f"Initialization failed: {e}") from e
+
 
     def generate(self, algo: Type[BaseGenerator]) -> None:
         self._require_state(MazeState.INITIALIZED, "generate()")
-
         try:
             rng = random.Random(self._seed)
             instance = algo(
@@ -157,14 +155,13 @@ class Maze:
             )
             self._iterator = instance.run()
             self._state = MazeState.GENERATING
-
         except Exception as e:
             self._state = MazeState.ERROR
-            raise RuntimeError(f"Échec du lancement de la génération : {e}") from e
+            raise RuntimeError(f"Generation failed: {e}") from e
+
 
     def tick(self) -> bool:
         self._require_state(MazeState.GENERATING, "tick()")
-
         try:
             next(self._iterator)    # type: ignore[arg-type]
             return True
@@ -173,14 +170,15 @@ class Maze:
             self._iterator = None
             return False
 
+
     def run_all(self) -> None:
         self._require_state(MazeState.GENERATING, "run_all()")
         while self.tick():
             pass
 
+
     def solve(self, solver: Type[BaseSolver]) -> None:
         self._require_state(MazeState.GENERATED, "solve()")
-
         instance = solver(
             grid=self._grid,
             width=self._width,
@@ -189,13 +187,12 @@ class Maze:
             exit_=self._exit,
         )
         result = instance.solve()
-
         if not result:
             raise ValueError(
-                "Aucun chemin trouvé entre l'entrée et la sortie."
+                "No path found between entry and exit"
             )
-
         self._solution = result
+
 
     def reset(self) -> None:
         self._state = MazeState.BLANK
@@ -206,12 +203,15 @@ class Maze:
         self._seed = self._rng_seed()
         self.initialize()
 
+
     def _rng_seed(self) -> int:
         import random
         return random.randint(0, 2**32 - 1)
 
+
     def is_done(self) -> bool:
         return self._state == MazeState.GENERATED
+
 
     def can_fit_42(self) -> bool:
         min_w, min_h = self.MIN_SIZE_FOR_42
@@ -224,14 +224,18 @@ class Maze:
         self._grid[y][x]   &= ~direction
         self._grid[ny][nx] &= ~OPPOSITE[direction]
 
+
     def has_wall(self, x: int, y: int, direction: int) -> bool:
         return bool(self._grid[y][x] & direction)
+
 
     def in_bounds(self, x: int, y: int) -> bool:
         return 0 <= x < self._width and 0 <= y < self._height
 
+
     def is_blocked(self, x: int, y: int) -> bool:
         return (x, y) in self._42_cells
+
 
     def get_neighbors(
         self, x: int, y: int
@@ -252,46 +256,53 @@ class Maze:
         exit_: tuple[int, int],
     ) -> None:
         if width < 2 or height < 2:
-            raise ValueError("Les dimensions doivent être au minimum 2×2.")
+            raise ValueError("Dimension must be XxX minimun")
         ex, ey = entry
         if not (0 <= ex < width and 0 <= ey < height):
             raise ValueError(
-                f"L'entrée {entry} est hors limites ({width}×{height})."
+                f"Entry {entry} is out limit ({width}×{height})"
             )
         fx, fy = exit_
         if not (0 <= fx < width and 0 <= fy < height):
             raise ValueError(
-                f"La sortie {exit_} est hors limites ({width}×{height})."
+                f"Exit {exit_} is out limit ({width}×{height})"
             )
         if entry == exit_:
-            raise ValueError("L'entrée et la sortie doivent être différentes.")
+            raise ValueError("Entry and Exit must be on separated cells")
+
 
     def _require_state(self, expected: MazeState, action: str) -> None:
         if self._state != expected:
             raise RuntimeError(
-                f"'{action}' requiert l'état {expected.name}, "
-                f"état actuel : {self._state.name}."
+                f"'{action}' requiert the state {expected.name}, "
+                f"actuel state: {self._state.name}."
             )
+
 
     def _require_state_gte(self, minimum: MazeState, prop: str) -> None:
         if self._state < minimum:
             raise RuntimeError(
-                f"'{prop}' non disponible en état {self._state.name} "
-                f"(minimum requis : {minimum.name})."
+                f"'{prop}' is not available with the state {self._state.name} "
+                f"(minimum required : {minimum.name})."
             )
 
 
     def _place_42(self) -> None:
         start_x = (self._width  - _PATTERN_W) // 2
         start_y = (self._height - _PATTERN_H) // 2
-
         for row, bits in enumerate(_DIGIT_4):
             for col, on in enumerate(bits):
                 if on:
                     self._42_cells.add((start_x + col, start_y + row))
-
         x_off = start_x + len(_DIGIT_4[0]) + 1
         for row, bits in enumerate(_DIGIT_2):
             for col, on in enumerate(bits):
                 if on:
                     self._42_cells.add((x_off + col, start_y + row))
+
+
+    def _validate_pos_42(self) -> None:
+        if self._entry in self._42_cells or self._exit in self._42_cells:
+            raise ValueError(
+                "Entry or exit in locked cells"
+            )
