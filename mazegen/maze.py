@@ -118,6 +118,11 @@ class Maze:
         return list(self._solution)
 
 
+    @property
+    def is_solving(self) -> bool:
+        return self._solve_iterator is not None
+
+
     def initialize(self) -> None:
         try:
             self._grid = [[0xF] * self._width for _ in range(self._height)]
@@ -306,3 +311,27 @@ class Maze:
             raise ValueError(
                 "Entry or exit in locked cells"
             )
+
+
+    def solve_animated(self, solver: Type[BaseSolver]) -> None:
+        self._require_state(MazeState.GENERATED, "solve_animated()")
+        instance = solver(
+            grid=self._grid,
+            width=self._width,
+            height=self._height,
+            entry=self._entry,
+            exit_=self._exit,
+        )
+        self._solve_iterator: Optional[Generator] = instance.solve_animated()
+        self._solution = []
+
+
+    def tick_solve(self) -> bool:
+        if self._solve_iterator is None:
+            return False
+        try:
+            self._solution = next(self._solve_iterator)
+            return True
+        except StopIteration:
+            self._solve_iterator = None
+            return False

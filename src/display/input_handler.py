@@ -46,3 +46,6 @@ class MlxInputHandler:
     def _skip_animation(self) -> None:
         if self._maze.state == MazeState.GENERATING:  # type: ignore[attr-defined]
             self._maze.run_all()  # type: ignore[attr-defined]
+        elif self._maze.is_solving:
+            while self._maze.tick_solve():          # type: ignore[attr-defined]
+                pass

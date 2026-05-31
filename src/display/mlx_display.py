@@ -67,10 +67,12 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
                     break
         if app._maze.state == MazeState.GENERATED and not app._solved:
             try:
-                app._maze.solve(A_Star)
+                app._maze.solve_animated(A_Star)
                 app._solved = True
             except ValueError:
                 app._solved = True
+        if app._solved and app._show_path:
+            app._maze.tick_solve()
         app._draw()
 
 

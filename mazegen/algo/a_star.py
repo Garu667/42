@@ -1,4 +1,5 @@
 from mazegen.algo.base import BaseSolver
+from collections.abc import Generator
 from heapq import heappush, heappop
 
 NORTH = 0b0001
@@ -92,3 +93,29 @@ class A_Star(BaseSolver):
                     came_from[neighbor] = current
                     heappush(open_list, (f, g_new, neighbor))
         return []
+
+
+    def solve_animated(self) -> Generator[list[str], None, None]:
+        open_list: list[tuple[int, int, tuple[int, int]]] = []
+        heappush(open_list, (0, 0, self.entry))
+        came_from: dict[tuple[int, int], tuple[int, int]] = {}
+        g_score: dict[tuple[int, int], int] = {self.entry: 0}
+        while open_list:
+            _, g, current = heappop(open_list)
+            if current == self.exit_:
+                yield reconstruct_path(came_from, self.entry, self.exit_)
+                return
+            if g > g_score.get(current, float('inf')):
+                continue
+            if current in came_from:
+                yield reconstruct_path(came_from, self.entry, current)
+            for neighbor in get_accessible_neighbors(
+                self.grid, current, self.width, self.height
+            ):
+                g_new = g + 1
+                if g_new < g_score.get(neighbor, float('inf')):
+                    g_score[neighbor] = g_new
+                    f = g_new + heuristic(neighbor, self.exit_)
+                    came_from[neighbor] = current
+                    heappush(open_list, (f, g_new, neighbor))
+        yield []
