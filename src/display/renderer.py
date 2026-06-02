@@ -24,30 +24,30 @@ WALL_PALETTES: list[int] = [
 
 class MlxRenderer:
     def _draw(self) -> None:
-        if self._img_data is None:  # type: ignore[attr-defined]
+        if self._img_data is None:
             return
         self._fill_background()
         self._draw_cells()
-        if self._show_path and self._maze.state == MazeState.GENERATED:  # type: ignore[attr-defined]
+        if self._show_path and self._maze.state == MazeState.GENERATED:
             self._draw_path()
-        self._mlx.mlx_put_image_to_window(  # type: ignore[attr-defined]
-            self._mlx_ptr,  # type: ignore[attr-defined]
-            self._win_ptr,  # type: ignore[attr-defined]
-            self._img_ptr,  # type: ignore[attr-defined]
+        self._mlx.mlx_put_image_to_window(
+            self._mlx_ptr,
+            self._win_ptr,
+            self._img_ptr,
             0, 0
         )
 
     def _fill_background(self) -> None:
-        color_bytes = COLOR_BACKGROUND.to_bytes(4, 'little') * self._win_w  # type: ignore[attr-defined]
-        for row in range(self._win_h):  # type: ignore[attr-defined]
-            offset = row * self._img_sl  # type: ignore[attr-defined]
-            self._img_data[offset:offset + self._win_w * 4] = color_bytes  # type: ignore[attr-defined]
+        color_bytes = COLOR_BACKGROUND.to_bytes(4, 'little') * self._win_w
+        for row in range(self._win_h):
+            offset = row * self._img_sl
+            self._img_data[offset:offset + self._win_w * 4] = color_bytes
 
     def _draw_cells(self) -> None:
-        grid = self._maze.grid  # type: ignore[attr-defined]
-        forty_two = self._maze.forty_two_cells  # type: ignore[attr-defined]
-        for y in range(self._maze.height):  # type: ignore[attr-defined]
-            for x in range(self._maze.width):  # type: ignore[attr-defined]
+        grid = self._maze.grid
+        forty_two = self._maze.forty_two_cells
+        for y in range(self._maze.height):
+            for x in range(self._maze.width):
                 self._draw_cell(x, y, grid[y][x], (x, y) in forty_two)
 
     def _draw_cell(
@@ -57,10 +57,10 @@ class MlxRenderer:
         cell_val: int,
         is_42: bool,
     ) -> None:
-        px = cx * self._cell_size  # type: ignore[attr-defined]
-        py = cy * self._cell_size  # type: ignore[attr-defined]
-        entry = self._maze.entry  # type: ignore[attr-defined]
-        exit_ = self._maze.exit   # type: ignore[attr-defined]
+        px = cx * self._cell_size
+        py = cy * self._cell_size
+        entry = self._maze.entry
+        exit_ = self._maze.exit
         if is_42:
             cell_color = COLOR_42
         elif (cx, cy) == entry:
@@ -72,23 +72,25 @@ class MlxRenderer:
         self._fill_rect(
             px + WALL_SIZE,
             py + WALL_SIZE,
-            self._cell_size - WALL_SIZE,  # type: ignore[attr-defined]
-            self._cell_size - WALL_SIZE,  # type: ignore[attr-defined]
+            self._cell_size - WALL_SIZE,
+            self._cell_size - WALL_SIZE,
             cell_color,
         )
-        wall = self._wall_color if not is_42 else COLOR_42  # type: ignore[attr-defined]
+        wall = self._wall_color if not is_42 else COLOR_42
         if cell_val & NORTH:
-            self._fill_rect(px, py, self._cell_size, WALL_SIZE, wall)  # type: ignore[attr-defined]
+            self._fill_rect(px, py, self._cell_size, WALL_SIZE, wall)
         if cell_val & WEST:
-            self._fill_rect(px, py, WALL_SIZE, self._cell_size, wall)  # type: ignore[attr-defined]
+            self._fill_rect(px, py, WALL_SIZE, self._cell_size, wall)
         if cell_val & SOUTH:
-            self._fill_rect(px, py + self._cell_size - WALL_SIZE, self._cell_size, WALL_SIZE, wall)  # type: ignore[attr-defined]
+            self._fill_rect(px, py + self._cell_size - WALL_SIZE,
+                            self._cell_size, WALL_SIZE, wall)
         if cell_val & EAST:
-            self._fill_rect(px + self._cell_size - WALL_SIZE, py, WALL_SIZE, self._cell_size, wall)  # type: ignore[attr-defined]
+            self._fill_rect(px + self._cell_size - WALL_SIZE, py,
+                            WALL_SIZE, self._cell_size, wall)
 
     def _draw_path(self) -> None:
         try:
-            path = self._maze.solution  # type: ignore[attr-defined]
+            path = self._maze.solution
         except RuntimeError:
             return
         direction_to_delta = {
@@ -97,8 +99,8 @@ class MlxRenderer:
             'E': (1,  0),
             'W': (-1, 0),
         }
-        grid = self._maze.grid  # type: ignore[attr-defined]
-        x, y = self._maze.entry  # type: ignore[attr-defined]
+        grid = self._maze.grid
+        x, y = self._maze.entry
         positions = [(x, y)]
         for step in path:
             dx, dy = direction_to_delta[step]
@@ -116,10 +118,10 @@ class MlxRenderer:
             off_w = WALL_SIZE if (cell_val & WEST) else 0
             off_e = WALL_SIZE if (cell_val & EAST) else 0
             self._fill_rect(
-                cx * self._cell_size + off_w,  # type: ignore[attr-defined]
-                cy * self._cell_size + off_n,  # type: ignore[attr-defined]
-                self._cell_size - off_w - off_e,  # type: ignore[attr-defined]
-                self._cell_size - off_n - off_s,  # type: ignore[attr-defined]
+                cx * self._cell_size + off_w,
+                cy * self._cell_size + off_n,
+                self._cell_size - off_w - off_e,
+                self._cell_size - off_n - off_s,
                 color,
             )
 
@@ -136,17 +138,17 @@ class MlxRenderer:
             return
         x1 = max(x, 0)
         y1 = max(y, 0)
-        x2 = min(x + w, self._win_w)  # type: ignore[attr-defined]
-        y2 = min(y + h, self._win_h)  # type: ignore[attr-defined]
+        x2 = min(x + w, self._win_w)
+        y2 = min(y + h, self._win_h)
         if x1 >= x2 or y1 >= y2:
             return
         color_bytes = color.to_bytes(4, 'little') * (x2 - x1)
         row_len = len(color_bytes)
         for row in range(y1, y2):
-            offset = row * self._img_sl + x1 * 4  # type: ignore[attr-defined]
-            self._img_data[offset:offset + row_len] = color_bytes  # type: ignore[attr-defined]
+            offset = row * self._img_sl + x1 * 4
+            self._img_data[offset:offset + row_len] = color_bytes
 
     def _put_pixel(self, x: int, y: int, color: int) -> None:
-        if 0 <= x < self._win_w and 0 <= y < self._win_h:  # type: ignore[attr-defined]
-            offset = y * self._img_sl + x * 4  # type: ignore[attr-defined]
-            self._img_data[offset:offset + 4] = color.to_bytes(4, 'little')  # type: ignore[attr-defined]
+        if 0 <= x < self._win_w and 0 <= y < self._win_h:
+            offset = y * self._img_sl + x * 4
+            self._img_data[offset:offset + 4] = color.to_bytes(4, 'little')
