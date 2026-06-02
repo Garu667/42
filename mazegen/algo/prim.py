@@ -31,10 +31,6 @@ class Prim(BaseGenerator):
     creusé pour permettre l'animation frame-by-frame via ``tick()``.
     """
 
-    # ------------------------------------------------------------------
-    # Helpers — voisins
-    # ------------------------------------------------------------------
-
     def _get_unvisited_neighbors(
         self,
         x: int,
@@ -81,10 +77,6 @@ class Prim(BaseGenerator):
                 result.append((nx, ny, direction))
         return result
 
-    # ------------------------------------------------------------------
-    # Helpers — carve
-    # ------------------------------------------------------------------
-
     def _carve_between(
         self,
         x: int,
@@ -102,7 +94,7 @@ class Prim(BaseGenerator):
             nx, ny:    Cellule voisine.
             direction: Direction de la source vers le voisin.
         """
-        self.grid[y][x]   &= ~direction
+        self.grid[y][x] &= ~direction
         self.grid[ny][nx] &= ~OPPOSITE[direction]
 
     def _carve_around(self, x: int, y: int) -> None:
@@ -126,10 +118,6 @@ class Prim(BaseGenerator):
                     self.grid[ny][nx] &= ~OPPOSITE[direction]
                 else:
                     self.grid[ny][nx] |= OPPOSITE[direction]
-
-    # ------------------------------------------------------------------
-    # Contrainte 3x3
-    # ------------------------------------------------------------------
 
     def _would_create_open_3x3(
         self,
@@ -205,10 +193,6 @@ class Prim(BaseGenerator):
 
         return False
 
-    # ------------------------------------------------------------------
-    # Mode imparfait
-    # ------------------------------------------------------------------
-
     def _make_imperfect(self) -> None:
         """Brise ~20% des murs internes pour créer des boucles.
 
@@ -265,10 +249,6 @@ class Prim(BaseGenerator):
                 self._carve_around(x, y)
                 break_count += 1
                 break
-
-    # ------------------------------------------------------------------
-    # run() — générateur principal
-    # ------------------------------------------------------------------
 
     def run(self) -> Generator[None, None, None]:
         """Génère le labyrinthe étape par étape (yield après chaque carve).

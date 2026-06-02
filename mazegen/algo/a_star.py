@@ -46,7 +46,8 @@ def get_accessible_neighbors(grid: list[list[int]], cell: tuple[int, int],
 
 
 def reconstruct_path(came_from: dict[tuple[int, int], tuple[int, int]],
-                     entry_cell: tuple[int, int], exit_cell: tuple[int, int]) -> list[str]:
+                     entry_cell: tuple[int, int],
+                     exit_cell: tuple[int, int]) -> list[str]:
     path = []
     current = exit_cell
     while current != entry_cell:

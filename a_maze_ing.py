@@ -47,7 +47,8 @@ def main(argv: list[str]) -> None:
             print(f"File name error: {e}")
         except ValidationError as e:
             for error in e.errors():
-                print(f"[{error['loc']}] {error['msg']} (got: {error['input']})")
+                print(f"[{error['loc']}] {error['msg']} "
+                      f"(got: {error['input']})")
         else:
             print(file_content)
             print(data)
