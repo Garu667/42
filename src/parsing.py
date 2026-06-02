@@ -21,14 +21,13 @@ class Parsing(BaseModel):
     exit: tuple[int, int]
     output_file: str = Field(min_length=5, max_length=50)
     perfect: bool = True
-    animation: bool = True
     seed: int = Field(ge=0)
 
     @model_validator(mode='before')
     @classmethod
     def dict_validator(cls, data: dict[str, Any]) -> dict[str, Any]:
         keys = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT",
-                "ANIMATION", "SEED"]
+                "SEED"]
         for key in keys:
             if key not in data:
                 raise MissingKeyError(f"Missing key '{key}' in config file")
@@ -52,14 +51,10 @@ class Parsing(BaseModel):
         perfect_value = data["PERFECT"].strip().lower()
         if perfect_value not in ("true", "false"):
             raise ValueError("PERFECT value must be 'True' or 'False'")
-        animation_value = data["ANIMATION"].strip().lower()
-        if animation_value not in ("true", "false"):
-            raise ValueError("ANIMATION value must be 'True' or 'False'")
         return {"width": data["WIDTH"], "height": data["HEIGHT"],
                 "entry": data["ENTRY"], "exit": data["EXIT"],
                 "output_file": data["OUTPUT_FILE"].strip(),
                 "perfect": perfect_value == "true",
-                "animation": animation_value == "true",
                 "seed": data["SEED"]}
 
     @model_validator(mode='after')
