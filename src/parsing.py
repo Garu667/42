@@ -32,7 +32,8 @@ class Parsing(BaseModel):
             if key not in data:
                 raise MissingKeyError(f"Missing key '{key}' in config file")
             if not data[key] or not data[key].strip():
-                raise ValueError(f"Key '{key}' exists but has no value in config file")
+                raise ValueError(f"Key '{key}' exists but has no value in "
+                                 "config file")
         try:
             data["WIDTH"] = int(data["WIDTH"].strip())
             data["HEIGHT"] = int(data["HEIGHT"].strip())
@@ -60,12 +61,14 @@ class Parsing(BaseModel):
     @model_validator(mode='after')
     def config_validator(self) -> 'Parsing':
         if self.entry[0] < 0 or self.entry[1] < 0:
-            raise PositionError("Entry position coordinates must be non-negative")
+            raise PositionError("Entry position coordinates must be "
+                                "non-negative")
         if self.entry[0] >= self.width or self.entry[1] >= self.height:
             raise PositionError(f"Entry position {self.entry} is out of "
                                 f"grid bounds ({self.width}x{self.height})")
         if self.exit[0] < 0 or self.exit[1] < 0:
-            raise PositionError("Exit position coordinates must be non-negative")
+            raise PositionError("Exit position coordinates must be "
+                                "non-negative")
         if self.exit[0] >= self.width or self.exit[1] >= self.height:
             raise PositionError(f"Exit position {self.exit} is out of "
                                 f"grid bounds ({self.width}x{self.height})")
