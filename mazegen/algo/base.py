@@ -1,4 +1,5 @@
 from __future__ import annotations
+from collections.abc import Generator
 from abc import ABC, abstractmethod
 import random
 
@@ -25,7 +26,7 @@ class BaseGenerator(ABC):
         self.rng = rng
 
     @abstractmethod
-    def run(self) -> None:
+    def run(self) -> Generator[None, None, None]:
         ...
 
 
@@ -46,4 +47,8 @@ class BaseSolver(ABC):
 
     @abstractmethod
     def solve(self) -> list[str]:
+        ...
+
+    @abstractmethod
+    def solve_animated(self) -> Generator[list[str], None, None]:
         ...
