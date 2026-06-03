@@ -41,12 +41,8 @@ def main() -> None:
             seed=config.seed,
         )
         maze.initialize()
-        if config.animation:
-            display = MlxDisplay(maze, Prim)
-            display.run()
-        else:
-            maze.generate(Prim)
-            maze.run_all()
+        display = MlxDisplay(maze, Prim)
+        display.run()
     except Exception as e:
         print(f"Error: {e}")
 
