@@ -49,9 +49,15 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
     def run(self) -> None:
         self._setup()
         self._maze.generate(self._algo_class)
-        self._mlx.mlx_loop_hook(self._mlx_ptr, self._on_frame, self)
-        self._mlx.mlx_hook(
-            self._win_ptr, X_EVENT_CLOSE, 0, self._on_close, self
+        self._mlx.mlx_loop_hook(    # type: ignore[union-attr]
+            self._mlx_ptr,
+            self._on_frame,
+            self
+        )
+        self._mlx.mlx_hook(  # type: ignore[union-attr]
+            self._win_ptr, X_EVENT_CLOSE,
+            0,
+            self._on_close, self
         )
         self._mlx.mlx_loop(self._mlx_ptr)  # type: ignore[union-attr]
         self._cleanup()
@@ -70,7 +76,7 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
                 app._solved = True
         if app._solved and app._show_path:
             app._maze.tick_solve()
-        app._draw()
+        app._draw()  # type: ignore[misc]
 
     def _on_close(self, app: MlxDisplay) -> None:
         app._mlx.mlx_loop_exit(app._mlx_ptr)   # type: ignore[union-attr]

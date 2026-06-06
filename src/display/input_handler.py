@@ -1,13 +1,27 @@
 from __future__ import annotations
+from typing import Protocol, Any
 from pynput.keyboard import Key, KeyCode
-from mazegen.maze import MazeState
+from mazegen.maze import MazeState, Maze
+from mazegen.algo.base import BaseGenerator
+
+
+class InputProtocol(Protocol):
+    _pending_keys: set
+    _show_path: bool
+    _solved: bool
+    _wall_color_idx: int
+    _wall_color: int
+    _maze: Maze
+    _algo_class: type[BaseGenerator]
+    _mlx: Any
+    _mlx_ptr: Any
 
 
 class MlxInputHandler:
-    def _on_key(self, key: object) -> None:
+    def _on_key(self: InputProtocol, key: object) -> None:
         self._pending_keys.add(key)
 
-    def _process_keys(self) -> None:
+    def _process_keys(self: InputProtocol) -> None:
         keys = self._pending_keys.copy()
         self._pending_keys.clear()
         seen: set[object] = set()
@@ -18,9 +32,9 @@ class MlxInputHandler:
             if key == Key.esc or key == KeyCode.from_char('q'):
                 self._mlx.mlx_loop_exit(self._mlx_ptr)
             elif key == KeyCode.from_char('s'):
-                self._skip_animation()
+                self._skip_animation()  # type: ignore[attr-defined]
             elif key == KeyCode.from_char('r'):
-                self._regenerate()
+                self._regenerate()  # type: ignore[attr-defined]
             elif key == KeyCode.from_char('p'):
                 self._show_path = not self._show_path
             elif key == KeyCode.from_char('c'):
@@ -30,7 +44,7 @@ class MlxInputHandler:
                 )
                 self._wall_color = WALL_PALETTES[self._wall_color_idx]
 
-    def _regenerate(self) -> None:
+    def _regenerate(self: InputProtocol) -> None:
         self._show_path = False
         self._solved = False
         try:
@@ -40,7 +54,7 @@ class MlxInputHandler:
         except RuntimeError as e:
             print(f"[Warning] Regeneration skipped: {e}")
 
-    def _skip_animation(self) -> None:
+    def _skip_animation(self: InputProtocol) -> None:
         if self._maze.state == MazeState.GENERATING:
             self._maze.run_all()
         elif self._maze.is_solving:
