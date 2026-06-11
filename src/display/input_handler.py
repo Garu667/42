@@ -6,6 +6,8 @@ from mazegen.algo.base import BaseGenerator
 
 
 class InputProtocol(Protocol):
+    """Protocol defining attributes required by input handler."""
+
     _pending_keys: set
     _show_path: bool
     _solved: bool
@@ -19,37 +21,44 @@ class InputProtocol(Protocol):
 
 
 class MlxInputHandler:
+    """Handle keyboard input events for maze interaction."""
+
     def _on_key(self: InputProtocol, key: object) -> None:
+        """Store pressed key for later processing."""
         self._pending_keys.add(key)
 
     def _process_keys(self: InputProtocol) -> None:
+        """Process queued keyboard inputs."""
         keys = self._pending_keys.copy()
         self._pending_keys.clear()
         seen: set[object] = set()
+
         for key in keys:
             if key in seen:
                 continue
             seen.add(key)
+
             if key == Key.esc or key == KeyCode.from_char('q'):
                 self._mlx.mlx_loop_exit(self._mlx_ptr)
             elif key == KeyCode.from_char('s'):
-                self._skip_animation()  # type: ignore[attr-defined]
+                self._skip_animation()
             elif key == KeyCode.from_char('r'):
-                self._regenerate()  # type: ignore[attr-defined]
+                self._regenerate()
             elif key == KeyCode.from_char('p'):
                 self._show_path = not self._show_path
             elif key == KeyCode.from_char('c'):
                 from src.display.renderer import WALL_PALETTES
                 from src.display.renderer import COLOR_42
-                self._color_idx = (
-                    (self._color_idx + 1) % len(WALL_PALETTES)
-                )
+
+                self._color_idx = (self._color_idx + 1) % len(WALL_PALETTES)
                 self._wall_color = WALL_PALETTES[self._color_idx]
                 self._42_color = COLOR_42[self._color_idx]
 
     def _regenerate(self: InputProtocol) -> None:
+        """Reset and regenerate the maze."""
         self._show_path = False
         self._solved = False
+
         try:
             self._maze.reset()
             if self._maze.state == MazeState.INITIALIZED:
@@ -58,6 +67,7 @@ class MlxInputHandler:
             print(f"[Warning] Regeneration skipped: {e}")
 
     def _skip_animation(self: InputProtocol) -> None:
+        """Skip generation or solving animation."""
         if self._maze.state == MazeState.GENERATING:
             self._maze.run_all()
         elif self._maze.is_solving:

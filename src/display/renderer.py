@@ -7,10 +7,12 @@ NORTH: int = 0x1
 EAST:  int = 0x2
 SOUTH: int = 0x4
 WEST:  int = 0x8
+
 COLOR_BACKGROUND: int = 0xFF1A1A2E
 COLOR_WALL: int = 0xFFE0E0E0
 COLOR_ENTRY: int = 0xFF00BFFF
 COLOR_EXIT: int = 0xFFFF4444
+
 COLOR_42: list[int] = [
     0xFF444466,
     0xFF473D00,
@@ -25,6 +27,7 @@ COLOR_42: list[int] = [
 
 COLOR_PATH_START: int = 0xFF00BFFF
 COLOR_PATH_END: int = 0xFFFF6B6B
+
 WALL_PALETTES: list[int] = [
     0xFFE0E0E0,
     0xFFFFD700,
@@ -40,6 +43,8 @@ WALL_PALETTES: list[int] = [
 
 @runtime_checkable
 class RendererProtocol(Protocol):
+    """Protocol describing renderer attributes required by MlxRenderer."""
+
     _img_data: bytearray
     _img_sl: int
     _win_w: int
@@ -56,13 +61,16 @@ class RendererProtocol(Protocol):
 
 
 class MlxRenderer:
+    """Handle maze rendering using MLX-like graphical backend."""
+
     def _draw(self: RendererProtocol) -> None:
+        """Render full frame (background, maze, path, display)."""
         if self._img_data is None:
             return
-        self._fill_background()  # type: ignore[attr-defined]
-        self._draw_cells()  # type: ignore[attr-defined]
+        self._fill_background()
+        self._draw_cells()
         if self._show_path and self._maze.state == MazeState.GENERATED:
-            self._draw_path()  # type: ignore[attr-defined]
+            self._draw_path()
         self._mlx.mlx_put_image_to_window(
             self._mlx_ptr,
             self._win_ptr,
@@ -71,17 +79,19 @@ class MlxRenderer:
         )
 
     def _fill_background(self: RendererProtocol) -> None:
+        """Fill the screen with background color."""
         color_bytes = COLOR_BACKGROUND.to_bytes(4, 'little') * self._win_w
         for row in range(self._win_h):
             offset = row * self._img_sl
             self._img_data[offset:offset + self._win_w * 4] = color_bytes
 
     def _draw_cells(self: RendererProtocol) -> None:
+        """Draw all maze cells."""
         grid = self._maze.grid
         forty_two = self._maze.forty_two_cells
         for y in range(self._maze.height):
             for x in range(self._maze.width):
-                self._draw_cell(  # type: ignore[attr-defined]
+                self._draw_cell(
                     x,
                     y,
                     grid[y][x],
@@ -95,10 +105,12 @@ class MlxRenderer:
         cell_val: int,
         is_42: bool,
     ) -> None:
+        """Render a single maze cell with walls and special colors."""
         px = cx * self._cell_size
         py = cy * self._cell_size
         entry = self._maze.entry
         exit_ = self._maze.exit
+
         if is_42:
             cell_color = self._42_color
         elif (cx, cy) == entry:
@@ -107,31 +119,23 @@ class MlxRenderer:
             cell_color = COLOR_EXIT
         else:
             cell_color = COLOR_BACKGROUND
-        self._fill_rect(  # type: ignore[attr-defined]
+
+        self._fill_rect(
             px + WALL_SIZE,
             py + WALL_SIZE,
             self._cell_size - WALL_SIZE,
             self._cell_size - WALL_SIZE,
             cell_color,
         )
+
         wall = self._wall_color if not is_42 else self._42_color
+
         if cell_val & NORTH:
-            self._fill_rect(  # type: ignore[attr-defined]
-                px,
-                py,
-                self._cell_size,
-                WALL_SIZE, wall
-            )
+            self._fill_rect(px, py, self._cell_size, WALL_SIZE, wall)
         if cell_val & WEST:
-            self._fill_rect(  # type: ignore[attr-defined]
-                px,
-                py,
-                WALL_SIZE,
-                self._cell_size,
-                wall
-            )
+            self._fill_rect(px, py, WALL_SIZE, self._cell_size, wall)
         if cell_val & SOUTH:
-            self._fill_rect(  # type: ignore[attr-defined]
+            self._fill_rect(
                 px,
                 py + self._cell_size - WALL_SIZE,
                 self._cell_size,
@@ -139,7 +143,7 @@ class MlxRenderer:
                 wall
             )
         if cell_val & EAST:
-            self._fill_rect(  # type: ignore[attr-defined]
+            self._fill_rect(
                 px + self._cell_size - WALL_SIZE,
                 py,
                 WALL_SIZE,
@@ -148,39 +152,48 @@ class MlxRenderer:
             )
 
     def _draw_path(self: RendererProtocol) -> None:
+        """Render computed solution path with gradient effect."""
         try:
             path = self._maze.solution
         except RuntimeError:
             return
+
         direction_to_delta = {
             'N': (0, -1),
             'S': (0,  1),
             'E': (1,  0),
             'W': (-1, 0),
         }
+
         grid = self._maze.grid
         x, y = self._maze.entry
         positions = [(x, y)]
+
         for step in path:
             dx, dy = direction_to_delta[step]
             x += dx
             y += dy
             positions.append((x, y))
+
         inner = positions[1:]
         total = max(len(inner) - 1, 1)
+
         for i, (cx, cy) in enumerate(inner):
             t = i / total
-            color = self._lerp_color(  # type: ignore[attr-defined]
+            color = self._lerp_color(
                 COLOR_PATH_START,
                 COLOR_PATH_END,
                 t
             )
+
             cell_val = grid[cy][cx]
+
             off_n = WALL_SIZE if (cell_val & NORTH) else 0
             off_s = WALL_SIZE if (cell_val & SOUTH) else 0
             off_w = WALL_SIZE if (cell_val & WEST) else 0
             off_e = WALL_SIZE if (cell_val & EAST) else 0
-            self._fill_rect(  # type: ignore[attr-defined]
+
+            self._fill_rect(
                 cx * self._cell_size + off_w,
                 cy * self._cell_size + off_n,
                 self._cell_size - off_w - off_e,
@@ -189,6 +202,7 @@ class MlxRenderer:
             )
 
     def _lerp_color(self: RendererProtocol, c1: int, c2: int, t: float) -> int:
+        """Interpolate between two colors."""
         r1, g1, b1 = (c1 >> 16) & 0xFF, (c1 >> 8) & 0xFF, c1 & 0xFF
         r2, g2, b2 = (c2 >> 16) & 0xFF, (c2 >> 8) & 0xFF, c2 & 0xFF
         r = int(r1 + (r2 - r1) * t)
@@ -204,6 +218,7 @@ class MlxRenderer:
         h: int,
         color: int
     ) -> None:
+        """Fill a rectangle area with a color."""
         if w <= 0 or h <= 0:
             return
         x1 = max(x, 0)
@@ -219,6 +234,7 @@ class MlxRenderer:
             self._img_data[offset:offset + row_len] = color_bytes
 
     def _put_pixel(self: RendererProtocol, x: int, y: int, color: int) -> None:
+        """Draw a single pixel."""
         if 0 <= x < self._win_w and 0 <= y < self._win_h:
             offset = y * self._img_sl + x * 4
             self._img_data[offset:offset + 4] = color.to_bytes(4, 'little')
