@@ -1,8 +1,10 @@
 from mazegen.maze import Maze
 from mazegen.algo.prim import Prim
+from mazegen.algo.a_star import A_Star
 from src.display.mlx_display import MlxDisplay
 from src.parsing import Parsing, MissingKeyError, PositionError, FileNameError
 from src.maze_output import MazeWriter
+import sys
 
 
 def load_config(path: str) -> Parsing:
@@ -17,9 +19,16 @@ def load_config(path: str) -> Parsing:
     return Parsing(**data)
 
 
-def main() -> None:
+def main(ac: int, av: list[str]) -> None:
+    if len(av) == 1:
+        print("You must add the config file")
+        print("python3 a_maze_ing.py <file_name.txt> OR make run")
+        return
+    if not av[1].endswith(".txt"):
+        print("You must use a text file (exemple: config.txt)")
+        return
     try:
-        config = load_config("config.txt")
+        config = load_config(av[1])
     except MissingKeyError as e:
         print(f"Config incomplète : {e}")
         exit(1)
@@ -44,14 +53,18 @@ def main() -> None:
         maze.initialize()
         display = MlxDisplay(maze, Prim)
         display.run()
+        if not maze.is_done():
+            maze.run_all()
+        if not maze.has_solution:
+            maze.solve(A_Star)
         writer = MazeWriter(maze, config.output_file)
-        writer.write()
+        writer.output()
     except Exception as e:
         print(f"Error: {e}")
 
 
 if __name__ == "__main__":
     try:
-        main()
+        main(len(sys.argv), sys.argv)
     except Exception as e:
         print(f"Error: {e}")

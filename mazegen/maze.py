@@ -121,6 +121,10 @@ class Maze:
     def is_solving(self) -> bool:
         return self._solve_iterator is not None
 
+    @property
+    def has_solution(self) -> bool:
+        return bool(self._solution)
+
     def initialize(self) -> None:
         try:
             self._grid = [[0xF] * self._width for _ in range(self._height)]
