@@ -2,6 +2,7 @@ from mazegen.maze import Maze
 from mazegen.algo.prim import Prim
 from src.display.mlx_display import MlxDisplay
 from src.parsing import Parsing, MissingKeyError, PositionError, FileNameError
+from src.maze_output import MazeWriter
 
 
 def load_config(path: str) -> Parsing:
@@ -43,6 +44,8 @@ def main() -> None:
         maze.initialize()
         display = MlxDisplay(maze, Prim)
         display.run()
+        writer = MazeWriter(maze, config.output_file)
+        writer.write()
     except Exception as e:
         print(f"Error: {e}")
 
