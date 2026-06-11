@@ -45,14 +45,18 @@ _PATTERN_H: int = 5
 
 
 class MazeState(IntEnum):
-    BLANK = 0   # Objet créé, aucune grille allouée
-    INITIALIZED = 1   # Grille à 0xF, pattern "42" placé
-    GENERATING = 2   # Algorithme en cours (yields intermédiaires)
-    GENERATED = 3   # Labyrinthe complet et valide
-    ERROR = -1  # Paramètres invalides ou génération échouée
+    """State of the maze lifecycle."""
+
+    BLANK = 0
+    INITIALIZED = 1
+    GENERATING = 2
+    GENERATED = 3
+    ERROR = -1
 
 
 class Maze:
+    """Represent and manage a maze lifecycle (generation, solving)."""
+
     MIN_SIZE_FOR_42: tuple[int, int] = (_PATTERN_W + 2, _PATTERN_H + 2)
 
     def __init__(
@@ -64,6 +68,7 @@ class Maze:
         perfect: bool = True,
         seed: Optional[int] = None,
     ) -> None:
+        """Initialize maze parameters and internal state."""
         self._validate(width, height, entry, exit_)
 
         self._width = width
@@ -81,56 +86,66 @@ class Maze:
 
     @property
     def state(self) -> MazeState:
+        """Current maze state."""
         return self._state
 
     @property
     def width(self) -> int:
+        """Maze width."""
         return self._width
 
     @property
     def height(self) -> int:
+        """Maze height."""
         return self._height
 
     @property
     def entry(self) -> tuple[int, int]:
+        """Entry coordinates."""
         return self._entry
 
     @property
     def exit(self) -> tuple[int, int]:
+        """Exit coordinates."""
         return self._exit
 
     @property
     def grid(self) -> list[list[int]]:
+        """Return a copy of the maze grid."""
         self._require_state_gte(MazeState.INITIALIZED, "grid")
         return [row[:] for row in self._grid]
 
     @property
     def forty_two_cells(self) -> set[tuple[int, int]]:
+        """Return blocked '42 pattern' cells."""
         self._require_state_gte(MazeState.INITIALIZED, "forty_two_cells")
         return set(self._42_cells)
 
     @property
     def solution(self) -> list[str]:
+        """Return computed solution path."""
         if not self._solution:
-            raise RuntimeError(
-                "Call solve() before accessing to the solution."
-            )
+            raise RuntimeError("Call solve() before accessing to the solution.")
         return list(self._solution)
 
     @property
     def is_solving(self) -> bool:
+        """Check if solving animation is running."""
         return self._solve_iterator is not None
 
     @property
     def has_solution(self) -> bool:
+        """Check if a solution exists."""
         return bool(self._solution)
 
     def initialize(self) -> None:
+        """Initialize the maze grid and internal state."""
         try:
             self._grid = [[0xF] * self._width for _ in range(self._height)]
             self._42_cells = set()
             self._solution = []
             self._iterator = None
+
             if self.can_fit_42():
                 self._place_42()
                 self._validate_pos_42()
@@ -140,12 +155,15 @@ class Maze:
                     f"(minimum {self.MIN_SIZE_FOR_42[0]}×"
                     f"{self.MIN_SIZE_FOR_42[1]})."
                 )
+
             self._state = MazeState.INITIALIZED
+
         except Exception as e:
             self._state = MazeState.ERROR
             raise RuntimeError(f"Initialization failed: {e}") from e
 
     def generate(self, algo: Type[BaseGenerator]) -> None:
+        """Start maze generation using a given algorithm."""
         self._require_state(MazeState.INITIALIZED, "generate()")
         try:
             rng = random.Random(self._seed)
@@ -166,9 +184,14 @@ class Maze:
             raise RuntimeError(f"Generation failed: {e}") from e
 
     def tick(self) -> bool:
+        """Advance one step of generation.
+
+        Returns:
+            bool: True if generation continues, False if finished.
+        """
         self._require_state(MazeState.GENERATING, "tick()")
         try:
-            next(self._iterator)    # type: ignore[arg-type]
+            next(self._iterator)
             return True
         except StopIteration:
             self._state = MazeState.GENERATED
@@ -176,11 +199,13 @@ class Maze:
             return False
 
     def run_all(self) -> None:
+        """Run full maze generation until completion."""
         self._require_state(MazeState.GENERATING, "run_all()")
         while self.tick():
             pass
 
     def solve(self, solver: Type[BaseSolver]) -> None:
+        """Solve the generated maze."""
         self._require_state(MazeState.GENERATED, "solve()")
         instance = solver(
             grid=self._grid,
@@ -191,12 +216,11 @@ class Maze:
         )
         result = instance.solve()
         if not result:
-            raise ValueError(
-                "No path found between entry and exit"
-            )
+            raise ValueError("No path found between entry and exit")
         self._solution = result
 
     def reset(self) -> None:
+        """Reset the maze to initial state."""
         self._state = MazeState.BLANK
         self._grid = []
         self._42_cells = set()
@@ -206,34 +230,42 @@ class Maze:
         self.initialize()
 
     def _rng_seed(self) -> int:
+        """Generate a random seed."""
         import random
         return random.randint(0, 2**32 - 1)
 
     def is_done(self) -> bool:
+        """Check if maze generation is complete."""
         return self._state == MazeState.GENERATED
 
     def can_fit_42(self) -> bool:
+        """Check if the '42' pattern can be placed."""
         min_w, min_h = self.MIN_SIZE_FOR_42
         return self._width >= min_w and self._height >= min_h
 
     def carve(self, x: int, y: int, direction: int) -> None:
+        """Remove walls between two adjacent cells."""
         dx, dy = DELTA[direction]
         nx, ny = x + dx, y + dy
         self._grid[y][x] &= ~direction
         self._grid[ny][nx] &= ~OPPOSITE[direction]
 
     def has_wall(self, x: int, y: int, direction: int) -> bool:
+        """Check if a wall exists in a direction."""
         return bool(self._grid[y][x] & direction)
 
     def in_bounds(self, x: int, y: int) -> bool:
+        """Check if coordinates are inside the grid."""
         return 0 <= x < self._width and 0 <= y < self._height
 
     def is_blocked(self, x: int, y: int) -> bool:
+        """Check if a cell is blocked."""
         return (x, y) in self._42_cells
 
     def get_neighbors(
         self, x: int, y: int
     ) -> list[tuple[int, int, int]]:
+        """Return accessible neighbors with directions."""
         result: list[tuple[int, int, int]] = []
         for direction, (dx, dy) in DELTA.items():
             nx, ny = x + dx, y + dy
@@ -248,22 +280,20 @@ class Maze:
         entry: tuple[int, int],
         exit_: tuple[int, int],
     ) -> None:
+        """Validate maze parameters."""
         if width < 2 or height < 2:
             raise ValueError("Dimension must be XxX minimun")
         ex, ey = entry
-        if not (0 <= ex < width and 0 <= ey < height):
-            raise ValueError(
-                f"Entry {entry} is out limit ({width}×{height})"
-            )
         fx, fy = exit_
+        if not (0 <= ex < width and 0 <= ey < height):
+            raise ValueError(f"Entry {entry} is out limit ({width}×{height})")
         if not (0 <= fx < width and 0 <= fy < height):
-            raise ValueError(
-                f"Exit {exit_} is out limit ({width}×{height})"
-            )
+            raise ValueError(f"Exit {exit_} is out limit ({width}×{height})")
         if entry == exit_:
             raise ValueError("Entry and Exit must be on separated cells")
 
     def _require_state(self, expected: MazeState, action: str) -> None:
+        """Ensure maze is in expected state."""
         if self._state != expected:
             raise RuntimeError(
                 f"'{action}' requiert the state {expected.name}, "
@@ -271,6 +301,7 @@ class Maze:
             )
 
     def _require_state_gte(self, minimum: MazeState, prop: str) -> None:
+        """Ensure state is at least a minimum level."""
         if self._state < minimum:
             raise RuntimeError(
                 f"'{prop}' is not available with the state {self._state.name} "
@@ -278,6 +309,7 @@ class Maze:
             )
 
     def _place_42(self) -> None:
+        """Place the '42' pattern in the maze."""
         start_x = (self._width - _PATTERN_W) // 2
         start_y = (self._height - _PATTERN_H) // 2
         for row, bits in enumerate(_DIGIT_4):
@@ -291,12 +323,12 @@ class Maze:
                     self._42_cells.add((x_off + col, start_y + row))
 
     def _validate_pos_42(self) -> None:
+        """Ensure entry/exit are not inside the pattern."""
         if self._entry in self._42_cells or self._exit in self._42_cells:
-            raise ValueError(
-                "Entry or exit in locked cells"
-            )
+            raise ValueError("Entry or exit in locked cells")
 
     def solve_animated(self, solver: Type[BaseSolver]) -> None:
+        """Start animated solving process."""
         self._require_state(MazeState.GENERATED, "solve_animated()")
         instance = solver(
             grid=self._grid,
@@ -309,6 +341,11 @@ class Maze:
         self._solution = []
 
     def tick_solve(self) -> bool:
+        """Advance one solving step.
+
+        Returns:
+            bool: True if solving continues.
+        """
         if self._solve_iterator is None:
             return False
         try:
@@ -317,3 +354,4 @@ class Maze:
         except StopIteration:
             self._solve_iterator = None
             return False
+ 

@@ -9,11 +9,30 @@ WEST = 0b1000
 
 
 def heuristic(position1: tuple[int, int], position2: tuple[int, int]) -> int:
+    """Compute the Manhattan distance between two positions.
+
+    Args:
+        position1 (tuple[int, int]): First position.
+        position2 (tuple[int, int]): Second position.
+
+    Returns:
+        int: Manhattan distance.
+    """
     return abs(position1[0] - position2[0]) + abs(position1[1] - position2[1])
 
 
 def can_move(grid: list[list[int]], cell: tuple[int, int],
              neighbor: tuple[int, int]) -> bool:
+    """Check whether movement to a neighboring cell is possible.
+
+    Args:
+        grid (list[list[int]]): Maze grid.
+        cell (tuple[int, int]): Current cell.
+        neighbor (tuple[int, int]): Neighbor cell.
+
+    Returns:
+        bool: True if movement is allowed, False otherwise.
+    """
     cx, cy = cell
     nx, ny = neighbor
     if ny == cy + 1:
@@ -30,6 +49,17 @@ def can_move(grid: list[list[int]], cell: tuple[int, int],
 
 def get_accessible_neighbors(grid: list[list[int]], cell: tuple[int, int],
                              width: int, height: int) -> list[tuple[int, int]]:
+    """Return accessible neighboring cells.
+
+    Args:
+        grid (list[list[int]]): Maze grid.
+        cell (tuple[int, int]): Current cell.
+        width (int): Grid width.
+        height (int): Grid height.
+
+    Returns:
+        list[tuple[int, int]]: Accessible neighbors.
+    """
     x, y = cell
     neighbors = []
     if x > 0:
@@ -48,6 +78,16 @@ def get_accessible_neighbors(grid: list[list[int]], cell: tuple[int, int],
 def reconstruct_path(came_from: dict[tuple[int, int], tuple[int, int]],
                      entry_cell: tuple[int, int],
                      exit_cell: tuple[int, int]) -> list[str]:
+    """Reconstruct a path from entry to exit.
+
+    Args:
+        came_from (dict[tuple[int, int], tuple[int, int]]): Parent mapping.
+        entry_cell (tuple[int, int]): Entry cell.
+        exit_cell (tuple[int, int]): Exit cell.
+
+    Returns:
+        list[str]: Path as directions.
+    """
     path = []
     current = exit_cell
     while current != entry_cell:
@@ -68,12 +108,12 @@ def reconstruct_path(came_from: dict[tuple[int, int], tuple[int, int]],
 
 
 class A_Star(BaseSolver):
-    """A* solver"""
+    """Solve a maze using the A* algorithm."""
     def solve(self) -> list[str]:
-        """Resolve the maze using A*.
+        """Find a path from entry to exit.
 
         Returns:
-            List of direction ['N','E','S','W'] or nothing
+            list[str]: Path as directions.
         """
         open_list: list[tuple[int, int, tuple[int, int]]] = []
         heappush(open_list, (0, 0, self.entry))
@@ -96,6 +136,11 @@ class A_Star(BaseSolver):
         return []
 
     def solve_animated(self) -> Generator[list[str], None, None]:
+        """Yield intermediate paths during A* execution.
+
+        Yields:
+            list[str]: Current path as directions.
+        """
         open_list: list[tuple[int, int, tuple[int, int]]] = []
         heappush(open_list, (0, 0, self.entry))
         came_from: dict[tuple[int, int], tuple[int, int]] = {}

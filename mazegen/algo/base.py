@@ -5,6 +5,7 @@ import random
 
 
 class BaseGenerator(ABC):
+    """Abstract base class for maze generation algorithms."""
     def __init__(
         self,
         grid: list[list[int]],
@@ -16,6 +17,18 @@ class BaseGenerator(ABC):
         perfect: bool,
         rng: random.Random,
     ) -> None:
+        """Initialize a maze generator.
+
+        Args:
+            grid (list[list[int]]): Maze grid.
+            width (int): Grid width.
+            height (int): Grid height.
+            entry (tuple[int, int]): Entry position.
+            exit_ (tuple[int, int]): Exit position.
+            blocked (set[tuple[int, int]]): Blocked cells.
+            perfect (bool): Whether the maze must be perfect.
+            rng (random.Random): Random number generator.
+        """
         self.grid = grid
         self.width = width
         self.height = height
@@ -27,10 +40,12 @@ class BaseGenerator(ABC):
 
     @abstractmethod
     def run(self) -> Generator[None, None, None]:
+        """Generate the maze step by step."""
         ...
 
 
 class BaseSolver(ABC):
+    """Abstract base class for maze solving algorithms."""
     def __init__(
         self,
         grid: list[list[int]],
@@ -39,6 +54,15 @@ class BaseSolver(ABC):
         entry: tuple[int, int],
         exit_: tuple[int, int],
     ) -> None:
+        """Initialize a maze solver.
+
+        Args:
+            grid (list[list[int]]): Maze grid.
+            width (int): Grid width.
+            height (int): Grid height.
+            entry (tuple[int, int]): Entry position.
+            exit_ (tuple[int, int]): Exit position.
+        """
         self.grid = grid
         self.width = width
         self.height = height
@@ -47,8 +71,10 @@ class BaseSolver(ABC):
 
     @abstractmethod
     def solve(self) -> list[str]:
+        """Return a path from entry to exit."""
         ...
 
     @abstractmethod
     def solve_animated(self) -> Generator[list[str], None, None]:
+        """Yield solving steps for animation."""
         ...
