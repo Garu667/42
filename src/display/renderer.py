@@ -17,6 +17,10 @@ COLOR_42: list[int] = [
     0xFF004726,
     0xFF750000,
     0xFF2A1632,
+    0xFF0E2067,
+    0xFF753F00,
+    0xFF175E23,
+    0xFF733E0A,
 ]
 
 COLOR_PATH_START: int = 0xFF00BFFF
@@ -27,6 +31,10 @@ WALL_PALETTES: list[int] = [
     0xFF00FF88,
     0xFFFF6B6B,
     0xFF9B59B6,
+    0xFF6F88EB,
+    0xFFFF8904,
+    0xFF58D56D,
+    0xFF96520D,
 ]
 
 
