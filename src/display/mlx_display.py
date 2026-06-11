@@ -5,7 +5,7 @@ from pynput import keyboard
 from mazegen.maze import Maze, MazeState
 from mazegen.algo.base import BaseGenerator
 from mazegen.algo.a_star import A_Star
-from src.display.renderer import MlxRenderer, WALL_PALETTES, WALL_SIZE
+from src.display.renderer import MlxRenderer, WALL_PALETTES, WALL_SIZE, COLOR_42
 from src.display.input_handler import MlxInputHandler
 
 WIN_W: int = 1900
@@ -27,8 +27,9 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
         # État d'affichage
         self._show_path: bool = False
         self._solved: bool = False
-        self._wall_color_idx: int = 0
+        self._color_idx: int = 0
         self._wall_color: int = WALL_PALETTES[0]
+        self._42_color: int = COLOR_42[0]
         # Taille de cellule dynamique selon WIN_W/WIN_H
         cell_w = (WIN_W - WALL_SIZE) // maze.width
         cell_h = (WIN_H - WALL_SIZE) // maze.height

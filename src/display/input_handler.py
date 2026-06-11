@@ -9,8 +9,9 @@ class InputProtocol(Protocol):
     _pending_keys: set
     _show_path: bool
     _solved: bool
-    _wall_color_idx: int
+    _color_idx: int
     _wall_color: int
+    _42_color: int
     _maze: Maze
     _algo_class: type[BaseGenerator]
     _mlx: Any
@@ -39,10 +40,12 @@ class MlxInputHandler:
                 self._show_path = not self._show_path
             elif key == KeyCode.from_char('c'):
                 from src.display.renderer import WALL_PALETTES
-                self._wall_color_idx = (
-                    (self._wall_color_idx + 1) % len(WALL_PALETTES)
+                from src.display.renderer import COLOR_42
+                self._color_idx = (
+                    (self._color_idx + 1) % len(WALL_PALETTES)
                 )
-                self._wall_color = WALL_PALETTES[self._wall_color_idx]
+                self._wall_color = WALL_PALETTES[self._color_idx]
+                self._42_color = COLOR_42[self._color_idx]
 
     def _regenerate(self: InputProtocol) -> None:
         self._show_path = False

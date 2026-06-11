@@ -11,7 +11,14 @@ COLOR_BACKGROUND: int = 0xFF1A1A2E
 COLOR_WALL: int = 0xFFE0E0E0
 COLOR_ENTRY: int = 0xFF00FF88
 COLOR_EXIT: int = 0xFFFF4444
-COLOR_42: int = 0xFF444466
+COLOR_42: list[int] = [
+    0xFF444466,
+    0xFFFFF4B8,
+    0xFFB8FFDE,
+    0xFFFFB8B8,
+    0xFFE1CDE9,
+]
+
 COLOR_PATH_START: int = 0xFF00BFFF
 COLOR_PATH_END: int = 0xFFFF6B6B
 WALL_PALETTES: list[int] = [
@@ -31,6 +38,7 @@ class RendererProtocol(Protocol):
     _win_h: int
     _cell_size: int
     _wall_color: int
+    _42_color: int
     _show_path: bool
     _mlx: Any
     _mlx_ptr: Any
@@ -84,7 +92,7 @@ class MlxRenderer:
         entry = self._maze.entry
         exit_ = self._maze.exit
         if is_42:
-            cell_color = COLOR_42
+            cell_color = self._42_color
         elif (cx, cy) == entry:
             cell_color = COLOR_ENTRY
         elif (cx, cy) == exit_:
@@ -98,7 +106,7 @@ class MlxRenderer:
             self._cell_size - WALL_SIZE,
             cell_color,
         )
-        wall = self._wall_color if not is_42 else COLOR_42
+        wall = self._wall_color if not is_42 else self._42_color
         if cell_val & NORTH:
             self._fill_rect(  # type: ignore[attr-defined]
                 px,
