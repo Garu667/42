@@ -3,18 +3,22 @@ from typing import Any
 
 
 class MissingKeyError(Exception):
+    """Raised when a required key is missing."""
     pass
 
 
 class PositionError(Exception):
+    """Raised when a position is invalid."""
     pass
 
 
 class FileNameError(Exception):
+    """Raised when a file name is invalid."""
     pass
 
 
 class Parsing(BaseModel):
+    """Parse and validate maze configuration data."""
     width: int = Field(ge=3, le=200)
     height: int = Field(ge=3, le=200)
     entry: tuple[int, int]
@@ -26,6 +30,18 @@ class Parsing(BaseModel):
     @model_validator(mode='before')
     @classmethod
     def dict_validator(cls, data: dict[str, Any]) -> dict[str, Any]:
+        """Validate and convert raw configuration values.
+
+        Args:
+            data (dict[str, Any]): Configuration data read from the file.
+
+        Returns:
+            dict[str, Any]: Normalized configuration data.
+
+        Raises:
+            MissingKeyError: If a required key is missing.
+            ValueError: If a value is invalid or incorrectly formatted.
+        """
         keys = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT",
                 "SEED"]
         for key in keys:
@@ -60,6 +76,15 @@ class Parsing(BaseModel):
 
     @model_validator(mode='after')
     def config_validator(self) -> 'Parsing':
+        """Validate configuration consistency.
+
+        Returns:
+            Parsing: The validated model instance.
+
+        Raises:
+            PositionError: If entry or exit coordinates are invalid.
+            FileNameError: If the output file name is invalid.
+        """
         if self.entry[0] < 0 or self.entry[1] < 0:
             raise PositionError("Entry position coordinates must be "
                                 "non-negative")
