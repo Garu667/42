@@ -24,12 +24,7 @@ DELTA: dict[int, tuple[int, int]] = {
 
 
 class Prim(BaseGenerator):
-    """Générateur de labyrinthe par l'algorithme de Prim randomisé.
-
-    Hérite de :class:`BaseGenerator`.
-    ``run()`` est un générateur Python — il yield après chaque passage
-    creusé pour permettre l'animation frame-by-frame via ``tick()``.
-    """
+    """Generate a maze using the randomized Prim algorithm."""
 
     def _get_unvisited_neighbors(
         self,
@@ -37,10 +32,15 @@ class Prim(BaseGenerator):
         y: int,
         visited: Set[Tuple[int, int]],
     ) -> List[Tuple[int, int, int]]:
-        """Retourne les voisins non visités, non bloqués de ``(x, y)``.
+        """Return unvisited and non-blocked neighbors.
+
+        Args:
+            x (int): Cell x coordinate.
+            y (int): Cell y coordinate.
+            visited (Set[Tuple[int, int]]): Visited cells.
 
         Returns:
-            Liste de ``(nx, ny, direction)``.
+            List[Tuple[int, int, int]]: Neighbor coordinates and direction.
         """
         result = []
         for direction, (dx, dy) in DELTA.items():
@@ -60,10 +60,15 @@ class Prim(BaseGenerator):
         y: int,
         visited: Set[Tuple[int, int]],
     ) -> List[Tuple[int, int, int]]:
-        """Retourne les voisins déjà visités, non bloqués de ``(x, y)``.
+        """Return visited and non-blocked neighbors.
+
+        Args:
+            x (int): Cell x coordinate.
+            y (int): Cell y coordinate.
+            visited (Set[Tuple[int, int]]): Visited cells.
 
         Returns:
-            Liste de ``(nx, ny, direction)``.
+            List[Tuple[int, int, int]]: Neighbor coordinates and direction.
         """
         result = []
         for direction, (dx, dy) in DELTA.items():
@@ -85,27 +90,24 @@ class Prim(BaseGenerator):
         ny: int,
         direction: int,
     ) -> None:
-        """Ouvre le mur entre ``(x, y)`` et ``(nx, ny)``.
-
-        Met à jour les deux cellules pour garder la cohérence.
+        """Remove the wall between two adjacent cells.
 
         Args:
-            x, y:      Cellule source.
-            nx, ny:    Cellule voisine.
-            direction: Direction de la source vers le voisin.
+            x (int): Source cell x coordinate.
+            y (int): Source cell y coordinate.
+            nx (int): Neighbor x coordinate.
+            ny (int): Neighbor y coordinate.
+            direction (int): Direction to carve.
         """
         self.grid[y][x] &= ~direction
         self.grid[ny][nx] &= ~OPPOSITE[direction]
 
     def _carve_around(self, x: int, y: int) -> None:
-        """Propage l'état des murs de ``(x, y)`` vers ses voisins.
-
-        Pour chaque direction : si le mur est ouvert sur ``(x, y)``,
-        le mur opposé du voisin est aussi ouvert, et inversement.
-        Les voisins bloqués sont ignorés.
+        """Propagate wall state to neighboring cells.
 
         Args:
-            x, y: Cellule dont l'état est propagé.
+            x (int): Cell x coordinate.
+            y (int): Cell y coordinate.
         """
         for direction, (dx, dy) in DELTA.items():
             nx, ny = x + dx, y + dy
@@ -125,14 +127,15 @@ class Prim(BaseGenerator):
         cy: int,
         direction: int,
     ) -> bool:
-        """Retourne ``True`` si supprimer ce mur créerait une zone 3x3 ouverte.
+        """Check whether removing a wall creates an open 3x3 area.
 
         Args:
-            cx, cy:    Cellule source.
-            direction: Mur à supprimer.
+            cx (int): Source cell x coordinate.
+            cy (int): Source cell y coordinate.
+            direction (int): Wall direction.
 
         Returns:
-            ``True`` si l'opération est interdite.
+            bool: True if a 3x3 open area would be created.
         """
         dx, dy = DELTA[direction]
         nx, ny = cx + dx, cy + dy
@@ -159,7 +162,6 @@ class Prim(BaseGenerator):
 
             all_open = True
 
-            # Vérifier les murs Est intérieurs du bloc 3x3
             for r in range(by, by + 3):
                 for c in range(bx, bx + 2):
                     is_target = (
@@ -175,7 +177,6 @@ class Prim(BaseGenerator):
             if not all_open:
                 continue
 
-            # Vérifier les murs Sud intérieurs du bloc 3x3
             for r in range(by, by + 2):
                 for c in range(bx, bx + 3):
                     is_target = (
@@ -194,10 +195,7 @@ class Prim(BaseGenerator):
         return False
 
     def _make_imperfect(self) -> None:
-        """Brise ~20% des murs internes pour créer des boucles.
-
-        Respecte la contrainte : aucune zone 3x3 entièrement ouverte.
-        """
+        """Break additional walls to create loops in the maze."""
         all_cells = [
             (x, y)
             for y in range(self.height)
@@ -215,7 +213,6 @@ class Prim(BaseGenerator):
         total_walls = sum(
             count_walls(x, y) for x, y in all_cells
         )
-        # Soustraire les murs de bordure (non cassables)
         total_walls -= (self.height + self.width) * 2
         total_walls //= 2
         walls_to_break = max(1, int(total_walls * 0.2))
@@ -251,13 +248,11 @@ class Prim(BaseGenerator):
                 break
 
     def run(self) -> Generator[None, None, None]:
-        """Génère le labyrinthe étape par étape (yield après chaque carve).
+        """Generate the maze step by step.
 
         Yields:
-            ``None`` après chaque passage creusé — permet l'animation
-            frame-by-frame via ``Maze.tick()``.
+            None: One generation step for animation.
         """
-        # Choisir une cellule de départ aléatoire parmi les non-bloquées
         passable = [
             (x, y)
             for y in range(self.height)
@@ -268,7 +263,6 @@ class Prim(BaseGenerator):
 
         visited: Set[Tuple[int, int]] = {(start_x, start_y)}
 
-        # Frontier : (nx, ny, from_x, from_y, direction)
         frontier: List[Tuple[int, int, int, int, int]] = []
 
         for nx, ny, direction in self._get_unvisited_neighbors(
@@ -277,7 +271,6 @@ class Prim(BaseGenerator):
             frontier.append((nx, ny, start_x, start_y, direction))
 
         while frontier:
-            # Swap-with-last O(1)
             idx = self.rng.randrange(len(frontier))
             nx, ny, fx, fy, direction = frontier[idx]
             frontier[idx] = frontier[-1]
@@ -289,7 +282,7 @@ class Prim(BaseGenerator):
             self._carve_between(fx, fy, nx, ny, direction)
             visited.add((nx, ny))
 
-            yield  # ← animation : la MLX peut afficher ici
+            yield
 
             for nnx, nny, ndir in self._get_unvisited_neighbors(
                 nx, ny, visited
