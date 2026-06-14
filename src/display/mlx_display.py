@@ -57,7 +57,7 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
         self._img_data: Optional[bytearray] = None
         self._img_sl: int = 0
 
-        self._pending_keys: set = set()
+        self._pending_keys: set[object] = set()
         self._listener: Optional[keyboard.Listener] = None
 
     def run(self) -> None:

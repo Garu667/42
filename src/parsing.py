@@ -28,7 +28,6 @@ class Parsing(BaseModel):
     seed: int = Field(ge=0)
 
     @model_validator(mode='before')
-    @classmethod
     def dict_validator(cls, data: dict[str, Any]) -> dict[str, Any]:
         """Validate and convert raw configuration values.
 

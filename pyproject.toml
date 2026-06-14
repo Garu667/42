@@ -34,6 +34,10 @@ exclude = [
 	".git"
 ]
 
+[[tool.mypy.overrides]]
+module = ["mlx.*", "pynput.*"]
+ignore_missing_imports = true
+
 # https://github.com/microsoft/vscode-flake8/issues/135
 [tool.flake8]
 exclude= [ 

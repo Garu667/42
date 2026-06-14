@@ -7,7 +7,7 @@ from mazegen.algo.base import BaseGenerator
 
 class MlxInputHandler:
     """Handle keyboard input events for maze interaction."""
-    _pending_keys: set
+    _pending_keys: set[object]
     _show_path: bool
     _solved: bool
     _color_idx: int

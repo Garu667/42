@@ -16,7 +16,8 @@ def load_config(path: str) -> Parsing:
     Returns:
         Parsing: Validated configuration object.
     """
-    data = {}
+    data: dict[str, str] = {}
+
     with open(path) as f:
         for line in f:
             line = line.strip()
@@ -24,7 +25,7 @@ def load_config(path: str) -> Parsing:
                 continue
             key, _, value = line.partition('=')
             data[key.strip()] = value.strip()
-        return Parsing(**data)
+        return Parsing.model_validate(data)
 
 
 def main(ac: int, av: list[str]) -> None:
@@ -43,7 +44,6 @@ def main(ac: int, av: list[str]) -> None:
         return
     try:
         config = load_config(av[1])
-        config.config_validator()
     except MissingKeyError as e:
         print(f"Config incomplète : {e}")
         exit(1)
