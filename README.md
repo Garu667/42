@@ -1,4 +1,3 @@
-
 # A-Maze-ing
 
 *This project has been created as part of the 42 curriculum by hhamidi and ramaroud.*
@@ -16,15 +15,15 @@ The maze is exported to a file using a hexadecimal wall encoding and displayed g
 The maze always contains a visible **"42" pattern** formed by fully closed cells, and no fully open 3×3 area can be created.
 
 ---
-
-# Requirements
+# Instructions
+## Requirements
 
 * Python 3.10+
 * pip
 
 ---
 
-# Installation
+## Installation
 
 ```bash
 make install
@@ -32,7 +31,7 @@ make install
 
 ---
 
-# Run
+## Run
 
 ```bash
 make run
@@ -46,7 +45,7 @@ python3 a_maze_ing.py config.txt
 
 ---
 
-# Debug
+## Debug
 
 ```bash
 make debug
@@ -54,7 +53,7 @@ make debug
 
 ---
 
-# Lint
+## Lint
 
 ```bash
 make lint
@@ -68,7 +67,7 @@ make lint-strict
 
 ---
 
-# Clean
+## Clean
 
 ```bash
 make clean
