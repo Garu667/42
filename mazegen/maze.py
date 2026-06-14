@@ -191,8 +191,11 @@ class Maze:
             bool: True if generation continues, False if finished.
         """
         self._require_state(MazeState.GENERATING, "tick()")
+        it = self._iterator
+        if it is None:
+            raise RuntimeError("Iterator not initialized")
         try:
-            next(self._iterator)
+            next(it)
             return True
         except StopIteration:
             self._state = MazeState.GENERATED
@@ -338,7 +341,8 @@ class Maze:
             entry=self._entry,
             exit_=self._exit,
         )
-        self._solve_iterator: Optional[Generator] = instance.solve_animated()
+        self._solve_iterator: Generator[list[str], None, None] | None
+        self._solve_iterator = instance.solve_animated()
         self._solution = []
 
     def tick_solve(self) -> bool:
