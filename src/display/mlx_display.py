@@ -1,4 +1,5 @@
 from __future__ import annotations
+import signal
 from typing import Optional
 from mlx import Mlx
 from pynput import keyboard
@@ -70,6 +71,12 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
         if self._mlx is None:
             raise RuntimeError("MLX not initalized")
 
+        signal.signal(
+            signal.SIGINT,
+            lambda s,
+            f: (print("\nPress 'q' to leave the program"))
+        )
+
         self._mlx.mlx_loop_hook(
             self._mlx_ptr,
             self._on_frame,
@@ -83,14 +90,16 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
             self._on_close,
             self
         )
+        self._mlx.mlx_loop(self._mlx_ptr)
+        self._running = False
+        self._cleanup()
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-        try:
-            self._mlx.mlx_loop(self._mlx_ptr)
-        except KeyboardInterrupt:
-            pass
-        finally:
-            self._running = False
-            self._cleanup()
+    def _quit(self) -> None:
+        """Leave properly the MLX loop"""
+        self._running = False
+        if self._mlx is not None:
+            self._mlx.mlx_loop_exit(self._mlx_ptr)
 
     def _on_frame(self, app: MlxDisplay) -> None:
         """Main frame update loop."""
@@ -112,9 +121,7 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
                 app._maze.tick_solve()
             app._draw()
         except KeyboardInterrupt:
-            app._running = False
-            if app._mlx is not None:
-                app._mlx.mlx_loop_exit(app._mlx_ptr)
+            print("Press q to leave the program")
         except Exception:
             pass
 
