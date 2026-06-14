@@ -54,7 +54,7 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
         self._mlx_ptr = None
         self._win_ptr = None
         self._img_ptr = None
-        self._img_data = None
+        self._img_data: Optional[bytearray] = None
         self._img_sl: int = 0
 
         self._pending_keys: set = set()
@@ -64,6 +64,9 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
         """Start rendering loop and generate maze."""
         self._setup()
         self._maze.generate(self._algo_class)
+
+        if self._mlx is None:
+            raise RuntimeError("MLX not initalized")
 
         self._mlx.mlx_loop_hook(
             self._mlx_ptr,
@@ -105,7 +108,13 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
 
     def _on_close(self, app: MlxDisplay) -> None:
         """Handle window close event."""
-        app._mlx.mlx_loop_exit(app._mlx_ptr)
+        mlx = app._mlx
+        ptr = app._mlx_ptr
+
+        if mlx is None:
+            raise RuntimeError("MLX not initialized")
+
+        mlx.mlx_loop_exit(ptr)
 
     def _setup(self) -> None:
         """Initialize MLX context, window, image buffer, and input listener."""

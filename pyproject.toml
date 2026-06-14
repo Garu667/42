@@ -17,7 +17,6 @@ python = ">=3.10"
 pydantic = "*"
 flake8 = "*"
 pynput = "*"
-pytest = "*"
 mypy = "*"
 
 # https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
@@ -34,8 +33,6 @@ exclude = [
 	".venv",
 	".git"
 ]
-[[tool.mypy.overrides]]
-ignore_missing_imports = true
 
 # https://github.com/microsoft/vscode-flake8/issues/135
 [tool.flake8]

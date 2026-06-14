@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Protocol, runtime_checkable, Any
+from typing import Any, Optional
 from mazegen.maze import MazeState, Maze
 
 WALL_SIZE: int = 2
@@ -41,11 +41,9 @@ WALL_PALETTES: list[int] = [
 ]
 
 
-@runtime_checkable
-class RendererProtocol(Protocol):
-    """Protocol describing renderer attributes required by MlxRenderer."""
-
-    _img_data: bytearray
+class MlxRenderer:
+    """Handle maze rendering using MLX-like graphical backend."""
+    _img_data: Optional[bytearray]
     _img_sl: int
     _win_w: int
     _win_h: int
@@ -59,11 +57,7 @@ class RendererProtocol(Protocol):
     _img_ptr: Any
     _maze: Maze
 
-
-class MlxRenderer:
-    """Handle maze rendering using MLX-like graphical backend."""
-
-    def _draw(self: RendererProtocol) -> None:
+    def _draw(self) -> None:
         """Render full frame (background, maze, path, display)."""
         if self._img_data is None:
             return
@@ -78,14 +72,15 @@ class MlxRenderer:
             0, 0
         )
 
-    def _fill_background(self: RendererProtocol) -> None:
+    def _fill_background(self) -> None:
         """Fill the screen with background color."""
+        assert self._img_data is not None
         color_bytes = COLOR_BACKGROUND.to_bytes(4, 'little') * self._win_w
         for row in range(self._win_h):
             offset = row * self._img_sl
             self._img_data[offset:offset + self._win_w * 4] = color_bytes
 
-    def _draw_cells(self: RendererProtocol) -> None:
+    def _draw_cells(self) -> None:
         """Draw all maze cells."""
         grid = self._maze.grid
         forty_two = self._maze.forty_two_cells
@@ -99,7 +94,7 @@ class MlxRenderer:
                 )
 
     def _draw_cell(
-        self: RendererProtocol,
+        self,
         cx: int,
         cy: int,
         cell_val: int,
@@ -151,7 +146,7 @@ class MlxRenderer:
                 wall
             )
 
-    def _draw_path(self: RendererProtocol) -> None:
+    def _draw_path(self) -> None:
         """Render computed solution path with gradient effect."""
         try:
             path = self._maze.solution
@@ -201,7 +196,7 @@ class MlxRenderer:
                 color,
             )
 
-    def _lerp_color(self: RendererProtocol, c1: int, c2: int, t: float) -> int:
+    def _lerp_color(self, c1: int, c2: int, t: float) -> int:
         """Interpolate between two colors."""
         r1, g1, b1 = (c1 >> 16) & 0xFF, (c1 >> 8) & 0xFF, c1 & 0xFF
         r2, g2, b2 = (c2 >> 16) & 0xFF, (c2 >> 8) & 0xFF, c2 & 0xFF
@@ -211,7 +206,7 @@ class MlxRenderer:
         return 0xFF000000 | (r << 16) | (g << 8) | b
 
     def _fill_rect(
-        self: RendererProtocol,
+        self,
         x: int,
         y: int,
         w: int,
@@ -219,6 +214,7 @@ class MlxRenderer:
         color: int
     ) -> None:
         """Fill a rectangle area with a color."""
+        assert self._img_data is not None
         if w <= 0 or h <= 0:
             return
         x1 = max(x, 0)
@@ -233,8 +229,9 @@ class MlxRenderer:
             offset = row * self._img_sl + x1 * 4
             self._img_data[offset:offset + row_len] = color_bytes
 
-    def _put_pixel(self: RendererProtocol, x: int, y: int, color: int) -> None:
+    def _put_pixel(self, x: int, y: int, color: int) -> None:
         """Draw a single pixel."""
+        assert self._img_data is not None
         if 0 <= x < self._win_w and 0 <= y < self._win_h:
             offset = y * self._img_sl + x * 4
             self._img_data[offset:offset + 4] = color.to_bytes(4, 'little')

@@ -1,13 +1,12 @@
 from __future__ import annotations
-from typing import Protocol, Any
+from typing import Any
 from pynput.keyboard import Key, KeyCode
 from mazegen.maze import MazeState, Maze
 from mazegen.algo.base import BaseGenerator
 
 
-class InputProtocol(Protocol):
-    """Protocol defining attributes required by input handler."""
-
+class MlxInputHandler:
+    """Handle keyboard input events for maze interaction."""
     _pending_keys: set
     _show_path: bool
     _solved: bool
@@ -19,15 +18,11 @@ class InputProtocol(Protocol):
     _mlx: Any
     _mlx_ptr: Any
 
-
-class MlxInputHandler:
-    """Handle keyboard input events for maze interaction."""
-
-    def _on_key(self: InputProtocol, key: object) -> None:
+    def _on_key(self, key: object) -> None:
         """Store pressed key for later processing."""
         self._pending_keys.add(key)
 
-    def _process_keys(self: InputProtocol) -> None:
+    def _process_keys(self) -> None:
         """Process queued keyboard inputs."""
         keys = self._pending_keys.copy()
         self._pending_keys.clear()
@@ -54,7 +49,7 @@ class MlxInputHandler:
                 self._wall_color = WALL_PALETTES[self._color_idx]
                 self._42_color = COLOR_42[self._color_idx]
 
-    def _regenerate(self: InputProtocol) -> None:
+    def _regenerate(self) -> None:
         """Reset and regenerate the maze."""
         self._show_path = False
         self._solved = False
@@ -66,7 +61,7 @@ class MlxInputHandler:
         except RuntimeError as e:
             print(f"[Warning] Regeneration skipped: {e}")
 
-    def _skip_animation(self: InputProtocol) -> None:
+    def _skip_animation(self) -> None:
         """Skip generation or solving animation."""
         if self._maze.state == MazeState.GENERATING:
             self._maze.run_all()
