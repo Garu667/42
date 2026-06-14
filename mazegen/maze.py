@@ -125,7 +125,8 @@ class Maze:
     def solution(self) -> list[str]:
         """Return computed solution path."""
         if not self._solution:
-            raise RuntimeError("Call solve() before accessing to the solution.")
+            raise RuntimeError(
+                "Call solve() before accessing to the solution.")
         return list(self._solution)
 
     @property
@@ -354,4 +355,3 @@ class Maze:
         except StopIteration:
             self._solve_iterator = None
             return False
- 

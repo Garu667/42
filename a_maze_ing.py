@@ -24,7 +24,7 @@ def load_config(path: str) -> Parsing:
                 continue
             key, _, value = line.partition('=')
             data[key.strip()] = value.strip()
-    return Parsing(**data)
+        return Parsing(**data)
 
 
 def main(ac: int, av: list[str]) -> None:

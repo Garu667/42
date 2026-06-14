@@ -5,7 +5,10 @@ from pynput import keyboard
 from mazegen.maze import Maze, MazeState
 from mazegen.algo.base import BaseGenerator
 from mazegen.algo.a_star import A_Star
-from src.display.renderer import MlxRenderer, WALL_PALETTES, WALL_SIZE, COLOR_42
+from src.display.renderer import (MlxRenderer,
+                                  WALL_PALETTES,
+                                  WALL_SIZE,
+                                  COLOR_42)
 from src.display.input_handler import MlxInputHandler
 
 WIN_W: int = 1900
