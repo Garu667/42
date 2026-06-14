@@ -1,3 +1,4 @@
+
 # A-Maze-ing
 
 *This project has been created as part of the 42 curriculum by hhamidi and ramaroud.*
@@ -264,7 +265,61 @@ mazegen/
 ```
 
 ---
+# Reusable module — mazegen
 
+The maze generation logic is encapsulated in the Maze class and the mazegen package.
+It can be used as a standalone library to generate and solve mazes programmatically, independently from the MLX graphical interface.
+
+## Installation
+```
+pip install mazegen-1.0.0-py3-none-any.whl
+```
+## Basic usage
+```python
+from mazegen.maze import Maze, MazeState
+from mazegen.algo.prim import Prim
+from mazegen.algo.a_star import A_Star
+
+maze = Maze(20, 15, (0, 0), (19, 14), seed=42)
+
+maze.initialize()
+maze.generate(Prim)
+maze.run_all()
+maze.solve(A_Star)
+
+print("State:", maze.state)
+print("Solution length:", len(maze.solution))
+print("First 5 steps:", maze.solution[:5])
+print("OK - mazegen works standalone")
+```
+## Advanced usage
+
+You can use different configurations:
+```python
+maze = Maze(30, 30, (0, 0), (29, 29), seed=123, perfect=False)
+
+maze.initialize()
+maze.generate(Prim)
+maze.run_all()
+maze.solve(A_Star)
+```
+## Package build
+To build the package:
+```
+pip install build
+python3 -m build
+```
+This generates:
+```
+dist/mazegen-1.0.0-py3-none-any.whl
+```
+## Notes
+Maze is fully independent from the MLX renderer.
+You can plug any generator inheriting from BaseGenerator.
+You can plug any solver inheriting from BaseSolver.
+The API supports step-by-step generation (tick) or full generation (run_all).
+
+---
 # Bonus Features
 - Deterministic generation using seeds.
 - Animated maze generation.
@@ -344,5 +399,3 @@ Claude and ChatGPT were used for:
 * Assisting with README drafting.
 
 All design decisions, implementation, debugging, testing and final validation were performed by the project authors.
-
-
