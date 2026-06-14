@@ -19,8 +19,8 @@ class FileNameError(Exception):
 
 class Parsing(BaseModel):
     """Parse and validate maze configuration data."""
-    width: int = Field(ge=3, le=200)
-    height: int = Field(ge=3, le=200)
+    width: int = Field(ge=3, le=100)
+    height: int = Field(ge=3, le=100)
     entry: tuple[int, int]
     exit: tuple[int, int]
     output_file: str = Field(min_length=5, max_length=50)
