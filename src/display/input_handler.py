@@ -34,6 +34,7 @@ class MlxInputHandler:
             seen.add(key)
 
             if key == Key.esc or key == KeyCode.from_char('q'):
+                self._running = False
                 self._mlx.mlx_loop_exit(self._mlx_ptr)
             elif key == KeyCode.from_char('s'):
                 self._skip_animation()
@@ -44,7 +45,6 @@ class MlxInputHandler:
             elif key == KeyCode.from_char('c'):
                 from src.display.renderer import WALL_PALETTES
                 from src.display.renderer import COLOR_42
-
                 self._color_idx = (self._color_idx + 1) % len(WALL_PALETTES)
                 self._wall_color = WALL_PALETTES[self._color_idx]
                 self._42_color = COLOR_42[self._color_idx]

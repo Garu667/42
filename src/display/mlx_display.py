@@ -36,6 +36,7 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
         self._maze = maze
         self._algo_class = algo_class
         self._title = title
+        self._running: bool = False
 
         self._show_path: bool = False
         self._solved: bool = False
@@ -63,6 +64,7 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
     def run(self) -> None:
         """Start rendering loop and generate maze."""
         self._setup()
+        self._running = True
         self._maze.generate(self._algo_class)
 
         if self._mlx is None:
@@ -82,29 +84,39 @@ class MlxDisplay(MlxRenderer, MlxInputHandler):
             self
         )
 
-        self._mlx.mlx_loop(self._mlx_ptr)
-        self._cleanup()
+        try:
+            self._mlx.mlx_loop(self._mlx_ptr)
+        except KeyboardInterrupt:
+            pass
+        finally:
+            self._running = False
+            self._cleanup()
 
     def _on_frame(self, app: MlxDisplay) -> None:
         """Main frame update loop."""
-        app._process_keys()
-
-        if app._maze.state == MazeState.GENERATING:
-            for _ in range(10):
-                if not app._maze.tick():
-                    break
-
-        if app._maze.state == MazeState.GENERATED and not app._solved:
-            try:
-                app._maze.solve_animated(A_Star)
-                app._solved = True
-            except ValueError:
-                app._solved = True
-
-        if app._solved and app._show_path:
-            app._maze.tick_solve()
-
-        app._draw()
+        if not app._running:
+            return
+        try:
+            app._process_keys()
+            if app._maze.state == MazeState.GENERATING:
+                for _ in range(10):
+                    if not app._maze.tick():
+                        break
+            if app._maze.state == MazeState.GENERATED and not app._solved:
+                try:
+                    app._maze.solve_animated(A_Star)
+                    app._solved = True
+                except ValueError:
+                    app._solved = True
+            if app._solved and app._show_path:
+                app._maze.tick_solve()
+            app._draw()
+        except KeyboardInterrupt:
+            app._running = False
+            if app._mlx is not None:
+                app._mlx.mlx_loop_exit(app._mlx_ptr)
+        except Exception:
+            pass
 
     def _on_close(self, app: MlxDisplay) -> None:
         """Handle window close event."""
