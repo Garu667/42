@@ -1,0 +1,48 @@
+## Cheatsheet uv
+
+### Gestion de projet
+| Commande | Effet |
+|---|---|
+| `uv init` | Initialise un projet dans le dossier courant |
+| `uv add <pkg>` | Ajoute une dépendance de prod |
+| `uv add --dev <pkg>` | Ajoute une dépendance dans le groupe `dev` |
+| `uv add --group <nom> <pkg>` | Ajoute à un groupe custom (ex: `lint`, `test`) |
+| `uv remove <pkg>` | Retire une dépendance (ajoute `--dev`/`--group` si besoin) |
+| `uv lock` | Régénère `uv.lock` sans toucher au venv |
+| `uv sync` | Installe deps + groupe `dev` (groupe dev inclus par défaut) |
+| `uv sync --no-dev` | Installe sans le groupe `dev` |
+| `uv sync --only-group <nom>` | N'installe QUE ce groupe (utile en CI) |
+| `uv sync --all-groups` | Installe tous les groupes définis |
+
+### Exécution
+| Commande | Effet |
+|---|---|
+| `uv run <cmd>` | Exécute dans l'environnement du projet (sync auto si besoin) |
+| `uv run python fichier.py` | Lance un script |
+| `uv run -m pdb fichier.py` | Lance avec un module (ex: debugger) |
+
+### Versions Python
+| Commande | Effet |
+|---|---|
+| `uv python install 3.12` | Installe une version de Python |
+| `uv python list` | Liste les versions installées/disponibles |
+| `uv python pin 3.12` | Fixe la version pour ce projet (`.python-version`) |
+
+### Outils ponctuels (remplace pipx)
+| Commande | Effet |
+|---|---|
+| `uvx <outil>` | Lance un outil dans un env jetable (ex: `uvx ruff check .`) |
+| `uv tool install <outil>` | Installe un outil de façon persistante et globale |
+| `uv tool list` | Liste les outils installés |
+
+### Mode compatible pip
+| Commande | Effet |
+|---|---|
+| `uv pip install <pkg>` | Installe façon pip classique (hors gestion projet) |
+| `uv pip freeze` | Liste les paquets installés |
+
+### Divers
+| Commande | Effet |
+|---|---|
+| `uv self update` | Met à jour uv lui-même |
+| `uv cache clean` | Vide le cache uv |
