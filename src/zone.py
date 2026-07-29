@@ -37,3 +37,35 @@ class Zone:
         self.is_start = is_start
         self.is_end = is_end
         self._max_drones = max_drones
+
+    @property
+    def capacity(self) -> int | None:
+        if self.is_start or self.is_end:
+            return None
+        return self._max_drones
+
+    @property
+    def movement_cost(self) -> int:
+        """Number of turns required to enter a zone"""
+        return self.zone_type.movement_cost
+
+    def is_passable(self) -> bool:
+        """Whether a drone can pass"""
+        return self.zone_type.is_passable
+
+    def has_room_for(self, occupant_count: int) -> bool:
+        """ x """
+        if self.capacity is None:
+            return True
+        return occupant_count <= self.capacity
+
+    def __repr__(self) -> str:
+        return f"Zone({self.name!r}, type={self.zone_type.value})"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Zone):
+            return NotImplemented
+        return self.name == other.name
+
+    def __hash__(self) -> int:
+        return hash(self.name)
