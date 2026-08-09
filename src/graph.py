@@ -5,7 +5,7 @@ from src.zone import Zone
 class Graph:
     """Graph of zones and connections
 
-    Zones are indexed by name; connections are kept in an
+    Zones are indexed by name, connections are kept in an
     adjacency map so neighbor don't scan every connection
     """
 
