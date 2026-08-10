@@ -1,33 +1,37 @@
-from src.zone import Zone, ZoneType
-from src.connection import Connection
-from src.graph import Graph
+import sys
+from src.parsing import Parser
 
-def test_graph() -> Graph:
-    graph = Graph()
-    start = Zone("hub", 0, 0, is_start=True)
-    end = Zone("goal", 10, 10, is_end=True)
-    roof1 = Zone("roof1", 3, 4, zone_type=ZoneType.RESTRICTED)
-    roof2 = Zone("roof2", 6, 2, zone_type=ZoneType.NORMAL)
-    corridor = Zone("corridor", 4, 3, zone_type=ZoneType.PRIORITY, max_drones=4)
-    tunnel = Zone("tunnel", 7, 4, zone_type=ZoneType.NORMAL)
-    obstacle = Zone("obstacle", 5, 5, zone_type=ZoneType.BLOCKED)
+def test() -> None:
+    if len(sys.argv) != 2:
+        print("file")
+        sys.exit(1)
+    path = sys.argv[1]
+    graph, nb_drones = Parser().parse(path)
+    print(f"nb_drones = {nb_drones}")
+    print(f"zones     = {len(graph)}")
+    print(f"start     = {graph.start!r}")
+    print(f"end       = {graph.end!r}")
+    print("\nzones:")
+    for zone in graph.zones:
+        print(
+            f"  {zone.name:<15} ({zone.x:>3},{zone.y:>3})  "
+            f"type={zone.zone_type.value:<10} "
+            f"capacity={zone.capacity}"
+        )
+    print("\nconnections:")
+    seen = set()
+    for zone in graph.zones:
+        for neighbor, connection in graph.neighbors(zone):
+            if connection.name in seen:
+                continue
+            seen.add(connection.name)
+            print(
+                f"  {connection.name:<25} cap={connection.max_link_capacity}"
+            )
 
-    for zone in (start, end, roof1, roof2, corridor, tunnel, obstacle):
-        graph.add_zone(zone)
-    graph.add_connection(Connection(start, roof1))
-    graph.add_connection(Connection(roof1, roof2))
-    graph.add_connection(Connection(roof2, end))
-    graph.add_connection(Connection(start, corridor))
-    graph.add_connection(Connection(corridor, tunnel, max_link_capacity=4))
-    graph.add_connection(Connection(tunnel, end))
-
-    return graph
 
 def main() -> None:
-    graph = test_graph()
-    corridor = graph.get_zone("corridor")
-    print(f"{corridor} --- {corridor.capacity}")
-
+    test()
 
 if __name__ == "__main__":
     try:
