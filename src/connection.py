@@ -2,13 +2,7 @@ from src.zone import Zone
 
 
 class Connection:
-    """A bidirectional link between two zones
-
-    Args:
-        zone_a: First endpoint
-        zone_b: Second endpoint
-        max_link_capacity: Max drones able to traverse simultaneously
-    """
+    """A bidirectional link between two zones."""
 
     def __init__(
         self,
@@ -22,15 +16,11 @@ class Connection:
 
     @property
     def name(self) -> str:
-        """Name matching the simulation output format"""
+        """Name in the simulation output format, e.g. 'roof1-roof2'."""
         return f"{self.zone_a.name}-{self.zone_b.name}"
 
     def other_end(self, zone: Zone) -> Zone:
-        """Return the endpoint opposite to `zone`
-
-        Raises:
-            ValueError: If `zone` isn't an endpoint of this connection.
-        """
+        """Return the endpoint opposite to `zone`, else raise ValueError."""
         if zone == self.zone_a:
             return self.zone_b
         if zone == self.zone_b:
@@ -38,11 +28,11 @@ class Connection:
         raise ValueError(f"{zone.name!r} not on {self.name!r}")
 
     def connects(self, zone: Zone) -> bool:
-        """ x """
+        """Whether `zone` is one of the two endpoints."""
         return zone == self.zone_a or zone == self.zone_b
 
     def has_room_for(self, in_transit_count: int) -> bool:
-        """ x """
+        """Whether `in_transit_count` drones fit on this link."""
         return in_transit_count <= self.max_link_capacity
 
     def __repr__(self) -> str:

@@ -4,6 +4,8 @@ from src.zone import Zone, ZoneType
 
 
 class ParseError(Exception):
+    """Raised when a map file does not follow the expected format."""
+
     def __init__(self, line_number: int, message: str) -> None:
         self.line_number = line_number
         self.message = message
@@ -11,10 +13,9 @@ class ParseError(Exception):
 
 
 class Parser:
-    """
-    Reads a network description file and builds a Graph.
+    """Reads a network description file and builds a Graph.
 
-    Comments "#" and empty line are ignored
+    Comments "#" and empty lines are ignored.
     """
 
     def __init__(self) -> None:
@@ -22,14 +23,9 @@ class Parser:
         self._nb_drones: int | None = None
 
     def parse(self, path: str) -> tuple[Graph, int]:
-        """Parse a map file into a Graph
-
-        Raises:
-            ParseError: When the format is wrong
-        """
+        """Parse a map file into a Graph, raising ParseError if malformed."""
         self._graph = Graph()
         self._nb_drones = None
-
         with open(path, encoding="utf-8") as handle:
             for line_number, raw_line in enumerate(handle, start=1):
                 self._parse_line(line_number, raw_line)

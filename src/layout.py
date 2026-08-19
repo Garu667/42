@@ -23,7 +23,7 @@ class Layout:
         self._top_offset = top_offset
 
     def position(self, zone: Zone) -> tuple[int, int]:
-        """Pixel position for a zone's center."""
+        """Pixel position of a zone's center."""
         span_x = max(self._max_x - self._min_x, 1)
         span_y = max(self._max_y - self._min_y, 1)
         usable_w = self._width - 2 * self._margin

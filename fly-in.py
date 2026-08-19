@@ -1,10 +1,10 @@
-import sys
 import argparse
 
 from src.parsing import Parser
 from src.scheduler import Scheduler
 from src.terminal_display import TerminalDisplay
 from src.visualizer import Visualizer
+
 
 def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
@@ -13,11 +13,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("map_file", help="Path to a map description file")
     parser.add_argument(
-        "-g", "--gui",
+        "-n", "--no-gui",
         action="store_true",
-        help="Also open the pygame graphical replay window",
+        help="Disable the pygame graphical replay window",
     )
     return parser.parse_args()
+
 
 def main() -> None:
     args = parse_args()
@@ -28,8 +29,9 @@ def main() -> None:
     for i, tokens in enumerate(turns, start=1):
         display.show_turn(i, tokens)
     display.show_summary(total_turns=len(turns), nb_drones=nb_drones)
-    if args.gui:
+    if not args.no_gui:
         Visualizer(graph, turns, nb_drones).run()
+
 
 if __name__ == "__main__":
     try:

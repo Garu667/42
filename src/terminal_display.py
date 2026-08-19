@@ -18,8 +18,8 @@ ZONE_TYPE_STYLE = {
 class TerminalDisplay:
     """Prints the required per-turn output, colored per zone.
 
-    Uses the map's `color=` value when it's a valid rich color,
-    falling back to a color keyed on zone type otherwise.
+    Uses the map's `color=` value when it is a valid rich color, and
+    falls back to a color keyed on zone type otherwise.
     """
 
     def __init__(self, graph: Graph, console: Console | None = None) -> None:
@@ -46,7 +46,6 @@ class TerminalDisplay:
         self._console.print(line)
 
     def _style_for_token(self, token: str) -> str:
-        """Style for a `D<ID>-<target>` token, keyed on its destination."""
         _, _, target = token.partition("-")
         try:
             zone = self._graph.get_zone(target)
@@ -55,7 +54,6 @@ class TerminalDisplay:
         return self._zone_style(zone)
 
     def _zone_style(self, zone: Zone) -> str:
-        """Zone's declared color if valid, else a color for its type."""
         if zone.color and self._is_valid_color(zone.color):
             return zone.color
         if zone.is_end:
@@ -64,7 +62,6 @@ class TerminalDisplay:
 
     @staticmethod
     def _is_valid_color(value: str) -> bool:
-        """Whether rich can render `value` as a style/color."""
         try:
             Style.parse(value)
         except StyleSyntaxError:

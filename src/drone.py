@@ -33,7 +33,7 @@ class Drone:
 
     @property
     def next_zone(self) -> Zone | None:
-        """The next zone on the path, or None if already at the end."""
+        """The next zone on the path, None if already at the end."""
         if self.path_index + 1 >= len(self.path):
             return None
         return self.path[self.path_index + 1]

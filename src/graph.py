@@ -3,11 +3,7 @@ from src.zone import Zone
 
 
 class Graph:
-    """Graph of zones and connections
-
-    Zones are indexed by name, connections are kept in an
-    adjacency map so neighbor don't scan every connection
-    """
+    """Zones indexed by name, with an adjacency map of connections."""
 
     def __init__(self) -> None:
         self._zones: dict[str, Zone] = {}
@@ -16,11 +12,7 @@ class Graph:
         self._end: Zone | None = None
 
     def add_zone(self, zone: Zone) -> None:
-        """Register a zone
-
-        Raises:
-            ValueError: On duplicate name, or a second start/end hub
-        """
+        """Register a zone, raising ValueError on duplicates."""
         if zone.name in self._zones:
             raise ValueError(f"duplicate zone name: {zone.name!r}")
         if zone.is_start:
@@ -35,11 +27,7 @@ class Graph:
         self._adjacency[zone.name] = []
 
     def add_connection(self, connection: Connection) -> None:
-        """Register a bidirectional connection between zones
-
-        Raises:
-            ValueError: On unknown endpoint or duplicate connection
-        """
+        """Register a connection, raising ValueError if invalid."""
         for zone in (connection.zone_a, connection.zone_b):
             if zone.name not in self._zones:
                 raise ValueError(f"unknown zone: {zone.name!r}")
@@ -49,20 +37,20 @@ class Graph:
         self._adjacency[connection.zone_b.name].append(connection)
 
     def get_zone(self, name: str) -> Zone:
-        """Look up a zone by name (raises KeyError if unknown)"""
+        """Look up a zone by name, raising KeyError if unknown."""
         return self._zones[name]
 
     def get_connection(
         self, zone_a: Zone, zone_b: Zone
     ) -> Connection | None:
-        """Return the connection between two zones if there is one"""
+        """Return the connection between two zones, None if absent."""
         for connection in self._adjacency.get(zone_a.name, []):
             if connection.connects(zone_b):
                 return connection
         return None
 
     def neighbors(self, zone: Zone) -> list[tuple[Zone, Connection]]:
-        """Return reachable neighbors of `zone`"""
+        """Return the neighbors of `zone` with their connection."""
         return [
             (connection.other_end(zone), connection)
             for connection in self._adjacency.get(zone.name, [])
@@ -70,21 +58,21 @@ class Graph:
 
     @property
     def start(self) -> Zone:
-        """The unique start hub (raises ValueError if unset)"""
+        """The unique start hub, raising ValueError if unset."""
         if self._start is None:
             raise ValueError("no start hub defined")
         return self._start
 
     @property
     def end(self) -> Zone:
-        """The unique end hub (raises ValueError if unset)"""
+        """The unique end hub, raising ValueError if unset."""
         if self._end is None:
             raise ValueError("no end hub defined")
         return self._end
 
     @property
     def zones(self) -> list[Zone]:
-        """All registered zones"""
+        """All registered zones."""
         return list(self._zones.values())
 
     def __len__(self) -> int:

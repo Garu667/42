@@ -14,11 +14,9 @@ class SchedulingError(Exception):
 class Scheduler:
     """Plans and simulates the movement of all drones through a Graph.
 
-    Every drone follows the same precomputed shortest path. Conflicts
-    over zone and connection capacity are resolved turn by turn in
-    drone-id priority order. Restricted-zone transits reserve their
-    destination one turn ahead, since a drone cannot wait mid-transit
-    once committed.
+    Every drone follows the same precomputed shortest path. Capacity
+    conflicts are resolved turn by turn in drone-id order, and a
+    restricted-zone transit books its destination one turn ahead.
     """
 
     def __init__(self, graph: Graph, nb_drones: int) -> None:
@@ -38,11 +36,8 @@ class Scheduler:
         return [Drone(i, path) for i in range(1, nb_drones + 1)]
 
     def run(self) -> list[list[str]]:
-        """Simulate until every drone has arrived.
-
-        Returns:
-            One list of move tokens (e.g. 'D1-roof1') per turn that
-            had at least one move, in the required output format.
+        """Simulate until every drone has arrived, returning one list
+        of move tokens, e.g. ['D1-roof1'], per non-empty turn.
         """
         turns: list[list[str]] = []
         turn = 0

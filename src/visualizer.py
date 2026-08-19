@@ -27,7 +27,7 @@ DRONE_COLORS = [
 class Visualizer:
     """Renders the network and steps through a simulation's turns.
 
-    Controls: SPACE / right arrow = next turn, left arrow = previous
+    Controls: SPACE or right arrow = next turn, left arrow = previous
     turn, A = toggle autoplay, ESC or window close = quit.
     """
 
@@ -44,19 +44,17 @@ class Visualizer:
         self._screen = pygame.display.set_mode((width, height))
         self._clock = pygame.time.Clock()
         self._font = pygame.font.SysFont("consolas", 18)
-
         self._graph = graph
         self._replay = Replay(graph, turns, nb_drones)
         self._nb_drones = nb_drones
         self._layout = Layout(graph, width, height, top_offset=90)
-
         self._turn_index = 0
         self._autoplay = False
         self._autoplay_interval_ms = 500
         self._time_since_advance = 0
 
     def run(self) -> None:
-        """Main event/render loop until the user closes the window."""
+        """Main event and render loop until the user closes the window."""
         running = True
         while running:
             dt = self._clock.tick(60)

@@ -5,29 +5,23 @@ from src.zone import Zone, ZoneType
 
 
 class Pathfinder:
-    """Computes weighted shortest paths through a Graph.
-
-    Ties are broken in favor of paths crossing more `priority` zones,
-    per the subject's requirement that such zones be favored.
-    """
+    """Computes weighted shortest paths, favoring priority zones."""
 
     def __init__(self, graph: Graph) -> None:
         self._graph = graph
 
     def shortest_path(self, start: Zone, end: Zone) -> list[Zone] | None:
-        """Return the cheapest path from `start` to `end`, or None."""
+        """Return the cheapest path from `start` to `end`, None if absent."""
         counter = 0
         best: dict[str, tuple[int, int]] = {start.name: (0, 0)}
         came_from: dict[str, Zone] = {}
         heap: list[tuple[int, int, int, str]] = [(0, 0, counter, start.name)]
-
         while heap:
             cost, neg_priority, _, name = heapq.heappop(heap)
             if (cost, neg_priority) != best.get(name):
-                continue  # stale heap entry
+                continue
             if name == end.name:
                 return self._reconstruct(came_from, start, end)
-
             zone = self._graph.get_zone(name)
             for neighbor, _connection in self._graph.neighbors(zone):
                 if not neighbor.is_passable():
@@ -42,7 +36,6 @@ class Pathfinder:
                     heapq.heappush(
                         heap, (new_key[0], new_key[1], counter, neighbor.name)
                     )
-
         return None
 
     @staticmethod
