@@ -1,5 +1,3 @@
-"""Colored terminal rendering of the simulation using rich."""
-
 from rich.console import Console
 from rich.errors import StyleSyntaxError
 from rich.style import Style
