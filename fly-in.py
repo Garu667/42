@@ -3,6 +3,7 @@ import argparse
 
 from src.parsing import Parser
 from src.scheduler import Scheduler
+from src.terminal_display import TerminalDisplay
 
 def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
@@ -19,8 +20,13 @@ def parse_args() -> argparse.Namespace:
 
 def test() -> None:
     args = parse_args()
-
     graph, nb_drones = Parser().parse(args.map_file)
+    turns = Scheduler(graph, nb_drones).run()
+    display = TerminalDisplay(graph)
+    display.show_legend()
+    for i, tokens in enumerate(turns, start=1):
+        display.show_turn(i, tokens)
+    display.show_summary(total_turns=len(turns), nb_drones=nb_drones)
     if args.gui:
         print("Not yet")
 
