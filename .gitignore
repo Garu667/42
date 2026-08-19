@@ -13,3 +13,6 @@ wheels/
 maps
 maps/*
 maps.tar.gz
+
+# uv
+uv.lock
