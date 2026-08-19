@@ -60,17 +60,14 @@ class Scheduler:
     def _simulate_turn(self, turn: int) -> list[str]:
         moves: list[str] = []
         ordered = sorted(self._drones, key=lambda d: d.drone_id)
-
         for drone in ordered:
             token = self._complete_transit_if_due(drone, turn)
             if token is not None:
                 moves.append(token)
-
         for drone in ordered:
             token = self._attempt_departure(drone, turn)
             if token is not None:
                 moves.append(token)
-
         return moves
 
     def _complete_transit_if_due(self, drone: Drone, turn: int) -> str | None:
@@ -94,12 +91,10 @@ class Scheduler:
         if next_zone is None:
             drone.status = DroneStatus.ARRIVED
             return None
-
         connection = self._graph.get_connection(
             drone.current_zone, next_zone
         )
         assert connection is not None
-
         if next_zone.zone_type is ZoneType.RESTRICTED:
             return self._try_restricted_departure(
                 drone, connection, next_zone, turn
@@ -117,7 +112,6 @@ class Scheduler:
             return None
         if not self._zone_room_now(next_zone):
             return None
-
         self._occupancy[drone.current_zone.name].discard(drone.drone_id)
         self._occupancy.setdefault(next_zone.name, set()).add(
             drone.drone_id
@@ -144,7 +138,6 @@ class Scheduler:
             return None
         if not self._zone_room_future(next_zone, arrival_turn):
             return None
-
         self._occupancy[drone.current_zone.name].discard(drone.drone_id)
         self._use_connection(connection, turn)
         self._use_connection(connection, arrival_turn)

@@ -33,12 +33,10 @@ class Parser:
         with open(path, encoding="utf-8") as handle:
             for line_number, raw_line in enumerate(handle, start=1):
                 self._parse_line(line_number, raw_line)
-
         if self._nb_drones is None:
             raise ParseError(0, "missing 'nb_drones:' declaration")
         if not self._has_start_and_end():
             raise ParseError(0, "missing start_hub or end_hub")
-
         return self._graph, self._nb_drones
 
     def _has_start_and_end(self) -> bool:
@@ -93,17 +91,14 @@ class Parser:
             )
         name, x_str, y_str = tokens
         self._validate_name(line_number, name)
-
         zone_type = ZoneType.NORMAL
         if "zone" in metadata:
             zone_type = self._parse_zone_type(line_number, metadata["zone"])
-
         max_drones = 1
         if "max_drones" in metadata and not (is_start or is_end):
             max_drones = self._parse_positive_int(
                 line_number, "max_drones", metadata["max_drones"]
             )
-
         zone = Zone(
             name=name,
             x=self._parse_int(line_number, "x", x_str),
@@ -129,7 +124,6 @@ class Parser:
         name_a, _, name_b = fields.partition("-")
         zone_a = self._resolve_zone(line_number, name_a)
         zone_b = self._resolve_zone(line_number, name_b)
-
         capacity = 1
         if "max_link_capacity" in metadata:
             capacity = self._parse_positive_int(
@@ -137,7 +131,6 @@ class Parser:
                 "max_link_capacity",
                 metadata["max_link_capacity"],
             )
-
         connection = Connection(zone_a, zone_b, max_link_capacity=capacity)
         try:
             self._graph.add_connection(connection)
