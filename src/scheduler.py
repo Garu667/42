@@ -1,7 +1,7 @@
 from src.connection import Connection
 from src.drone import Drone, DroneStatus
 from src.graph import Graph
-from src.pathfinder import Pathfinder
+from src.pathfinder import Congestion, Pathfinder
 from src.zone import Zone, ZoneType
 
 MAX_TURNS = 5000
@@ -11,34 +11,25 @@ class SchedulingError(Exception):
     """Raised when no valid schedule can be produced."""
 
 
-class Scheduler:
-    """Plans and simulates the movement of all drones through a Graph.
+class Simulation:
+    """Runs the turn-by-turn movement of drones on their assigned paths.
 
-    Every drone follows the same precomputed shortest path. Capacity
-    conflicts are resolved turn by turn in drone-id order, and a
-    restricted-zone transit books its destination one turn ahead.
+    Conflicts are resolved in drone-id order. A restricted-zone transit
+    books its destination one turn ahead, as a drone cannot wait on a
+    connection once committed.
     """
 
-    def __init__(self, graph: Graph, nb_drones: int) -> None:
+    def __init__(self, graph: Graph, drones: list[Drone]) -> None:
         self._graph = graph
-        self._drones = self._plan_drones(graph, nb_drones)
+        self._drones = drones
         self._occupancy: dict[str, set[int]] = {
-            graph.start.name: {d.drone_id for d in self._drones}
+            graph.start.name: {d.drone_id for d in drones}
         }
         self._connection_usage: dict[str, dict[int, int]] = {}
         self._future_arrivals: dict[str, dict[int, int]] = {}
 
-    @staticmethod
-    def _plan_drones(graph: Graph, nb_drones: int) -> list[Drone]:
-        path = Pathfinder(graph).shortest_path(graph.start, graph.end)
-        if path is None:
-            raise SchedulingError("no path exists between start and end")
-        return [Drone(i, path) for i in range(1, nb_drones + 1)]
-
     def run(self) -> list[list[str]]:
-        """Simulate until every drone has arrived, returning one list
-        of move tokens, e.g. ['D1-roof1'], per non-empty turn.
-        """
+        """Simulate to completion, one move list per non-empty turn."""
         turns: list[list[str]] = []
         turn = 0
         while not all(d.has_arrived() for d in self._drones):
@@ -86,9 +77,7 @@ class Scheduler:
         if next_zone is None:
             drone.status = DroneStatus.ARRIVED
             return None
-        connection = self._graph.get_connection(
-            drone.current_zone, next_zone
-        )
+        connection = self._graph.get_connection(drone.current_zone, next_zone)
         assert connection is not None
         if next_zone.zone_type is ZoneType.RESTRICTED:
             return self._try_restricted_departure(
@@ -108,9 +97,7 @@ class Scheduler:
         if not self._zone_room_now(next_zone):
             return None
         self._occupancy[drone.current_zone.name].discard(drone.drone_id)
-        self._occupancy.setdefault(next_zone.name, set()).add(
-            drone.drone_id
-        )
+        self._occupancy.setdefault(next_zone.name, set()).add(drone.drone_id)
         self._use_connection(connection, turn)
         drone.path_index += 1
         drone.status = (
@@ -161,3 +148,45 @@ class Scheduler:
     def _use_connection(self, connection: Connection, turn: int) -> None:
         bucket = self._connection_usage.setdefault(connection.name, {})
         bucket[turn] = bucket.get(turn, 0) + 1
+
+
+class Scheduler:
+    """Assigns paths to drones and keeps the shorter of two strategies.
+
+    The shared strategy sends every drone down the single cheapest path.
+    The spread strategy gives each drone its own path, assigned from the
+    highest drone id down, so the drones leaving last get the cheapest
+    routes and earlier ones are pushed onto alternate branches.
+    """
+
+    def __init__(self, graph: Graph, nb_drones: int) -> None:
+        self._graph = graph
+        self._nb_drones = nb_drones
+
+    def run(self) -> list[list[str]]:
+        """Return the shorter turn-by-turn output of both strategies."""
+        plans = [self._shared_plan(), self._spread_plan()]
+        results = [Simulation(self._graph, plan).run() for plan in plans]
+        return min(results, key=len)
+
+    def _shared_plan(self) -> list[Drone]:
+        path = Pathfinder(self._graph).shortest_path(
+            self._graph.start, self._graph.end
+        )
+        if path is None:
+            raise SchedulingError("no path exists between start and end")
+        return [Drone(i, path) for i in range(1, self._nb_drones + 1)]
+
+    def _spread_plan(self) -> list[Drone]:
+        pathfinder = Pathfinder(self._graph)
+        congestion = Congestion()
+        paths: dict[int, list[Zone]] = {}
+        for drone_id in range(self._nb_drones, 0, -1):
+            path = pathfinder.shortest_path(
+                self._graph.start, self._graph.end, congestion
+            )
+            if path is None:
+                raise SchedulingError("no path exists between start and end")
+            congestion.record(path, self._graph)
+            paths[drone_id] = path
+        return [Drone(i, paths[i]) for i in range(1, self._nb_drones + 1)]

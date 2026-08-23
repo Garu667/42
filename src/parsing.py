@@ -9,7 +9,7 @@ class ParseError(Exception):
     def __init__(self, line_number: int, message: str) -> None:
         self.line_number = line_number
         self.message = message
-        super().__init__(f"Ligne {line_number}: {message}")
+        super().__init__(f"line {line_number}: {message}")
 
 
 class Parser:
@@ -47,7 +47,7 @@ class Parser:
         line = raw_line.strip()
         if not line or line.startswith("#"):
             return
-        elif self._nb_drones is None:
+        if self._nb_drones is None:
             self._parse_nb_drones(line_number, line)
         elif line.startswith("start_hub:"):
             self._parse_zone(line_number, line, "start_hub:", is_start=True)
