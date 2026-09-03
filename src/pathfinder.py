@@ -27,12 +27,16 @@ class Congestion:
     def record(self, path: list[Zone], graph: Graph) -> None:
         """Count one more use of every zone and connection of `path`."""
         for zone in path:
-            self._zone_usage[zone.name] = self._zone_usage.get(zone.name, 0) + 1
+            self._zone_usage[zone.name] = (
+                self._zone_usage.get(zone.name, 0) + 1
+            )
         for a, b in zip(path, path[1:]):
             connection = graph.get_connection(a, b)
             assert connection is not None
             name = connection.name
-            self._connection_usage[name] = self._connection_usage.get(name, 0) + 1
+            self._connection_usage[name] = (
+                self._connection_usage.get(name, 0) + 1
+            )
 
 
 class Pathfinder:
@@ -91,7 +95,11 @@ class Pathfinder:
                 congestion.zone_penalty(neighbor)
                 + congestion.connection_penalty(connection)
             )
-        bonus = PRIORITY_BONUS if neighbor.zone_type is ZoneType.PRIORITY else 0.0
+        bonus = (
+            PRIORITY_BONUS
+            if neighbor.zone_type is ZoneType.PRIORITY
+            else 0.0
+        )
         return neighbor.movement_cost + penalty - bonus
 
     @staticmethod
