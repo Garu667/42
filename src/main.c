@@ -12,6 +12,52 @@
 
 #include "codexion.h"
 
+static void	stop_simulation(t_sim *sim)
+{
+	pthread_mutex_lock(&sim->stop_mutex);
+	sim->stop = 1;
+	pthread_mutex_unlock(&sim->stop_mutex);
+}
+
+void	*monitor_routine(void *arg)
+{
+	t_sim	*sim;
+	long	time;
+	int		done;
+	int		i;
+
+	sim = (t_sim *)arg;
+	while (!sim_should_stop(sim))
+	{
+		i = -1;
+		usleep(100);
+		while (++i < sim->n_coders)
+		{
+			time = coder_status(sim, i, &done);
+			if (!done && time > sim->time_burnout)
+			{
+				log_action(sim, sim->coders[i].id, "burned out");
+				return (stop_simulation(sim), NULL);
+			}
+		}
+		if (all_coders_done(sim))
+			stop_simulation(sim);
+	}
+	return (NULL);
+}
+
+void	abort_sim(t_sim *sim, int created)
+{
+	int	i;
+
+	i = -1;
+	stop_simulation(sim);
+	while (++i < created)
+		pthread_join(sim->coders[i].thread, NULL);
+	pthread_join(sim->monitor, NULL);
+	cleanup_sim(sim, 0);
+}
+
 void	cleanup_sim(t_sim *sim, int i)
 {
 	int	j;
@@ -58,7 +104,7 @@ int	main(int ac, char **av)
 		return (i);
 	while (i < sim.n_coders)
 	{
-		pthread_join(sim.coders[i].thread, NULL);	// TODO
+		pthread_join(sim.coders[i].thread, NULL);
 		i++;
 	}
 	cleanup_sim(&sim, 0);

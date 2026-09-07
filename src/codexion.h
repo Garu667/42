@@ -23,6 +23,16 @@
 # define SCHEDULER_FIFO 1
 # define SCHEDULER_EDF  2
 
+typedef enum e_error
+{
+	ERR_ARGC = 1,
+	ERR_ARGS,
+	ERR_ALLOC_CODERS,
+	ERR_ALLOC_DONGLES,
+	ERR_INIT_DONGLES,
+	ERR_THREAD_CREATE
+}	t_error;
+
 typedef struct s_sim	t_sim;
 
 typedef struct s_waiter
@@ -89,7 +99,6 @@ t_waiter	*heap_pop(t_dongle *dongle);
 t_waiter	*heap_peek(t_dongle *dongle);
 void		heap_push(t_dongle *dongle, t_waiter *waiter, int scheduler);
 /*		init.c		*/
-void		*monitor_routine(void *arg);
 int			init_sim(t_sim *sim);
 /*		dongle.c		*/
 void		acquire_dongle(t_coder *coder, t_dongle *dongle);
@@ -99,6 +108,8 @@ void		log_action(t_sim *sim, int coder_id, char *action);
 void		*coder_routine(void *arg);
 long		coder_status(t_sim *sim, int i, int *done);
 /*		main.c		*/
+void		abort_sim(t_sim *sim, int created);
 void		cleanup_sim(t_sim *sim, int i);
+void		*monitor_routine(void *arg);
 
 #endif
