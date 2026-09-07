@@ -58,7 +58,7 @@ int	main(int ac, char **av)
 		return (i);
 	while (i < sim.n_coders)
 	{
-		pthread_join(sim.coders[i].thread, NULL);
+		pthread_join(sim.coders[i].thread, NULL);	// TODO
 		i++;
 	}
 	cleanup_sim(&sim, 0);

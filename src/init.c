@@ -98,20 +98,20 @@ int	init_sim(t_sim *sim)
 		return (3);
 	sim->dongles = malloc(sim->n_coders * sizeof(t_dongle));
 	if (!sim->dongles)
-		return (free(sim->coders), 4);
+		return (free(sim->coders), 4);							// TODO
 	if (init_dongles(sim->dongles, sim->n_coders) != 0)
-		return (free(sim->coders), free(sim->dongles), 5);
+		return (free(sim->coders), free(sim->dongles), 5);		// TODO
 	init_coders(sim);
 	pthread_mutex_init(&sim->stop_mutex, NULL);
 	pthread_mutex_init(&sim->log_mutex, NULL);
 	pthread_mutex_init(&sim->coders_mutex, NULL);
 	sim->sim_start = get_time_ms();
-	pthread_create(&sim->monitor, NULL, monitor_routine, sim);
+	pthread_create(&sim->monitor, NULL, monitor_routine, sim);	// TODO
 	while (++i < sim->n_coders)
 	{
-		if (pthread_create(&sim->coders[i].thread, NULL,
+		if (pthread_create(&sim->coders[i].thread, NULL,		// TODO
 				coder_routine, &sim->coders[i]) != 0)
-			return (cleanup_sim(sim, i), -9);
+			return (cleanup_sim(sim, i), 6);
 	}
 	pthread_join(sim->monitor, NULL);
 	return (0);
