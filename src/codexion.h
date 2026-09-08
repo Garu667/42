@@ -26,7 +26,6 @@
 typedef enum e_error
 {
 	ERR_ARGC = 1,
-	ERR_ARGS,
 	ERR_ALLOC_CODERS,
 	ERR_ALLOC_DONGLES,
 	ERR_INIT_DONGLES,
@@ -110,6 +109,7 @@ long		coder_status(t_sim *sim, int i, int *done);
 /*		error.c		*/
 int			free_return(t_sim *sim, int n_free, int ret_flag, int i);
 /*		main.c		*/
+void		stop_simulation(t_sim *sim);
 void		*monitor_routine(void *arg);
 
 #endif

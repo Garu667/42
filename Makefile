@@ -7,6 +7,7 @@ MANDATORY_SRCS	= src/parsing.c	\
 				  src/coders.c	\
 				  src/dongle.c	\
 				  src/utils.c	\
+				  src/error.c	\
 				  src/heap.c	\
 				  src/init.c	\
 				  src/main.c

@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-static void	stop_simulation(t_sim *sim)
+void	stop_simulation(t_sim *sim)
 {
 	pthread_mutex_lock(&sim->stop_mutex);
 	sim->stop = 1;
@@ -56,7 +56,7 @@ int	main(int ac, char **av)
 		fprintf(stderr,
 			"Usage: %s n_coders time_burnout time_compile time_debug "
 			"time_refactor n_compiles dongle_cd scheduler\n", av[0]);
-		return (1);
+		return (ERR_ARGC);
 	}
 	memset(&sim, 0, sizeof(t_sim));
 	if (parsing(av, &sim))

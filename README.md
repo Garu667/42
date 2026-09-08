@@ -85,16 +85,17 @@ Every state change is logged as `timestamp_in_ms coder_id action`:
 
 ## Project structure
 
-| File          | Responsibility                                                        |
-|---------------|-------------------------------------------------------------------------|
-| `main.c`      | Argument count check, top-level orchestration, final cleanup           |
-| `parsing.c`   | Argument validation and parsing                                        |
-| `init.c`      | Simulation setup, thread creation, monitor thread                      |
-| `dongle.c`    | Dongle acquisition/release, cooldown, waking waiters on stop            |
-| `coders.c`    | Coder thread lifecycle (compile / debug / refactor loop), logging      |
-| `heap.c`      | Hand-rolled binary min-heap used as the FIFO/EDF priority queue         |
-| `utils.c`     | Timing helpers, interruptible sleep, shared-state accessors             |
-| `codexion.h`  | Shared structs (`t_sim`, `t_coder`, `t_dongle`, `t_waiter`) and protos  |
+| File          | Functions                                                                 |
+|---------------|----------------------------------------------------------------------------|
+| `main.c`      | `monitor_routine`, `main` (top-level orchestration, argument-count check)  |
+| `error.c`     | `cleanup_sim`, `abort_sim`, `free_return` (every error/shutdown cleanup path) |
+| `init.c`      | `init_dongles`, `init_coders`, `init_unbreakable`, `init_sim`             |
+| `parsing.c`   | `invalid_number`, `parse_positive_long`, `invalid_scheduler`, `swap`, `parsing` |
+| `dongle.c`    | `dongle_ready`, `acquire_dongle`, `release_dongle`                        |
+| `heap.c`      | `has_priority`, `heap_peek`, `heap_push`, `heap_pop`                      |
+| `coders.c`    | `log_action`, `coder_compile`, `coder_life`, `coder_routine`, `coder_status` |
+| `utils.c`     | `get_time_ms`, `get_elapsed_ms`, `ft_msleep`, `sim_should_stop`, `all_coders_done` |
+| `codexion.h`  | Shared structs (`t_sim`, `t_coder`, `t_dongle`, `t_waiter`), the `t_error` enum, and every prototype |
 
 ## Blocking cases handled
 
@@ -105,19 +106,24 @@ Every state change is logged as `timestamp_in_ms coder_id action`:
   classic dining-philosophers deadlock — structurally impossible, regardless
   of scheduling luck.
 
-- **Starvation prevention.** Each dongle keeps its own waiting queue,
-  implemented as a binary min-heap ordered by arrival time (`fifo`) or by
-  deadline `last_compile_start + time_to_burnout` (`edf`, with arrival time
-  as a deterministic tie-breaker). On release, the dongle is handed off
-  directly to the highest-priority waiter — it is never reopened to
-  first-come-first-served contention — so the scheduler's ordering guarantee
-  actually holds under load.
+- **Starvation prevention.** Each dongle keeps its own tiny waiting array
+  (capacity 2 — its two neighbouring coders are structurally the only ones
+  who can ever want it), ordered by arrival time (`fifo`) or by deadline
+  `last_compile_start + time_to_burnout` (`edf`, with arrival time as a
+  deterministic tie-breaker). Release does not hand the dongle to anyone
+  directly — it simply clears `in_use`; every queued waiter is polling and
+  independently re-checks whether *it* is the highest-priority entry
+  (`heap_peek(dongle) == &waiter`) before taking it. A lower-priority waiter
+  can win the race to re-lock the mutex first, but its own check will fail,
+  so the FIFO/EDF ordering still holds even though no single thread is
+  designated the winner at release time.
 
 - **Cooldown handling.** After release, a dongle is unusable until
-  `dongle_cooldown` ms have passed. This is enforced once ownership of the
-  dongle is already secured (whether acquired directly or handed off), and
-  the wait happens without holding the dongle's mutex, so it never blocks
-  other threads from being scheduled.
+  `dongle_cooldown` ms have passed — `dongle_ready` refuses any waiter,
+  including the highest-priority one, until that window has fully elapsed.
+  The wait happens without holding the dongle's mutex for the whole
+  duration (each poll only holds it briefly), so it never blocks other
+  threads from being scheduled in the meantime.
 
 - **Precise burnout detection.** A dedicated monitor thread polls every
   coder's `last_compile` timestamp on a short interval and compares it
@@ -130,35 +136,38 @@ Every state change is logged as `timestamp_in_ms coder_id action`:
 
 - **Graceful, non-hanging shutdown.** The shared `stop` flag is itself
   protected by a mutex (read and written the same way everywhere — there is
-  no "read-only, no lock needed" shortcut). When the simulation stops, every
-  waiter currently blocked on a dongle is explicitly woken up, and every
-  sleep (compile/debug/refactor, and the cooldown wait) is interruptible: it
-  checks the stop flag on a short interval instead of sleeping blindly for
-  the full duration. Without this, a coder mid-`debug` with a large
-  `time_to_debug` would keep the whole program alive long after the
-  simulation should have ended.
+  no "read-only, no lock needed" shortcut). Every wait in the program —
+  a coder polling for a dongle, and every compile/debug/refactor sleep — is
+  interruptible: each one re-checks the stop flag on a short interval
+  instead of blocking or sleeping blindly for the full duration. Without
+  this, a coder mid-`debug` with a large `time_to_debug`, or one still
+  polling for a contested dongle, would keep the whole program alive long
+  after the simulation should have ended.
 
-- **Lock-order deadlock between mutexes.** Beyond the resource-level deadlock
-  above, a second, more subtle deadlock existed purely between two mutexes:
-  a coder could lock a dongle's mutex and then lock the stop mutex (via the
-  stop-check), while the monitor could lock the stop mutex and then lock a
-  dongle's mutex (to wake waiters) — two threads locking the same two mutexes
-  in opposite order, a classic AB-BA deadlock risk. It was found with
-  `helgrind` before it ever triggered in practice, and fixed by never holding
-  the stop mutex while touching a dongle mutex.
+- **Lock-order deadlock between mutexes (found during development).** An
+  earlier version of the shutdown path had a coder lock a dongle's mutex and
+  then lock the stop mutex (via the stop-check), while the monitor locked
+  the stop mutex and then a dongle's mutex to wake waiters — two threads
+  locking the same two mutexes in opposite order, a classic AB-BA deadlock
+  risk. It was caught with `helgrind` before it ever triggered in practice.
+  The current polling design (above) no longer needs that wake step at all,
+  which removed the risk at its root rather than just reordering the locks.
 
 ## Thread synchronization mechanisms
 
 - **Per-dongle `pthread_mutex_t`** protects that dongle's `in_use` flag,
-  `released_at` timestamp, and its waiting queue. Every read or write of
-  these fields goes through this lock.
+  `released_at` timestamp, and its small (capacity-2) waiting queue. Every
+  read or write of these fields goes through this lock — including a
+  waiter's own eligibility check, so no two threads can ever disagree about
+  whether a dongle is currently free.
 
-- **Per-waiter `pthread_cond_t`** (one condition variable per pending
-  request, not one shared condition variable per dongle). When a dongle is
-  released, the releasing thread pops the correct waiter from the heap and
-  signals *that waiter's own* condition variable directly. This gives a
-  precise hand-off instead of waking every waiter and letting them race for
-  the dongle, which would break the FIFO/EDF ordering guarantee.
+- **Bounded polling instead of a condition variable.** A waiter registers
+  itself in the dongle's queue once, then loops: release the lock, sleep a
+  short fixed interval (`usleep`), reacquire the lock, and recheck whether
+  it is now the highest-priority *and* cooldown-cleared entry
+  (`dongle_ready`). The same loop condition also watches the simulation's
+  `stop` flag, so a waiter never blocks past the point where the simulation
+  should end.
 
 - **`coders_mutex`** protects `last_compile` and `compile_count` on every
   `t_coder`. These fields are written by the owning coder thread and read by
@@ -175,11 +184,15 @@ Every state change is logged as `timestamp_in_ms coder_id action`:
 - **`log_mutex`** wraps the one `printf` call used for all logging, so
   concurrent log lines from different threads never interleave.
 
-- **Manual binary heap (`heap.c`)** acts as the priority queue backing both
-  `fifo` and `edf` scheduling — no standard library priority queue is used.
-  Push/pop use the usual sift-up/sift-down operations; the only thing that
-  changes between `fifo` and `edf` is the comparator (`has_priority`), which
-  compares arrival time or deadline depending on the configured scheduler.
+- **Fixed-size priority array (`heap.c`)** backs both `fifo` and `edf`
+  scheduling — no standard library priority queue is used. Since a given
+  dongle can structurally only ever be wanted by its two neighbouring
+  coders, the array never needs more than 2 slots: `heap_push` inserts and,
+  if there are now two entries, swaps them into priority order with a
+  single comparison; `heap_pop` removes the front slot and slides the other
+  one forward. The only thing that changes between `fifo` and `edf` is the
+  comparator (`has_priority`), which compares arrival time or deadline
+  depending on the configured scheduler.
 
 ## Resources
 
