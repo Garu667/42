@@ -46,41 +46,6 @@ void	*monitor_routine(void *arg)
 	return (NULL);
 }
 
-void	abort_sim(t_sim *sim, int created)
-{
-	int	i;
-
-	i = -1;
-	stop_simulation(sim);
-	while (++i < created)
-		pthread_join(sim->coders[i].thread, NULL);
-	pthread_join(sim->monitor, NULL);
-	cleanup_sim(sim, 0);
-}
-
-void	cleanup_sim(t_sim *sim, int i)
-{
-	int	j;
-
-	j = sim->n_coders;
-	if (i != 0)
-	{
-		j = i;
-		i = 0;
-	}
-	while (i < j)
-	{
-		free(sim->dongles[i].queue);
-		pthread_mutex_destroy(&sim->dongles[i].mutex);
-		i++;
-	}
-	free(sim->dongles);
-	free(sim->coders);
-	pthread_mutex_destroy(&sim->stop_mutex);
-	pthread_mutex_destroy(&sim->log_mutex);
-	pthread_mutex_destroy(&sim->coders_mutex);
-}
-
 int	main(int ac, char **av)
 {
 	t_sim	sim;
@@ -107,5 +72,5 @@ int	main(int ac, char **av)
 		pthread_join(sim.coders[i].thread, NULL);
 		i++;
 	}
-	cleanup_sim(&sim, 0);
+	return (free_return(&sim, 3, 0, 0));
 }

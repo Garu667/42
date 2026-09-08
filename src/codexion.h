@@ -107,9 +107,9 @@ void		release_dongle(t_dongle *dongle);
 void		log_action(t_sim *sim, int coder_id, char *action);
 void		*coder_routine(void *arg);
 long		coder_status(t_sim *sim, int i, int *done);
+/*		error.c		*/
+int			free_return(t_sim *sim, int n_free, int ret_flag, int i);
 /*		main.c		*/
-void		abort_sim(t_sim *sim, int created);
-void		cleanup_sim(t_sim *sim, int i);
 void		*monitor_routine(void *arg);
 
 #endif

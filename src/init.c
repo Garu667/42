@@ -54,6 +54,15 @@ static void	init_coders(t_sim *sim)
 	}
 }
 
+void	init_unbreakable(t_sim *sim)
+{
+	init_coders(sim);
+	pthread_mutex_init(&sim->stop_mutex, NULL);
+	pthread_mutex_init(&sim->log_mutex, NULL);
+	pthread_mutex_init(&sim->coders_mutex, NULL);
+	sim->sim_start = get_time_ms();
+}
+
 int	init_sim(t_sim *sim)
 {
 	int	i;
@@ -61,24 +70,20 @@ int	init_sim(t_sim *sim)
 	i = -1;
 	sim->coders = malloc(sim->n_coders * sizeof(t_coder));
 	if (!sim->coders)
-		return (ERR_ALLOC_CODERS);
+		return (free_return(sim, 0, ERR_ALLOC_CODERS, 0));
 	sim->dongles = malloc(sim->n_coders * sizeof(t_dongle));
 	if (!sim->dongles)
-		return (free(sim->coders), 4);
+		return (free_return(sim, 1, ERR_ALLOC_DONGLES, 0));
 	if (init_dongles(sim->dongles, sim->n_coders) != 0)
-		return (free(sim->coders), free(sim->dongles), 5);
-	init_coders(sim);
-	pthread_mutex_init(&sim->stop_mutex, NULL);
-	pthread_mutex_init(&sim->log_mutex, NULL);
-	pthread_mutex_init(&sim->coders_mutex, NULL);
-	sim->sim_start = get_time_ms();
+		return (free_return(sim, 2, ERR_INIT_DONGLES, 0));
+	init_unbreakable(sim);
 	if (pthread_create(&sim->monitor, NULL, monitor_routine, sim))
-		return (cleanup_sim(sim, i), 6);
+		return (free_return(sim, 3, ERR_THREAD_CREATE, 0));
 	while (++i < sim->n_coders)
 	{
 		if (pthread_create(&sim->coders[i].thread, NULL,
 				coder_routine, &sim->coders[i]) != 0)
-			return (abort_sim(sim, i), 7);
+			return (free_return(sim, 4, ERR_THREAD_CREATE, i));
 	}
 	pthread_join(sim->monitor, NULL);
 	return (0);
