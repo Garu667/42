@@ -39,19 +39,15 @@ static void	coder_life(
 			t_dongle *second
 		)
 {
-	acquire_dongle(coder, first);
-	if (sim_should_stop(sim))
+	if (!acquire_dongles(coder, first, second))
 		return ;
 	log_action(sim, coder->id, "has taken a dongle");
-	acquire_dongle(coder, second);
-	if (sim_should_stop(sim))
-		return ;
 	log_action(sim, coder->id, "has taken a dongle");
 	coder_compile(sim, coder);
-	if (sim_should_stop(sim))
-		return ;
 	release_dongle(first);
 	release_dongle(second);
+	if (sim_should_stop(sim))
+		return ;
 	log_action(sim, coder->id, "is debugging");
 	ft_msleep(sim->time_debug, sim);
 	if (sim_should_stop(sim))

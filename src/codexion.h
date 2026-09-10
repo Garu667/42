@@ -62,6 +62,7 @@ typedef struct s_coder
 	long			last_compile;
 	long			deadline;
 	int				compile_count;
+	t_waiter		waiter;
 }	t_coder;
 
 typedef struct s_sim
@@ -100,7 +101,8 @@ void		heap_push(t_dongle *dongle, t_waiter *waiter, int scheduler);
 /*		init.c		*/
 int			init_sim(t_sim *sim);
 /*		dongle.c		*/
-void		acquire_dongle(t_coder *coder, t_dongle *dongle);
+//void		acquire_dongle(t_coder *coder, t_dongle *dongle);
+int			acquire_dongles(t_coder *coder, t_dongle *first, t_dongle *second);
 void		release_dongle(t_dongle *dongle);
 /*		coders.c		*/
 void		log_action(t_sim *sim, int coder_id, char *action);
