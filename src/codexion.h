@@ -109,7 +109,7 @@ long		coder_status(t_sim *sim, int i, int *done);
 /*		error.c		*/
 int			free_return(t_sim *sim, int n_free, int ret_flag, int i);
 /*		main.c		*/
-void		stop_simulation(t_sim *sim);
+void		*stop_simulation(t_sim *sim);
 void		*monitor_routine(void *arg);
 
 #endif

@@ -12,11 +12,12 @@
 
 #include "codexion.h"
 
-void	stop_simulation(t_sim *sim)
+void	*stop_simulation(t_sim *sim)
 {
 	pthread_mutex_lock(&sim->stop_mutex);
 	sim->stop = 1;
 	pthread_mutex_unlock(&sim->stop_mutex);
+	return (NULL);
 }
 
 void	*monitor_routine(void *arg)
@@ -37,7 +38,7 @@ void	*monitor_routine(void *arg)
 			if (!done && time > sim->time_burnout)
 			{
 				log_action(sim, sim->coders[i].id, "burned out");
-				return (stop_simulation(sim), NULL);
+				return (stop_simulation(sim));
 			}
 		}
 		if (all_coders_done(sim))
