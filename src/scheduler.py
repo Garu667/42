@@ -2,6 +2,7 @@ from src.connection import Connection
 from src.drone import Drone, DroneStatus
 from src.graph import Graph
 from src.pathfinder import Congestion, Pathfinder
+from src.spacetime import SpaceTimePlanner
 from src.zone import Zone, ZoneType
 
 MAX_TURNS = 5000
@@ -45,12 +46,16 @@ class Simulation:
 
     def _simulate_turn(self, turn: int) -> list[str]:
         moves: list[str] = []
+        landed: set[int] = set()
         ordered = sorted(self._drones, key=lambda d: d.drone_id)
         for drone in ordered:
             token = self._complete_transit_if_due(drone, turn)
             if token is not None:
                 moves.append(token)
+                landed.add(drone.drone_id)
         for drone in ordered:
+            if drone.drone_id in landed:
+                continue
             token = self._attempt_departure(drone, turn)
             if token is not None:
                 moves.append(token)
@@ -156,7 +161,9 @@ class Scheduler:
     The shared strategy sends every drone down the single cheapest path.
     The spread strategy gives each drone its own path, assigned from the
     highest drone id down, so the drones leaving last get the cheapest
-    routes and earlier ones are pushed onto alternate branches.
+    routes and earlier ones are pushed onto alternate branches. The
+    spacetime strategy plans in (zone, turn) space so drones can wait
+    and pipeline through narrow corridors.
     """
 
     def __init__(self, graph: Graph, nb_drones: int) -> None:
@@ -164,10 +171,20 @@ class Scheduler:
         self._nb_drones = nb_drones
 
     def run(self) -> list[list[str]]:
-        """Return the shorter turn-by-turn output of both strategies."""
+        """Return the shortest turn-by-turn output of every strategy."""
         plans = [self._shared_plan(), self._spread_plan()]
         results = [Simulation(self._graph, plan).run() for plan in plans]
+        timed = self._spacetime_turns()
+        if timed is not None:
+            results.append(timed)
         return min(results, key=len)
+
+    def _spacetime_turns(self) -> list[list[str]] | None:
+        planner = SpaceTimePlanner(self._graph)
+        plans = planner.plan(self._nb_drones)
+        if plans is None:
+            return None
+        return planner.to_turns(plans)
 
     def _shared_plan(self) -> list[Drone]:
         path = Pathfinder(self._graph).shortest_path(
