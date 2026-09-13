@@ -6,52 +6,68 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 17:03:45 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/07/27 17:03:45 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2026/09/12 17:03:45 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static int	dongle_ready(t_dongle *dongle, t_waiter *waiter, long dongle_cd)
+static int	free_now(t_dongle *d, long cd)
 {
-	if (dongle->in_use)
-		return (0);
-	if (get_time_ms() - dongle->released_at < dongle_cd)
-		return (0);
-	return (heap_peek(dongle) == waiter);
+	return (!d->in_use && get_time_ms() - d->released_at >= cd);
 }
 
-void	acquire_dongle(t_coder *coder, t_dongle *dongle)
+static int	head_can_go(t_sim *sim, t_dongle *d, t_waiter *head)
 {
-	t_waiter	waiter;
+	t_coder		*hc;
+	t_dongle	*other;
 
-	waiter.coder_id = coder->id;
-	waiter.arrived_at = get_time_ms();
-	waiter.deadline = coder->last_compile + coder->sim->time_burnout;
-	pthread_mutex_lock(&dongle->mutex);
-	heap_push(dongle, &waiter, coder->sim->scheduler);
-	while (!dongle_ready(dongle, &waiter, coder->sim->dongle_cd)
-		&& !sim_should_stop(coder->sim))
-	{
-		pthread_mutex_unlock(&dongle->mutex);
-		usleep(500);
-		pthread_mutex_lock(&dongle->mutex);
-	}
-	if (dongle_ready(dongle, &waiter, coder->sim->dongle_cd)
-		&& !sim_should_stop(coder->sim))
-	{
-		dongle->in_use = 1;
-		heap_pop(dongle);
-	}
-	else if (dongle->queue_size == 2)
-		dongle->queue_size--;
-	pthread_mutex_unlock(&dongle->mutex);
+	hc = &sim->coders[head->coder_id - 1];
+	other = hc->left;
+	if (hc->left == d)
+		other = hc->right;
+	return (free_now(other, sim->dongle_cd));
 }
 
-void	release_dongle(t_dongle *dongle)
+static int	dongle_ready(t_sim *sim, t_dongle *d, t_waiter *w)
 {
-	pthread_mutex_lock(&dongle->mutex);
-	dongle->in_use = 0;
-	dongle->released_at = get_time_ms();
-	pthread_mutex_unlock(&dongle->mutex);
+	t_waiter	*head;
+
+	if (!free_now(d, sim->dongle_cd))
+		return (0);
+	head = heap_peek(d);
+	if (head == w || head == NULL)
+		return (1);
+	return (!head_can_go(sim, d, head));
+}
+
+int	try_claim(t_coder *c)
+{
+	int	ok;
+
+	lock_pair(c);
+	ok = (dongle_ready(c->sim, c->left, &c->waiter)
+			&& dongle_ready(c->sim, c->right, &c->waiter));
+	if (ok)
+	{
+		c->left->in_use = 1;
+		c->right->in_use = 1;
+		heap_remove(c->left, &c->waiter);
+		heap_remove(c->right, &c->waiter);
+	}
+	unlock_pair(c);
+	return (ok);
+}
+
+void	release_pair(t_coder *c)
+{
+	pthread_mutex_lock(&c->sim->table_mutex);
+	lock_pair(c);
+	c->left->in_use = 0;
+	c->left->released_at = get_time_ms();
+	c->right->in_use = 0;
+	c->right->released_at = get_time_ms();
+	unlock_pair(c);
+	pthread_cond_broadcast(&c->sim->table_cond);
+	pthread_mutex_unlock(&c->sim->table_mutex);
 }

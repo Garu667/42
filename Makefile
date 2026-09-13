@@ -9,6 +9,8 @@ MANDATORY_SRCS	= src/parsing.c	\
 				  src/utils.c	\
 				  src/error.c	\
 				  src/heap.c	\
+				  src/wait.c	\
+				  src/pair.c	\
 				  src/init.c	\
 				  src/main.c
 

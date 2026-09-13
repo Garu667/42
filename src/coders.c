@@ -32,26 +32,22 @@ static void	coder_compile(t_sim *sim, t_coder *coder)
 	pthread_mutex_unlock(&sim->coders_mutex);
 }
 
-static void	coder_life(
-			t_sim *sim,
-			t_coder *coder,
-			t_dongle *first,
-			t_dongle *second
-		)
+static void	coder_life(t_sim *sim, t_coder *coder)
 {
-	acquire_dongle(coder, first);
-	if (sim_should_stop(sim))
+	if (coder->left == coder->right)
+	{
+		log_action(sim, coder->id, "has taken a dongle");
+		while (!sim_should_stop(sim))
+			usleep(200);
 		return ;
+	}
+	acquire_pair(coder);
 	log_action(sim, coder->id, "has taken a dongle");
-	acquire_dongle(coder, second);
-	if (sim_should_stop(sim))
-		return ;
 	log_action(sim, coder->id, "has taken a dongle");
 	coder_compile(sim, coder);
+	release_pair(coder);
 	if (sim_should_stop(sim))
 		return ;
-	release_dongle(first);
-	release_dongle(second);
 	log_action(sim, coder->id, "is debugging");
 	ft_msleep(sim->time_debug, sim);
 	if (sim_should_stop(sim))
@@ -64,26 +60,19 @@ void	*coder_routine(void *arg)
 {
 	t_sim		*sim;
 	t_coder		*coder;
-	t_dongle	*first;
-	t_dongle	*second;
 
 	coder = (t_coder *)arg;
 	sim = coder->sim;
 	while (!sim_should_stop(sim))
 	{
+		pthread_mutex_lock(&sim->coders_mutex);
 		if (coder->compile_count == sim->n_req_compiles)
+		{
+			pthread_mutex_unlock(&sim->coders_mutex);
 			return (NULL);
-		if (coder->left->id < coder->right->id)
-		{
-			first = coder->left;
-			second = coder->right;
 		}
-		else
-		{
-			first = coder->right;
-			second = coder->left;
-		}
-		coder_life(sim, coder, first, second);
+		pthread_mutex_unlock(&sim->coders_mutex);
+		coder_life(sim, coder);
 	}
 	return (NULL);
 }

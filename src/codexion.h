@@ -45,6 +45,7 @@ typedef struct s_dongle
 {
 	int				id;
 	pthread_mutex_t	mutex;
+	pthread_cond_t	cond;
 	int				in_use;
 	long			released_at;
 	t_waiter		**queue;
@@ -59,6 +60,7 @@ typedef struct s_coder
 	t_sim			*sim;
 	t_dongle		*left;
 	t_dongle		*right;
+	t_waiter		waiter;
 	long			last_compile;
 	long			deadline;
 	int				compile_count;
@@ -80,8 +82,10 @@ typedef struct s_sim
 	int				stop;
 	pthread_mutex_t	stop_mutex;
 	pthread_mutex_t	log_mutex;
-	pthread_t		monitor;
+	pthread_mutex_t	table_mutex;
 	pthread_mutex_t	coders_mutex;
+	pthread_cond_t	table_cond;
+	pthread_t		monitor;
 }	t_sim;
 
 /*		parsing.c		*/
@@ -97,11 +101,12 @@ int			sim_should_stop(t_sim *sim);
 t_waiter	*heap_pop(t_dongle *dongle);
 t_waiter	*heap_peek(t_dongle *dongle);
 void		heap_push(t_dongle *dongle, t_waiter *waiter, int scheduler);
+void		heap_remove(t_dongle *dongle, t_waiter *waiter);
 /*		init.c		*/
 int			init_sim(t_sim *sim);
 /*		dongle.c		*/
-void		acquire_dongle(t_coder *coder, t_dongle *dongle);
-void		release_dongle(t_dongle *dongle);
+int			try_claim(t_coder *c);
+void		release_pair(t_coder *c);
 /*		coders.c		*/
 void		log_action(t_sim *sim, int coder_id, char *action);
 void		*coder_routine(void *arg);
@@ -111,5 +116,9 @@ int			free_return(t_sim *sim, int n_free, int ret_flag, int i);
 /*		main.c		*/
 void		*stop_simulation(t_sim *sim);
 void		*monitor_routine(void *arg);
-
+void		lock_pair(t_coder *c);
+void		unlock_pair(t_coder *c);
+void		queue_pair(t_coder *c, int add);
+void		wait_table(t_coder *c);
+void		acquire_pair(t_coder *c);
 #endif

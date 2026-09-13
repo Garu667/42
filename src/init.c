@@ -57,6 +57,8 @@ static void	init_coders(t_sim *sim)
 void	init_unbreakable(t_sim *sim)
 {
 	init_coders(sim);
+	pthread_mutex_init(&sim->table_mutex, NULL);
+	pthread_cond_init(&sim->table_cond, NULL);
 	pthread_mutex_init(&sim->stop_mutex, NULL);
 	pthread_mutex_init(&sim->log_mutex, NULL);
 	pthread_mutex_init(&sim->coders_mutex, NULL);

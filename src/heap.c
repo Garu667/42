@@ -50,3 +50,20 @@ t_waiter	*heap_pop(t_dongle *dongle)
 	dongle->queue[0] = dongle->queue[dongle->queue_size];
 	return (top);
 }
+
+void	heap_remove(t_dongle *dongle, t_waiter *waiter)
+{
+	int	i;
+
+	i = 0;
+	while (i < dongle->queue_size)
+	{
+		if (dongle->queue[i] == waiter)
+		{
+			dongle->queue_size--;
+			dongle->queue[i] = dongle->queue[dongle->queue_size];
+			return ;
+		}
+		i++;
+	}
+}
