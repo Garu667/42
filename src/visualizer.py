@@ -10,6 +10,7 @@ import pygame  # noqa: E402
 BACKGROUND = (18, 18, 24)
 TEXT_COLOR = (230, 230, 230)
 CONNECTION_COLOR = (90, 90, 100)
+ZONE_OUTLINE = (125, 125, 135)
 START_COLOR = (230, 200, 60)
 END_COLOR = (230, 60, 130)
 DENSE_THRESHOLD = 25
@@ -179,6 +180,9 @@ class Visualizer:
             pygame.draw.circle(
                 self._screen, self._zone_color(zone), (x, y), radius
             )
+            pygame.draw.circle(
+                self._screen, ZONE_OUTLINE, (x, y), radius, 1
+            )
             if show_labels:
                 label = self._font.render(zone.name, True, TEXT_COLOR)
                 self._screen.blit(
@@ -187,11 +191,25 @@ class Visualizer:
 
     @staticmethod
     def _zone_color(zone: Zone) -> tuple[int, int, int]:
+        declared = Visualizer._declared_color(zone)
+        if declared is not None:
+            return declared
         if zone.is_start:
             return START_COLOR
         if zone.is_end:
             return END_COLOR
         return ZONE_TYPE_COLORS[zone.zone_type]
+
+    @staticmethod
+    def _declared_color(zone: Zone) -> tuple[int, int, int] | None:
+        """The map's `color=` value as RGB, or None if unusable."""
+        if not zone.color:
+            return None
+        try:
+            color = pygame.Color(zone.color)
+        except ValueError:
+            return None
+        return (color.r, color.g, color.b)
 
     def _draw_drones(self) -> None:
         radius = max(2, int(self._drone_radius * self._camera.zoom))
@@ -207,6 +225,7 @@ class Visualizer:
                 x, y = self._screen_pos(state.zone)
                 x += int(((drone_id * 7) % 20 - 10) * self._camera.zoom)
                 y += int(((drone_id * 13) % 20 - 10) * self._camera.zoom)
+            pygame.draw.circle(self._screen, BACKGROUND, (x, y), radius + 2)
             pygame.draw.circle(self._screen, color, (x, y), radius)
 
     def _draw_hud(self) -> None:
