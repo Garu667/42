@@ -52,18 +52,6 @@ void	heap_push(t_dongle *dongle, t_waiter *waiter, int scheduler)
 	dongle->queue_size++;
 }
 
-t_waiter	*heap_pop(t_dongle *dongle)
-{
-	t_waiter	*top;
-
-	if (dongle->queue_size == 0)
-		return (NULL);
-	top = dongle->queue[0];
-	dongle->queue_size--;
-	dongle->queue[0] = dongle->queue[dongle->queue_size];
-	return (top);
-}
-
 void	heap_remove(t_dongle *dongle, t_waiter *waiter)
 {
 	int	i;

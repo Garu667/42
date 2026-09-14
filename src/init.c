@@ -48,7 +48,7 @@ static void	init_coders(t_sim *sim)
 		sim->coders[i].sim = sim;
 		sim->coders[i].left = &sim->dongles[i];
 		sim->coders[i].right = &sim->dongles[(i + 1) % sim->n_coders];
-		sim->coders[i].last_compile = get_time_ms();
+		sim->coders[i].last_compile = sim->sim_start;
 		sim->coders[i].compile_count = 0;
 		i++;
 	}
@@ -56,13 +56,13 @@ static void	init_coders(t_sim *sim)
 
 void	init_unbreakable(t_sim *sim)
 {
+	sim->sim_start = get_time_ms();
 	init_coders(sim);
 	pthread_mutex_init(&sim->stop_mutex, NULL);
 	pthread_mutex_init(&sim->log_mutex, NULL);
 	pthread_mutex_init(&sim->coders_mutex, NULL);
 	pthread_mutex_init(&sim->table_mutex, NULL);
 	pthread_cond_init(&sim->table_cond, NULL);
-	sim->sim_start = get_time_ms();
 }
 
 int	init_sim(t_sim *sim)

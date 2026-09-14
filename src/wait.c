@@ -69,8 +69,8 @@ void	acquire_pair(t_coder *c)
 	c->waiter.deadline = c->last_compile + sim->time_burnout;
 	c->waiter.n_compile = c->compile_count;
 	pthread_mutex_unlock(&sim->coders_mutex);
-	pthread_mutex_lock(&sim->table_mutex);
 	queue_pair(c, 1);
+	pthread_mutex_lock(&sim->table_mutex);
 	while (!sim_should_stop(sim) && !try_claim(c))
 		wait_table(c);
 	if (sim_should_stop(sim))

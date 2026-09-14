@@ -98,7 +98,6 @@ long		get_elapsed_ms(t_sim *sim);
 int			all_coders_done(t_sim *sim);
 int			sim_should_stop(t_sim *sim);
 /*		heap.c		*/
-t_waiter	*heap_pop(t_dongle *dongle);
 t_waiter	*heap_peek(t_dongle *dongle);
 void		heap_push(t_dongle *dongle, t_waiter *waiter, int scheduler);
 void		heap_remove(t_dongle *dongle, t_waiter *waiter);
