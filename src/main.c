@@ -14,13 +14,24 @@
 
 void	*stop_simulation(t_sim *sim)
 {
-	pthread_mutex_lock(&sim->table_mutex);
-	pthread_cond_broadcast(&sim->table_cond);
-	pthread_mutex_unlock(&sim->table_mutex);
 	pthread_mutex_lock(&sim->stop_mutex);
 	sim->stop = 1;
 	pthread_mutex_unlock(&sim->stop_mutex);
+	pthread_mutex_lock(&sim->table_mutex);
+	pthread_cond_broadcast(&sim->table_cond);
+	pthread_mutex_unlock(&sim->table_mutex);
 	return (NULL);
+}
+
+long	coder_status(t_sim *sim, int i, int *done)
+{
+	long	time;
+
+	pthread_mutex_lock(&sim->coders_mutex);
+	*done = (sim->coders[i].compile_count >= sim->n_req_compiles);
+	time = get_time_ms() - sim->coders[i].last_compile;
+	pthread_mutex_unlock(&sim->coders_mutex);
+	return (time);
 }
 
 void	*monitor_routine(void *arg)

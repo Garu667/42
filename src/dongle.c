@@ -6,7 +6,7 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 17:03:45 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/09/12 17:03:45 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2026/07/27 17:03:45 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,6 @@
 static int	free_now(t_dongle *d, long cd)
 {
 	return (!d->in_use && get_time_ms() - d->released_at >= cd);
-}
-
-static int	head_can_go(t_sim *sim, t_dongle *d, t_waiter *head)
-{
-	t_coder		*hc;
-	t_dongle	*other;
-
-	hc = &sim->coders[head->coder_id - 1];
-	other = hc->left;
-	if (hc->left == d)
-		other = hc->right;
-	return (free_now(other, sim->dongle_cd));
 }
 
 static int	dongle_ready(t_sim *sim, t_dongle *d, t_waiter *w)
@@ -38,7 +26,7 @@ static int	dongle_ready(t_sim *sim, t_dongle *d, t_waiter *w)
 	head = heap_peek(d);
 	if (head == w || head == NULL)
 		return (1);
-	return (!head_can_go(sim, d, head));
+	return (0);
 }
 
 int	try_claim(t_coder *c)

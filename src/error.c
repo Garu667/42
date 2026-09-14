@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   heap.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -33,6 +33,8 @@ void	cleanup_sim(t_sim *sim, int i)
 	pthread_mutex_destroy(&sim->stop_mutex);
 	pthread_mutex_destroy(&sim->log_mutex);
 	pthread_mutex_destroy(&sim->coders_mutex);
+	pthread_mutex_destroy(&sim->table_mutex);
+	pthread_cond_destroy(&sim->table_cond);
 }
 
 void	abort_sim(t_sim *sim, int created)
