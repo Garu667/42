@@ -65,7 +65,7 @@ void	*coder_routine(void *arg)
 	coder = (t_coder *)arg;
 	sim = coder->sim;
 	if (coder->id % 2 == 0)
-		usleep(100);
+		usleep(sim->time_compile * 500);
 	while (!sim_should_stop(sim))
 	{
 		pthread_mutex_lock(&sim->coders_mutex);
