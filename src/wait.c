@@ -63,10 +63,11 @@ void	acquire_pair(t_coder *c)
 	t_sim	*sim;
 
 	sim = c->sim;
+	pthread_mutex_lock(&sim->coders_mutex);
 	c->waiter.coder_id = c->id;
 	c->waiter.arrived_at = get_time_ms();
-	pthread_mutex_lock(&sim->coders_mutex);
 	c->waiter.deadline = c->last_compile + sim->time_burnout;
+	c->waiter.n_compile = c->compile_count;
 	pthread_mutex_unlock(&sim->coders_mutex);
 	pthread_mutex_lock(&sim->table_mutex);
 	queue_pair(c, 1);

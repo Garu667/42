@@ -39,6 +39,7 @@ typedef struct s_waiter
 	int		coder_id;
 	long	arrived_at;
 	long	deadline;
+	int		n_compile;
 }	t_waiter;
 
 typedef struct s_dongle

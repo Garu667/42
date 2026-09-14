@@ -24,8 +24,8 @@ static void	coder_compile(t_sim *sim, t_coder *coder)
 {
 	pthread_mutex_lock(&sim->coders_mutex);
 	coder->last_compile = get_time_ms();
-	log_action(sim, coder->id, "is compiling");
 	pthread_mutex_unlock(&sim->coders_mutex);
+	log_action(sim, coder->id, "is compiling");
 	ft_msleep(sim->time_compile, sim);
 	pthread_mutex_lock(&sim->coders_mutex);
 	coder->compile_count++;
@@ -39,10 +39,11 @@ static void	coder_life(t_sim *sim, t_coder *coder)
 		log_action(sim, coder->id, "has taken a dongle");
 		while (!sim_should_stop(sim))
 			usleep(200);
+		return ;
 	}
-	acquire_pair(coder);
 	if (sim_should_stop(sim))
 		return ;
+	acquire_pair(coder);
 	log_action(sim, coder->id, "has taken a dongle");
 	log_action(sim, coder->id, "has taken a dongle");
 	coder_compile(sim, coder);
