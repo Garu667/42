@@ -38,7 +38,7 @@ void	*monitor_routine(void *arg)
 		while (++i < sim->n_coders)
 		{
 			time = coder_status(sim, i, &done);
-			if (!done && time > sim->time_burnout)
+			if (!done && time >= sim->time_burnout)
 			{
 				log_action(sim, sim->coders[i].id, "burned out");
 				return (stop_simulation(sim));
