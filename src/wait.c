@@ -47,6 +47,11 @@ void	wait_table(t_coder *c)
 	{
 		ts.tv_sec = target / 1000;
 		ts.tv_nsec = (target % 1000) * 1000000L;
+		if (ts.tv_nsec >= 1000000000L)
+		{
+			ts.tv_sec += 1;
+			ts.tv_nsec -= 1000000000L;
+		}
 		pthread_cond_timedwait(&c->sim->table_cond, &c->sim->table_mutex, &ts);
 	}
 	else

@@ -90,5 +90,3 @@ long	coder_status(t_sim *sim, int i, int *done)
 	pthread_mutex_unlock(&sim->coders_mutex);
 	return (time);
 }
-
-
