@@ -75,6 +75,7 @@ void	acquire_pair(t_coder *c)
 		wait_table(c);
 	if (sim_should_stop(sim))
 		queue_pair(c, 0);
-	pthread_cond_broadcast(&sim->table_cond);
+	else
+		pthread_cond_broadcast(&sim->table_cond);
 	pthread_mutex_unlock(&sim->table_mutex);
 }
