@@ -12,11 +12,6 @@
 
 #include "codexion.h"
 
-/*
-** Earliest instant at which the state can change on its own, i.e. the soonest
-** cooldown expiry. A dongle that is in_use contributes nothing: its release
-** will signal us. Returning 0 means "wait until somebody wakes us".
-*/
 static long	next_wakeup(t_sim *sim)
 {
 	int		i;
@@ -38,12 +33,6 @@ static long	next_wakeup(t_sim *sim)
 	return (best);
 }
 
-/*
-** No timed wait: cond_wait whenever the only thing that can unblock us is
-** another thread (a release or a new request). During a cooldown nothing will
-** signal us, so we drop the mutex for a short sleep instead. Missing a signal
-** in that window is harmless: we rescan as soon as we take the mutex back.
-*/
 void	sched_wait(t_sim *sim)
 {
 	if (next_wakeup(sim) <= 0)

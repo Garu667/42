@@ -19,12 +19,6 @@ static int	dongle_free(t_sim *sim, t_dongle *d, long now)
 	return (now - d->released_at >= sim->dongle_cd);
 }
 
-/*
-** Either hand both dongles to this waiter, or reserve both for it so that no
-** lower-priority waiter can take them later in this same pass. That reservation
-** is the whole anti-starvation argument: a blocked waiter is only ever blocked
-** by coders that are compiling, and they release after time_compile.
-*/
 static int	try_grant(t_sim *sim, t_waiter *w, long now)
 {
 	t_coder	*c;

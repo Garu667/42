@@ -24,12 +24,6 @@ static void	fill_waiter(t_coder *c)
 	pthread_mutex_unlock(&sim->coders_mutex);
 }
 
-/*
-** The coder never inspects a dongle. It registers a request, then sleeps on
-** its own condvar until the arbiter has already flipped both dongles to
-** in_use on its behalf. granted is the whole contract, and it is the loop
-** predicate, so a spurious wakeup cannot make a coder leave empty-handed.
-*/
 int	request_dongles(t_coder *c)
 {
 	t_sim	*sim;

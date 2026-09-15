@@ -12,11 +12,6 @@
 
 #include "codexion.h"
 
-/*
-** Strict total order over waiters: seq is unique and assigned under
-** sched_mutex, so has_priority never reports a tie. That is what makes the
-** top-down scan deterministic and reproducible.
-*/
 static int	has_priority(t_waiter *a, t_waiter *b, int scheduler)
 {
 	if (scheduler == SCHEDULER_FIFO)
@@ -28,11 +23,6 @@ static int	has_priority(t_waiter *a, t_waiter *b, int scheduler)
 	return (a->seq < b->seq);
 }
 
-/*
-** Sorted insertion, not a heap: the scheduler walks the whole queue in
-** priority order on every pass, which a heap cannot provide without
-** destroying it. O(n) insert, O(1) ordered traversal.
-*/
 void	queue_push(t_sim *sim, t_waiter *waiter)
 {
 	int	i;
