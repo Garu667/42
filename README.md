@@ -4,208 +4,173 @@
 
 ## Description
 
-**codexion** is a multithreaded simulation of the classic Dining Philosophers
-problem, reframed as coders sharing scarce USB dongles in a co-working space.
+Dining philosophers, rewritten. `number_of_coders` coders sit in a circle with
+one USB dongle between each pair of neighbours (so: as many dongles as coders).
+A coder needs **both** of its adjacent dongles to compile.
 
-`number_of_coders` coders sit in a circular arrangement around a shared
-Quantum Compiler. There are exactly as many USB dongles as coders, arranged
-the same way: each coder has one dongle on their left and one on their right.
-To compile, a coder must hold **both** their dongles at the same time.
-
-Each coder repeats an endless cycle:
+Each coder loops:
 
 ```
-acquire left + right dongle → compile → release both dongles → debug → refactor → (repeat)
+take both dongles -> compile -> release both -> debug -> refactor
 ```
 
-If a coder fails to start compiling within `time_to_burnout` milliseconds of
-their last compile (or of the start of the simulation), they **burn out**,
-and the whole simulation stops. It also stops once every coder has compiled
-at least `number_of_compiles_required` times.
+The simulation ends when a coder **burns out** (no compile started within
+`time_to_burnout` ms of its previous one) or when every coder has compiled
+`number_of_compiles_required` times.
 
-The project's real goal is building a correct, deadlock-free,
-starvation-free, and precisely-timed concurrent program using only POSIX
-threads and mutexes, with a hand-rolled priority queue for fair dongle
-arbitration.
+**Core design idea:** a coder never touches a dongle itself. A single **arbiter
+thread** owns every dongle and one global ordered wait queue, and only ever
+hands out a **complete pair**. Since nobody can hold half a pair, a circular
+wait cannot exist.
 
 ## Instructions
 
-### Compilation
-
-The Makefile provides `clean`, `fclean`, and `re` rules.
-
-### Usage
+### Build
 
 ```sh
-./codexion number_of_coders time_to_burnout time_to_compile time_to_debug \
-           time_to_refactor number_of_compiles_required dongle_cooldown scheduler
+make            # produces ./codexion
+make clean      # objects
+make fclean     # objects + binary
+make re
 ```
 
-| Argument                    | Meaning                                                                 |
-|------------------------------|--------------------------------------------------------------------------|
-| `number_of_coders`           | Number of coders (and number of dongles)                               |
-| `time_to_burnout`             | ms since last compile start before a coder burns out                   |
-| `time_to_compile`             | ms a compile takes (both dongles held)                                 |
-| `time_to_debug`               | ms spent debugging                                                     |
-| `time_to_refactor`            | ms spent refactoring                                                    |
-| `number_of_compiles_required` | Simulation stops once every coder has compiled at least this many times |
-| `dongle_cooldown`             | ms a dongle stays unusable after being released                        |
-| `scheduler`                   | `fifo` or `edf` — arbitration policy when several coders want a dongle  |
+Compiled with `-Wall -Wextra -Werror -pthread`, no warnings. No dependency
+beyond libpthread.
 
-All arguments are mandatory and must be strictly positive integers (except
-`scheduler`, which must be exactly `fifo` or `edf`).
+### Run
 
-Example:
 ```sh
-# Scheduler in Maj
-./codexion 3 500 100 100 100 3 50 FIFO
-# Huge number
-./codexion 3 999999999999999999999 100 100 100 3 50 fifo
-# Zero Coders
-./codexion 0 500 100 100 100 3 50 fifo
-# One coder
-./codexion 1 500 100 100 100 3 50 fifo
-# dongle_cd > time_burnout
-./codexion 3 200 50 50 50 3 300 fifo
-# Stress EDF
-./codexion 8 600 20 20 20 8 20 edf
+./codexion n_coders time_to_burnout time_to_compile time_to_debug \
+           time_to_refactor n_compiles_required dongle_cooldown scheduler
 ```
 
-### Reading the output
+| Argument              | Meaning                                                      |
+| --------------------- | ------------------------------------------------------------ |
+| `n_coders`            | Number of coders, and of dongles (must be > 0)                |
+| `time_to_burnout`     | ms without starting a compile before a coder burns out (> 0)  |
+| `time_to_compile`     | ms spent compiling, both dongles held (> 0)                   |
+| `time_to_debug`       | ms spent debugging (> 0)                                      |
+| `time_to_refactor`    | ms spent refactoring (> 0)                                    |
+| `n_compiles_required` | Stop once every coder reached this count (may be 0)           |
+| `dongle_cooldown`     | ms a dongle stays unusable after release (may be 0)           |
+| `scheduler`           | `fifo` or `edf`, lowercase — order used to arbitrate requests |
 
-Every state change is logged as `timestamp_in_ms coder_id action`:
+All values are integers. Anything else (negative, overflowing, `FIFO`, missing
+argument) exits with an error message and no thread started.
+
+### Output
+
+One line per state change, `timestamp_ms coder_id action`:
 
 ```
 0 1 has taken a dongle
-2 1 has taken a dongle
-2 1 is compiling
-202 1 is debugging
-402 1 is refactoring
+0 1 has taken a dongle
+0 1 is compiling
+200 1 is debugging
+400 1 is refactoring
 ```
 
-## Project structure
+Every `is compiling` is preceded by exactly two `has taken a dongle` lines for
+the same coder. `burned out` is always the last line printed.
 
-| File          | Functions                                                                 |
-|---------------|----------------------------------------------------------------------------|
-| `main.c`      | `monitor_routine`, `main` (top-level orchestration, argument-count check)  |
-| `error.c`     | `cleanup_sim`, `abort_sim`, `free_return` (every error/shutdown cleanup path) |
-| `init.c`      | `init_dongles`, `init_coders`, `init_unbreakable`, `init_sim`             |
-| `parsing.c`   | `invalid_number`, `parse_positive_long`, `invalid_scheduler`, `swap`, `parsing` |
-| `dongle.c`    | `dongle_ready`, `acquire_dongle`, `release_dongle`                        |
-| `heap.c`      | `has_priority`, `heap_peek`, `heap_push`, `heap_pop`                      |
-| `coders.c`    | `log_action`, `coder_compile`, `coder_life`, `coder_routine`, `coder_status` |
-| `utils.c`     | `get_time_ms`, `get_elapsed_ms`, `ft_msleep`, `sim_should_stop`, `all_coders_done` |
-| `codexion.h`  | Shared structs (`t_sim`, `t_coder`, `t_dongle`, `t_waiter`), the `t_error` enum, and every prototype |
+### Reference runs
+
+```sh
+./codexion 1 800 200 200 200 10 0 fifo     # 1 dongle for 2 needed -> burns out at ~800
+./codexion 5 2000 200 200 200 10 0 fifo    # no burnout, stops after 10 compiles each
+./codexion 5 2000 200 200 200 7 0 edf      # same with edf
+./codexion 5 500 200 200 200 10 0 fifo     # cycle (600) > burnout (500) -> burns out at ~500
+./codexion 5 3000 200 200 200 10 400 fifo  # cooldown respected, no burnout
+```
 
 ## Blocking cases handled
 
-- **Deadlock prevention (Coffman's circular wait).** Instead of every coder
-  always acquiring `left` then `right`, each coder acquires whichever of its
-  two dongles has the **lower id first**. This imposes a single global
-  acquisition order across all coders, which makes a circular wait — the
-  classic dining-philosophers deadlock — structurally impossible, regardless
-  of scheduling luck.
-
-- **Starvation prevention.** Each dongle keeps its own tiny waiting array
-  (capacity 2 — its two neighbouring coders are structurally the only ones
-  who can ever want it), ordered by arrival time (`fifo`) or by deadline
-  `last_compile_start + time_to_burnout` (`edf`, with arrival time as a
-  deterministic tie-breaker). Release does not hand the dongle to anyone
-  directly — it simply clears `in_use`; every queued waiter is polling and
-  independently re-checks whether *it* is the highest-priority entry
-  (`heap_peek(dongle) == &waiter`) before taking it. A lower-priority waiter
-  can win the race to re-lock the mutex first, but its own check will fail,
-  so the FIFO/EDF ordering still holds even though no single thread is
-  designated the winner at release time.
-
-- **Cooldown handling.** After release, a dongle is unusable until
-  `dongle_cooldown` ms have passed — `dongle_ready` refuses any waiter,
-  including the highest-priority one, until that window has fully elapsed.
-  The wait happens without holding the dongle's mutex for the whole
-  duration (each poll only holds it briefly), so it never blocks other
-  threads from being scheduled in the meantime.
-
-- **Precise burnout detection.** A dedicated monitor thread polls every
-  coder's `last_compile` timestamp on a short interval and compares it
-  against `time_to_burnout`, logging the burnout and stopping the simulation
-  well within the 10 ms tolerance required by the subject.
-
-- **Log serialization.** All logging goes through a single function that
-  locks a dedicated mutex around the `printf` call, so two messages can
-  never interleave on one line.
-
-- **Graceful, non-hanging shutdown.** The shared `stop` flag is itself
-  protected by a mutex (read and written the same way everywhere — there is
-  no "read-only, no lock needed" shortcut). Every wait in the program —
-  a coder polling for a dongle, and every compile/debug/refactor sleep — is
-  interruptible: each one re-checks the stop flag on a short interval
-  instead of blocking or sleeping blindly for the full duration. Without
-  this, a coder mid-`debug` with a large `time_to_debug`, or one still
-  polling for a contested dongle, would keep the whole program alive long
-  after the simulation should have ended.
-
-- **Lock-order deadlock between mutexes (found during development).** An
-  earlier version of the shutdown path had a coder lock a dongle's mutex and
-  then lock the stop mutex (via the stop-check), while the monitor locked
-  the stop mutex and then a dongle's mutex to wake waiters — two threads
-  locking the same two mutexes in opposite order, a classic AB-BA deadlock
-  risk. It was caught with `helgrind` before it ever triggered in practice.
-  The current polling design (above) no longer needs that wake step at all,
-  which removed the risk at its root rather than just reordering the locks.
+- **Deadlock (circular wait).** Grants are all-or-nothing and done by one
+  thread under one mutex: a coder is either given both dongles or none. No
+  partial hold, no hold-and-wait, no cycle.
+- **Starvation.** The queue is kept sorted (`fifo` by arrival, `edf` by
+  deadline). When the arbiter cannot serve a waiter during a pass, it marks
+  both of its dongles `reserved`, so no lower-priority waiter can take them
+  later in that same pass. A blocked waiter is therefore only ever blocked by
+  coders that are *currently compiling*, and those release after
+  `time_to_compile`.
+- **Cooldown.** A released dongle stays unavailable for `dongle_cooldown` ms.
+  The check happens at grant time, inside the arbiter, so a cooling dongle is
+  reserved for its rightful owner instead of being stolen by whoever asks next.
+- **Lost / spurious wakeups.** A coder waits on `while (!granted && !stop)`:
+  the flag, not the signal, is the contract. The arbiter flips both dongles to
+  `in_use` *before* signalling, so a grant can never be missed or duplicated.
+- **Waiting on time vs waiting on a thread.** During a cooldown no thread will
+  signal the arbiter, so blocking in `pthread_cond_wait` would hang it. It
+  drops the mutex for a short sleep instead, and goes back to `cond_wait` as
+  soon as the only possible change is another thread's action.
+- **Lock-order inversion (AB-BA).** `sched_mutex`, `log_mutex` and
+  `coders_mutex` are never nested into one another; `stop_mutex` is always the
+  innermost lock. A single global ordering exists, checked with `helgrind`.
+- **Shutdown without hanging.** `stop` is set under its own mutex, then every
+  coder condvar and the arbiter condvar are broadcast, so no thread stays
+  parked in `cond_wait`. Every sleep is a poll loop that rechecks `stop`
+  instead of sleeping blindly for the full duration.
+- **Log serialization.** All output goes through one mutexed `printf`, and
+  logging is refused once `stop` is set, so lines never interleave and nothing
+  is printed after the final `burned out`.
+- **Single coder.** With `n_coders == 1`, left and right are the same dongle:
+  the coder takes it, can never compile, and burns out on time.
 
 ## Thread synchronization mechanisms
 
-- **Per-dongle `pthread_mutex_t`** protects that dongle's `in_use` flag,
-  `released_at` timestamp, and its small (capacity-2) waiting queue. Every
-  read or write of these fields goes through this lock — including a
-  waiter's own eligibility check, so no two threads can ever disagree about
-  whether a dongle is currently free.
+Threads: `n_coders` coder threads, one arbiter, one monitor. No global
+variable — everything lives in `t_sim`, passed by pointer.
 
-- **Bounded polling instead of a condition variable.** A waiter registers
-  itself in the dongle's queue once, then loops: release the lock, sleep a
-  short fixed interval (`usleep`), reacquire the lock, and recheck whether
-  it is now the highest-priority *and* cooldown-cleared entry
-  (`dongle_ready`). The same loop condition also watches the simulation's
-  `stop` flag, so a waiter never blocks past the point where the simulation
-  should end.
+| Primitive       | Protects / does                                                            |
+| --------------- | -------------------------------------------------------------------------- |
+| `sched_mutex`   | Dongle state, wait queue, sequence counter, `granted` flags                 |
+| `sched_cond`    | Wakes the arbiter on a new request or a release                             |
+| `coder[i].cond` | One condvar per coder, signalled when its pair is granted                   |
+| `coders_mutex`  | `last_compile` and `compile_count` (written by coders, read by the monitor) |
+| `stop_mutex`    | The `stop` flag, locked for reads as well as writes                         |
+| `log_mutex`     | The single `printf` used for every log line                                 |
 
-- **`coders_mutex`** protects `last_compile` and `compile_count` on every
-  `t_coder`. These fields are written by the owning coder thread and read by
-  the monitor thread; without this lock, the monitor could read a torn or
-  stale value while a coder is mid-write — a genuine data race, not just a
-  theoretical one, since nothing in the C standard guarantees a plain memory
-  write is visible to another thread without synchronization.
+- **Queue (`queue.c`).** Sorted insertion into a fixed array, not a heap: the
+  arbiter needs to walk *all* waiters in priority order on each pass, which a
+  heap cannot do without being destroyed. O(n) insert, O(1) ordered traversal.
+- **Scheduler policy.** `fifo` and `edf` differ only by the comparator
+  `has_priority()`. `seq` is unique and assigned under `sched_mutex`, so the
+  order is total and the runs are reproducible.
+- **Monitor thread.** Polls each coder's `last_compile` on a short interval and
+  stops the simulation within the 10 ms tolerance of the deadline.
 
-- **`stop_mutex`** protects the single `stop` flag shared by every thread.
-  It is locked for every read, not only every write — reading a flag another
-  thread can modify concurrently is exactly as much a data race as writing
-  it.
+### Source layout
 
-- **`log_mutex`** wraps the one `printf` call used for all logging, so
-  concurrent log lines from different threads never interleave.
-
-- **Fixed-size priority array (`heap.c`)** backs both `fifo` and `edf`
-  scheduling — no standard library priority queue is used. Since a given
-  dongle can structurally only ever be wanted by its two neighbouring
-  coders, the array never needs more than 2 slots: `heap_push` inserts and,
-  if there are now two entries, swaps them into priority order with a
-  single comparison; `heap_pop` removes the front slot and slides the other
-  one forward. The only thing that changes between `fifo` and `edf` is the
-  comparator (`has_priority`), which compares arrival time or deadline
-  depending on the configured scheduler.
+| File                       | Role                                              |
+| -------------------------- | ------------------------------------------------- |
+| `main.c`                   | Entry point, monitor thread, shutdown             |
+| `parsing.c` / `init.c`     | Argument checking, allocation, thread startup     |
+| `coders.c`                 | Coder lifecycle and logging                       |
+| `dongle.c`                 | Request / release seen from the coder side        |
+| `scheduler.c`              | The arbiter: grant, reserve, scan                 |
+| `sched_wait.c`             | When the arbiter blocks and when it sleeps        |
+| `queue.c`                  | Ordered wait queue, `fifo` / `edf` comparator     |
+| `utils.c` / `error.c`      | Time helpers, interruptible sleep, cleanup paths  |
 
 ## Resources
 
-- [Codexion Visualizer](https://github.com/0xS4cha/codexion_visualizer) made by [sservant](https://github.com/0xS4cha)
-- Medium Forum, [this post](https://medium.com/@akshatarhabib/understanding-threads-in-c-c9feb5e9372a) particularly
-- `man 3 pthread_mutex_lock`, `man 3 pthread_cond_wait`, `man 3 pthread_cond_timedwait`
-- Youtube video, they are too far in my historic i couldn't link them
+- [Codexion Visualizer](https://github.com/0xS4cha/codexion_visualizer) by [sservant](https://github.com/0xS4cha)
+- [Understanding threads in C](https://medium.com/@akshatarhabib/understanding-threads-in-c-c9feb5e9372a) (Medium)
+- `man 3 pthread_mutex_lock`, `man 3 pthread_cond_wait`, `man 3 pthread_cond_signal`
+- `valgrind --tool=helgrind` and `--tool=drd`, plus `-fsanitize=thread`, used to
+  check for data races and lock-order inversions
 
-### AI usage disclosure
+### AI usage
 
-An AI assistant was used throughout this project's development in order to explain concurrency concepts.
+An AI assistant was used as an explainer and a reviewer, not as a code
+generator:
 
-- **Explaining concurrency concepts** on request (what a lock-order
-  deadlock is versus a resource-order deadlock, why a condition variable
-  read still needs a mutex, how a heap-based direct hand-off avoids
-  starvation) rather than just supplying fixes.
+- **Explaining concepts** on demand: lock-order vs resource-order deadlock, why
+  reading a shared flag still requires a mutex, why a condvar always needs a
+  predicate loop.
+- **Reviewing the arbiter design** (`scheduler.c`, `queue.c`) after a first
+  version where each dongle had its own queue and its own cooldown check: that
+  version could starve a waiter and applied the cooldown at the wrong moment.
+  The discussion led to the current single-queue arbiter with reservation.
+- **Writing this README**: structure and wording.
