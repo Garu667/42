@@ -52,24 +52,6 @@ static long	parse_positive_long(const char *str, int flag)
 	return (result);
 }
 
-static int	invalid_scheduler(const char *str)
-{
-	if (!str)
-		return (1);
-	if (strcmp(str, "fifo") == 0 || strcmp(str, "edf") == 0)
-		return (0);
-	return (2);
-}
-
-void	swap(t_waiter **a, t_waiter **b)
-{
-	t_waiter	*tmp;
-
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
-}
-
 int	parsing(char **av, t_sim *sim)
 {
 	sim->n_coders = (int)parse_positive_long(av[1], 1);
@@ -84,8 +66,6 @@ int	parsing(char **av, t_sim *sim)
 		|| sim->time_refactor < 0 || sim->n_req_compiles < 0
 		|| sim->dongle_cd < 0)
 		return (1);
-	if (invalid_scheduler(av[8]))
-		return (2);
 	if (strcmp(av[8], "fifo") == 0 || strcmp(av[8], "edf") == 0)
 	{
 		if (strcmp(av[8], "fifo") == 0)
@@ -94,6 +74,6 @@ int	parsing(char **av, t_sim *sim)
 			sim->scheduler = SCHEDULER_EDF;
 	}
 	else
-		return (3);
+		return (ERR_ARGC);
 	return (0);
 }

@@ -44,7 +44,6 @@ typedef struct s_waiter
 
 typedef struct s_dongle
 {
-	int		id;
 	int		in_use;
 	int		reserved;
 	long	released_at;
@@ -91,7 +90,6 @@ typedef struct s_sim
 }	t_sim;
 
 /*		parsing.c		*/
-void		swap(t_waiter **a, t_waiter **b);
 int			parsing(char **av, t_sim *sim);
 /*		utils.c		*/
 long		get_time_ms(void);

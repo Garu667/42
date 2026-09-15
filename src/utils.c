@@ -55,7 +55,6 @@ int	all_coders_done(t_sim *sim)
 	int	i;
 
 	i = 0;
-	compiled = 0;
 	required = sim->n_req_compiles;
 	while (i < sim->n_coders)
 	{

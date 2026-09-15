@@ -31,7 +31,7 @@ clean:
 	rm -f $(DEPFILES)
 
 fclean: clean
-	rm -f $(NAME) $(BONUS_NAME)
+	rm -f $(NAME)
 
 re: fclean all
 

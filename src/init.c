@@ -19,7 +19,6 @@ static void	init_dongles(t_sim *sim)
 	i = -1;
 	while (++i < sim->n_coders)
 	{
-		sim->dongles[i].id = i + 1;
 		sim->dongles[i].in_use = 0;
 		sim->dongles[i].reserved = 0;
 		sim->dongles[i].released_at = 0;
