@@ -43,11 +43,12 @@ static void	coder_life(t_sim *sim, t_coder *coder)
 	}
 	if (sim_should_stop(sim))
 		return ;
-	acquire_pair(coder);
+	if (!request_dongles(coder))
+		return ;
 	log_action(sim, coder->id, "has taken a dongle");
 	log_action(sim, coder->id, "has taken a dongle");
 	coder_compile(sim, coder);
-	release_pair(coder);
+	release_dongles(coder);
 	if (sim_should_stop(sim))
 		return ;
 	log_action(sim, coder->id, "is debugging");

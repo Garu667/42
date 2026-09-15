@@ -6,56 +6,64 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/27 17:03:45 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/07/27 17:03:45 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2026/09/15 10:00:00 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static int	free_now(t_dongle *d, long cd)
+static void	fill_waiter(t_coder *c)
 {
-	return (!d->in_use && get_time_ms() - d->released_at >= cd);
+	t_sim	*sim;
+
+	sim = c->sim;
+	pthread_mutex_lock(&sim->coders_mutex);
+	c->waiter.coder_id = c->id;
+	c->waiter.deadline = c->last_compile + sim->time_burnout;
+	c->waiter.n_compile = c->compile_count;
+	pthread_mutex_unlock(&sim->coders_mutex);
 }
 
-static int	dongle_ready(t_sim *sim, t_dongle *d, t_waiter *w)
+/*
+** The coder never inspects a dongle. It registers a request, then sleeps on
+** its own condvar until the arbiter has already flipped both dongles to
+** in_use on its behalf. granted is the whole contract, and it is the loop
+** predicate, so a spurious wakeup cannot make a coder leave empty-handed.
+*/
+int	request_dongles(t_coder *c)
 {
-	t_waiter	*head;
+	t_sim	*sim;
+	int		ok;
 
-	if (!free_now(d, sim->dongle_cd))
-		return (0);
-	head = heap_peek(d);
-	if (head == w || head == NULL)
-		return (1);
-	return (0);
-}
-
-int	try_claim(t_coder *c)
-{
-	int	ok;
-
-	lock_pair(c);
-	ok = (dongle_ready(c->sim, c->left, &c->waiter)
-			&& dongle_ready(c->sim, c->right, &c->waiter));
-	if (ok)
-	{
-		c->left->in_use = 1;
-		c->right->in_use = 1;
-		heap_remove(c->left, &c->waiter);
-		heap_remove(c->right, &c->waiter);
-	}
-	unlock_pair(c);
+	sim = c->sim;
+	fill_waiter(c);
+	pthread_mutex_lock(&sim->sched_mutex);
+	c->waiter.seq = sim->seq++;
+	c->granted = 0;
+	queue_push(sim, &c->waiter);
+	pthread_cond_signal(&sim->sched_cond);
+	while (!c->granted && !sim_should_stop(sim))
+		pthread_cond_wait(&c->cond, &sim->sched_mutex);
+	ok = c->granted;
+	if (!ok)
+		queue_remove(sim, &c->waiter);
+	pthread_mutex_unlock(&sim->sched_mutex);
 	return (ok);
 }
 
-void	release_pair(t_coder *c)
+void	release_dongles(t_coder *c)
 {
-	pthread_mutex_lock(&c->sim->table_mutex);
-	lock_pair(c);
+	t_sim	*sim;
+	long	now;
+
+	sim = c->sim;
+	pthread_mutex_lock(&sim->sched_mutex);
+	now = get_time_ms();
 	c->left->in_use = 0;
-	c->left->released_at = get_time_ms();
+	c->left->released_at = now;
 	c->right->in_use = 0;
-	c->right->released_at = get_time_ms();
-	unlock_pair(c);
-	pthread_cond_broadcast(&c->sim->table_cond);
-	pthread_mutex_unlock(&c->sim->table_mutex);
+	c->right->released_at = now;
+	c->granted = 0;
+	pthread_cond_signal(&sim->sched_cond);
+	pthread_mutex_unlock(&sim->sched_mutex);
 }

@@ -6,38 +6,30 @@
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/08 11:14:17 by ramaroud          #+#    #+#             */
-/*   Updated: 2026/09/14 11:50:17 by ramaroud         ###   ########lyon.fr   */
+/*   Updated: 2026/09/15 10:00:00 by ramaroud         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	cleanup_sim(t_sim *sim, int i)
+static void	cleanup_sim(t_sim *sim)
 {
-	int	j;
+	int	i;
 
-	j = sim->n_coders;
-	if (i != 0)
-	{
-		j = i;
-		i = 0;
-	}
-	while (i < j)
-	{
-		free(sim->dongles[i].queue);
-		pthread_mutex_destroy(&sim->dongles[i].mutex);
-		i++;
-	}
+	i = -1;
+	while (++i < sim->n_coders)
+		pthread_cond_destroy(&sim->coders[i].cond);
+	free(sim->queue);
 	free(sim->dongles);
 	free(sim->coders);
+	pthread_mutex_destroy(&sim->sched_mutex);
+	pthread_cond_destroy(&sim->sched_cond);
 	pthread_mutex_destroy(&sim->stop_mutex);
 	pthread_mutex_destroy(&sim->log_mutex);
 	pthread_mutex_destroy(&sim->coders_mutex);
-	pthread_mutex_destroy(&sim->table_mutex);
-	pthread_cond_destroy(&sim->table_cond);
 }
 
-void	abort_sim(t_sim *sim, int created)
+static void	abort_sim(t_sim *sim, int created)
 {
 	int	i;
 
@@ -46,7 +38,15 @@ void	abort_sim(t_sim *sim, int created)
 	while (++i < created)
 		pthread_join(sim->coders[i].thread, NULL);
 	pthread_join(sim->monitor, NULL);
-	cleanup_sim(sim, 0);
+	pthread_join(sim->arbiter, NULL);
+	cleanup_sim(sim);
+}
+
+static void	abort_arbiter(t_sim *sim)
+{
+	stop_simulation(sim);
+	pthread_join(sim->arbiter, NULL);
+	cleanup_sim(sim);
 }
 
 int	free_return(t_sim *sim, int n_free, int ret_flag, int i)
@@ -59,8 +59,10 @@ int	free_return(t_sim *sim, int n_free, int ret_flag, int i)
 		free(sim->dongles);
 	}
 	if (n_free == 3)
-		cleanup_sim(sim, 0);
+		cleanup_sim(sim);
 	if (n_free == 4)
 		abort_sim(sim, i);
+	if (n_free == 5)
+		abort_arbiter(sim);
 	return (ret_flag);
 }
