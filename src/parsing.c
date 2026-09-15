@@ -65,7 +65,7 @@ int	parsing(char **av, t_sim *sim)
 		|| sim->time_compile < 0 || sim->time_debug < 0
 		|| sim->time_refactor < 0 || sim->n_req_compiles < 0
 		|| sim->dongle_cd < 0)
-		return (1);
+		return (ERR_PARSING);
 	if (strcmp(av[8], "fifo") == 0 || strcmp(av[8], "edf") == 0)
 	{
 		if (strcmp(av[8], "fifo") == 0)
@@ -74,6 +74,6 @@ int	parsing(char **av, t_sim *sim)
 			sim->scheduler = SCHEDULER_EDF;
 	}
 	else
-		return (ERR_ARGC);
+		return (ERR_PARSING);
 	return (0);
 }

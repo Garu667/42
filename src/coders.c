@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-void	log_action(t_sim *sim, int coder_id, char *action)
+void	log_action(t_sim *sim, int coder_id, const char *action)
 {
 	pthread_mutex_lock(&sim->log_mutex);
 	if (!sim_should_stop(sim))
@@ -66,6 +66,7 @@ void	*coder_routine(void *arg)
 
 	coder = (t_coder *)arg;
 	sim = coder->sim;
+	wait_for_start(sim);
 	if (coder->id % 2 == 0)
 		ft_msleep(sim->time_compile / 2, sim);
 	while (!sim_should_stop(sim))

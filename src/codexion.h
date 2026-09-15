@@ -26,6 +26,7 @@
 typedef enum e_error
 {
 	ERR_ARGC = 1,
+	ERR_PARSING,
 	ERR_ALLOC_CODERS,
 	ERR_ALLOC_DONGLES,
 	ERR_ALLOC_QUEUE,
@@ -79,6 +80,7 @@ typedef struct s_sim
 	int				qsize;
 	long			seq;
 	long			sim_start;
+	int				can_start;
 	int				stop;
 	pthread_mutex_t	sched_mutex;
 	pthread_cond_t	sched_cond;
@@ -109,7 +111,7 @@ void		sched_wait(t_sim *sim);
 int			request_dongles(t_coder *coder);
 void		release_dongles(t_coder *coder);
 /*		coders.c		*/
-void		log_action(t_sim *sim, int coder_id, char *action);
+void		log_action(t_sim *sim, int coder_id, const char *action);
 void		*coder_routine(void *arg);
 long		coder_status(t_sim *sim, int i, int *done);
 /*		error.c		*/
@@ -117,5 +119,7 @@ int			free_return(t_sim *sim, int n_free, int ret_flag, int i);
 /*		main.c		*/
 void		*stop_simulation(t_sim *sim);
 void		*monitor_routine(void *arg);
+void		start_simulation(t_sim *sim);
+void		wait_for_start(t_sim *sim);
 
 #endif

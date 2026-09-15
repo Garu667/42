@@ -36,6 +36,7 @@ void	*monitor_routine(void *arg)
 	int		i;
 
 	sim = (t_sim *)arg;
+	wait_for_start(sim);
 	while (!sim_should_stop(sim))
 	{
 		i = -1;
@@ -53,6 +54,36 @@ void	*monitor_routine(void *arg)
 			stop_simulation(sim);
 	}
 	return (NULL);
+}
+
+void	wait_for_start(t_sim *sim)
+{
+	int	go;
+
+	go = 0;
+	while (!go)
+	{
+		pthread_mutex_lock(&sim->stop_mutex);
+		go = (sim->can_start || sim->stop);
+		pthread_mutex_unlock(&sim->stop_mutex);
+		if (!go)
+			usleep(100);
+	}
+}
+
+void	start_simulation(t_sim *sim)
+{
+	int	i;
+
+	pthread_mutex_lock(&sim->coders_mutex);
+	sim->sim_start = get_time_ms();
+	i = -1;
+	while (++i < sim->n_coders)
+		sim->coders[i].last_compile = sim->sim_start;
+	pthread_mutex_unlock(&sim->coders_mutex);
+	pthread_mutex_lock(&sim->stop_mutex);
+	sim->can_start = 1;
+	pthread_mutex_unlock(&sim->stop_mutex);
 }
 
 int	main(int ac, char **av)

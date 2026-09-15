@@ -45,16 +45,16 @@ static void	init_coders(t_sim *sim)
 
 static void	init_unbreakable(t_sim *sim)
 {
-	sim->sim_start = get_time_ms();
 	sim->qsize = 0;
 	sim->seq = 0;
 	init_dongles(sim);
-	init_coders(sim);
 	pthread_mutex_init(&sim->sched_mutex, NULL);
 	pthread_cond_init(&sim->sched_cond, NULL);
 	pthread_mutex_init(&sim->stop_mutex, NULL);
 	pthread_mutex_init(&sim->log_mutex, NULL);
 	pthread_mutex_init(&sim->coders_mutex, NULL);
+	sim->sim_start = get_time_ms();
+	init_coders(sim);
 }
 
 static int	start_coders(t_sim *sim)
@@ -68,6 +68,7 @@ static int	start_coders(t_sim *sim)
 				coder_routine, &sim->coders[i]) != 0)
 			return (free_return(sim, 4, ERR_THREAD_CREATE, i));
 	}
+	start_simulation(sim);
 	pthread_join(sim->monitor, NULL);
 	pthread_join(sim->arbiter, NULL);
 	return (0);
