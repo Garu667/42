@@ -102,7 +102,7 @@ int	main(int ac, char **av)
 	if (parsing(av, &sim))
 	{
 		fprintf(stderr, "Error: invalid arguments\n");
-		return (2);
+		return (ERR_PARSING);
 	}
 	i = init_sim(&sim);
 	if (i != 0)

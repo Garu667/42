@@ -60,6 +60,7 @@ void	*sched_routine(void *arg)
 	t_sim	*sim;
 
 	sim = (t_sim *)arg;
+	wait_for_start(sim);
 	pthread_mutex_lock(&sim->sched_mutex);
 	while (!sim_should_stop(sim))
 	{
