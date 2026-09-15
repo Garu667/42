@@ -60,13 +60,13 @@ int	request_dongles(t_coder *c)
 	pthread_mutex_lock(&sim->sched_mutex);
 	c->waiter.seq = sim->seq++;
 	c->granted = 0;
-	queue_push(sim, &c->waiter);
+	heap_push(sim, &c->waiter);
 	pthread_cond_signal(&sim->sched_cond);
 	while (!c->granted && !sim_should_stop(sim))
 		pthread_cond_wait(&c->cond, &sim->sched_mutex);
 	ok = c->granted;
 	if (!ok)
-		queue_remove(sim, &c->waiter);
+		heap_remove(sim, &c->waiter);
 	pthread_mutex_unlock(&sim->sched_mutex);
 	return (ok);
 }

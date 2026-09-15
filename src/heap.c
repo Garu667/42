@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   queue.c                                            :+:      :+:    :+:   */
+/*   heap.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -23,23 +23,57 @@ static int	has_priority(t_waiter *a, t_waiter *b, int scheduler)
 	return (a->seq < b->seq);
 }
 
-void	queue_push(t_sim *sim, t_waiter *waiter)
+static void	sift_up(t_sim *sim, int index)
 {
-	int	i;
+	int	parent;
 
-	if (sim->qsize >= sim->n_coders)
-		return ;
-	i = sim->qsize;
-	while (i > 0 && has_priority(waiter, sim->queue[i - 1], sim->scheduler))
+	while (index > 0)
 	{
-		sim->queue[i] = sim->queue[i - 1];
-		i--;
+		parent = (index - 1) / 2;
+		if (!has_priority(sim->queue[index],
+				sim->queue[parent], sim->scheduler))
+			break ;
+		swap_waiters(&sim->queue[index], &sim->queue[parent]);
+		index = parent;
 	}
-	sim->queue[i] = waiter;
-	sim->qsize++;
 }
 
-void	queue_remove(t_sim *sim, t_waiter *waiter)
+static void	sift_down(t_sim *sim, int index)
+{
+	int	left;
+	int	right;
+	int	best;
+
+	while (1)
+	{
+		left = index * 2 + 1;
+		right = index * 2 + 2;
+		best = index;
+		if (left < sim->qsize
+			&& has_priority(sim->queue[left],
+				sim->queue[best], sim->scheduler))
+			best = left;
+		if (right < sim->qsize
+			&& has_priority(sim->queue[right],
+				sim->queue[best], sim->scheduler))
+			best = right;
+		if (best == index)
+			break ;
+		swap_waiters(&sim->queue[index], &sim->queue[best]);
+		index = best;
+	}
+}
+
+void	heap_push(t_sim *sim, t_waiter *waiter)
+{
+	if (sim->qsize >= sim->n_coders)
+		return ;
+	sim->queue[sim->qsize] = waiter;
+	sim->qsize++;
+	sift_up(sim, sim->qsize - 1);
+}
+
+void	heap_remove(t_sim *sim, t_waiter *waiter)
 {
 	int	i;
 
@@ -49,9 +83,13 @@ void	queue_remove(t_sim *sim, t_waiter *waiter)
 	if (i == sim->qsize)
 		return ;
 	sim->qsize--;
-	while (i < sim->qsize)
-	{
-		sim->queue[i] = sim->queue[i + 1];
-		i++;
-	}
+	if (i == sim->qsize)
+		return ;
+	sim->queue[i] = sim->queue[sim->qsize];
+	if (i > 0
+		&& has_priority(sim->queue[i],
+			sim->queue[(i - 1) / 2], sim->scheduler))
+		sift_up(sim, i);
+	else
+		sift_down(sim, i);
 }

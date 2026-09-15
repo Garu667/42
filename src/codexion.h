@@ -93,6 +93,7 @@ typedef struct s_sim
 }	t_sim;
 
 /*		parsing.c		*/
+void		swap_waiters(t_waiter **a, t_waiter **b);
 int			parsing(char **av, t_sim *sim);
 /*		utils.c		*/
 long		get_time_ms(void);
@@ -100,9 +101,9 @@ void		ft_msleep(long ms, t_sim *sim);
 long		get_elapsed_ms(t_sim *sim);
 int			all_coders_done(t_sim *sim);
 int			sim_should_stop(t_sim *sim);
-/*		queue.c		*/
-void		queue_push(t_sim *sim, t_waiter *waiter);
-void		queue_remove(t_sim *sim, t_waiter *waiter);
+/*		heap.c		*/
+void		heap_push(t_sim *sim, t_waiter *waiter);
+void		heap_remove(t_sim *sim, t_waiter *waiter);
 /*		init.c		*/
 int			init_sim(t_sim *sim);
 /*		scheduler.c		*/

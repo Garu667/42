@@ -13,6 +13,15 @@
 #include "codexion.h"
 #include <limits.h>
 
+void	swap_waiters(t_waiter **a, t_waiter **b)
+{
+	t_waiter	*tmp;
+
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
 static int	invalid_number(const char *str)
 {
 	int	i;

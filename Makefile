@@ -1,6 +1,6 @@
 NAME			= codexion
 CC				= cc
-CFLAGS			= -Wall -Werror -Wextra -pthread -MMD -MP
+CFLAGS			= -Wall -Werror -Wextra -pthread -MMD -MP -g
 OBJDIR			= objs
 
 MANDATORY_SRCS	= src/parsing.c	\
@@ -8,7 +8,7 @@ MANDATORY_SRCS	= src/parsing.c	\
 				  src/dongle.c	\
 				  src/utils.c	\
 				  src/error.c	\
-				  src/queue.c	\
+				  src/heap.c	\
 				  src/scheduler.c	\
 				  src/sched_wait.c	\
 				  src/init.c	\

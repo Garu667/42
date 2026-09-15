@@ -14,7 +14,7 @@
 
 static int	dongle_free(t_sim *sim, t_dongle *d, long now)
 {
-	if (d->in_use || d->reserved)
+	if (d->in_use)
 		return (0);
 	return (now - d->released_at >= sim->dongle_cd);
 }
@@ -27,15 +27,13 @@ static int	try_grant(t_sim *sim, t_waiter *w, long now)
 	lock_pair(c->left, c->right, 1);
 	if (!dongle_free(sim, c->left, now) || !dongle_free(sim, c->right, now))
 	{
-		c->left->reserved = 1;
-		c->right->reserved = 1;
 		lock_pair(c->left, c->right, 0);
 		return (0);
 	}
 	c->left->in_use = 1;
 	c->right->in_use = 1;
 	lock_pair(c->left, c->right, 0);
-	queue_remove(sim, w);
+	heap_remove(sim, w);
 	c->granted = 1;
 	pthread_cond_signal(&c->cond);
 	return (1);
@@ -46,15 +44,8 @@ static void	sched_scan(t_sim *sim)
 	int		i;
 	long	now;
 
-	i = -1;
-	now = get_time_ms();
-	while (++i < sim->n_coders)
-	{
-		pthread_mutex_lock(&sim->dongles[i].mutex);
-		sim->dongles[i].reserved = 0;
-		pthread_mutex_unlock(&sim->dongles[i].mutex);
-	}
 	i = 0;
+	now = get_time_ms();
 	while (i < sim->qsize)
 	{
 		if (!try_grant(sim, sim->queue[i], now))
