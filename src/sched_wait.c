@@ -26,9 +26,11 @@ static long	next_wakeup(t_sim *sim)
 	i = -1;
 	while (++i < sim->n_coders)
 	{
+		pthread_mutex_lock(&sim->dongles[i].mutex);
 		end = sim->dongles[i].released_at + sim->dongle_cd;
 		if (!sim->dongles[i].in_use && end > now && (best == 0 || end < best))
 			best = end;
+		pthread_mutex_unlock(&sim->dongles[i].mutex);
 	}
 	return (best);
 }

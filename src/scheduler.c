@@ -24,14 +24,17 @@ static int	try_grant(t_sim *sim, t_waiter *w, long now)
 	t_coder	*c;
 
 	c = &sim->coders[w->coder_id - 1];
+	lock_pair(c->left, c->right, 1);
 	if (!dongle_free(sim, c->left, now) || !dongle_free(sim, c->right, now))
 	{
 		c->left->reserved = 1;
 		c->right->reserved = 1;
+		lock_pair(c->left, c->right, 0);
 		return (0);
 	}
 	c->left->in_use = 1;
 	c->right->in_use = 1;
+	lock_pair(c->left, c->right, 0);
 	queue_remove(sim, w);
 	c->granted = 1;
 	pthread_cond_signal(&c->cond);
@@ -46,7 +49,11 @@ static void	sched_scan(t_sim *sim)
 	i = -1;
 	now = get_time_ms();
 	while (++i < sim->n_coders)
+	{
+		pthread_mutex_lock(&sim->dongles[i].mutex);
 		sim->dongles[i].reserved = 0;
+		pthread_mutex_unlock(&sim->dongles[i].mutex);
+	}
 	i = 0;
 	while (i < sim->qsize)
 	{

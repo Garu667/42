@@ -45,9 +45,10 @@ typedef struct s_waiter
 
 typedef struct s_dongle
 {
-	int		in_use;
-	int		reserved;
-	long	released_at;
+	int				in_use;
+	int				reserved;
+	long			released_at;
+	pthread_mutex_t	mutex;
 }	t_dongle;
 
 typedef struct s_coder
@@ -108,6 +109,7 @@ int			init_sim(t_sim *sim);
 void		*sched_routine(void *arg);
 void		sched_wait(t_sim *sim);
 /*		dongle.c		*/
+void		lock_pair(t_dongle *a, t_dongle *b, int lock);
 int			request_dongles(t_coder *coder);
 void		release_dongles(t_coder *coder);
 /*		coders.c		*/

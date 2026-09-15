@@ -19,6 +19,7 @@ static void	init_dongles(t_sim *sim)
 	i = -1;
 	while (++i < sim->n_coders)
 	{
+		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
 		sim->dongles[i].in_use = 0;
 		sim->dongles[i].reserved = 0;
 		sim->dongles[i].released_at = 0;
