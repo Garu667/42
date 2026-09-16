@@ -13,8 +13,8 @@ debug: install
 
 clean:
 	find . -type d -name __pycache__ -exec rm -fr {} +
-	rm -rf .mypy_cache $(VENV) uv.lock
-
+	# rm -rf .mypy_cache $(VENV) uv.lock
+	find . -type d -name .mypy_cache -exec rm -fr {} +
 lint: install
 	$(UV) run flake8 . --exclude=$(VENV)
 	$(UV) run mypy . --exclude $(VENV) --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
