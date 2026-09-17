@@ -171,7 +171,7 @@ the number of moves actually made.
 | Maze nightmare | 8 | <= 30 | 13 |
 | Capacity hell | 12 | <= 35 | 16 |
 | Ultimate challenge | 15 | <= 45 | 26 |
-| The Impossible Dream | 25 | record 45 | 45 |
+| The Impossible Dream | 25 | record 43 | 43 |
 
 Every mandatory target is met. The challenger map matches the reference
 record but does not beat it: its entry gates are a chain of
