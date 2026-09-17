@@ -166,8 +166,8 @@ the number of moves actually made.
 | Simple fork | 4 | <= 8 | 4 |
 | Basic capacity | 4 | <= 6 | 4 |
 | Dead end trap | 5 | <= 12 | 8 |
-| Circular loop | 6 | <= 15 | 14 |
-| Priority puzzle | 5 | <= 12 | 6 |
+| Circular loop | 6 | <= 15 | 15 |
+| Priority puzzle | 5 | <= 12 | 7 |
 | Maze nightmare | 8 | <= 30 | 13 |
 | Capacity hell | 12 | <= 35 | 16 |
 | Ultimate challenge | 15 | <= 45 | 26 |
