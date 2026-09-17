@@ -1,11 +1,149 @@
-from src.camera import Camera
-from src.graph import Graph
-from src.layout import Layout
-from src.replay import Replay
-from src.zone import Zone, ZoneType
 import os
+from dataclasses import dataclass
+
+from src.network import Graph, Zone, ZoneType
+
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 import pygame  # noqa: E402
+
+
+MIN_ZOOM = 0.4
+MAX_ZOOM = 6.0
+
+
+class Camera:
+    """Pan and zoom transform applied on top of Layout's world pixels."""
+
+    def __init__(self) -> None:
+        self.zoom = 1.0
+        self.pan_x = 0.0
+        self.pan_y = 0.0
+
+    def to_screen(self, world_x: int, world_y: int) -> tuple[int, int]:
+        """World pixel coordinates translated to screen coordinates."""
+        sx = (world_x + self.pan_x) * self.zoom
+        sy = (world_y + self.pan_y) * self.zoom
+        return int(sx), int(sy)
+
+    def zoom_at(self, factor: float, anchor: tuple[int, int]) -> None:
+        """Zoom by `factor`, keeping the world point under `anchor` fixed."""
+        old_zoom = self.zoom
+        new_zoom = max(MIN_ZOOM, min(MAX_ZOOM, old_zoom * factor))
+        if new_zoom == old_zoom:
+            return
+        ax, ay = anchor
+        world_x = ax / old_zoom - self.pan_x
+        world_y = ay / old_zoom - self.pan_y
+        self.zoom = new_zoom
+        self.pan_x = ax / new_zoom - world_x
+        self.pan_y = ay / new_zoom - world_y
+
+    def pan(self, dx: int, dy: int) -> None:
+        """Shift the view by a screen-space offset."""
+        self.pan_x += dx / self.zoom
+        self.pan_y += dy / self.zoom
+
+    def reset(self) -> None:
+        """Return to the default unzoomed, uncentered view."""
+        self.zoom = 1.0
+        self.pan_x = 0.0
+        self.pan_y = 0.0
+
+
+class Layout:
+    """Linear transform from data-space zone coordinates to pixels."""
+
+    def __init__(
+        self,
+        graph: Graph,
+        width: int,
+        height: int,
+        margin: int = 60,
+        top_offset: int = 0,
+    ) -> None:
+        xs = [zone.x for zone in graph.zones]
+        ys = [zone.y for zone in graph.zones]
+        self._min_x, self._max_x = min(xs), max(xs)
+        self._min_y, self._max_y = min(ys), max(ys)
+        self._width = width
+        self._height = height
+        self._margin = margin
+        self._top_offset = top_offset
+
+    def position(self, zone: Zone) -> tuple[int, int]:
+        """Pixel position of a zone's center."""
+        span_x = max(self._max_x - self._min_x, 1)
+        span_y = max(self._max_y - self._min_y, 1)
+        usable_w = self._width - 2 * self._margin
+        top = self._top_offset + self._margin
+        bottom = self._height - self._margin
+        usable_h = bottom - top
+        px = self._margin + (zone.x - self._min_x) / span_x * usable_w
+        py = top + (1 - (zone.y - self._min_y) / span_y) * usable_h
+        return int(px), int(py)
+
+    def interpolated(
+        self, zone_a: Zone, zone_b: Zone, t: float
+    ) -> tuple[int, int]:
+        """Pixel position along zone_a -> zone_b at t in [0, 1]."""
+        ax, ay = self.position(zone_a)
+        bx, by = self.position(zone_b)
+        return int(ax + (bx - ax) * t), int(ay + (by - ay) * t)
+
+
+@dataclass
+class DronePosition:
+    """A drone's location at a given point in the replay."""
+
+    zone: Zone
+    target_zone: Zone | None = None
+
+    @property
+    def in_transit(self) -> bool:
+        """Whether the drone is mid-flight toward a restricted zone."""
+        return self.target_zone is not None
+
+
+class Replay:
+    """Reconstructs each drone's position turn by turn from the log."""
+
+    def __init__(
+        self, graph: Graph, turns: list[list[str]], nb_drones: int
+    ) -> None:
+        self._graph = graph
+        self._turns = turns
+        self._nb_drones = nb_drones
+
+    @property
+    def total_turns(self) -> int:
+        """Number of recorded turns."""
+        return len(self._turns)
+
+    def positions_at(self, turn_index: int) -> dict[int, DronePosition]:
+        """Every drone's position after `turn_index` turns have played."""
+        positions = {
+            drone_id: DronePosition(zone=self._graph.start)
+            for drone_id in range(1, self._nb_drones + 1)
+        }
+        for turn in self._turns[:turn_index]:
+            for token in turn:
+                self._apply_token(positions, token)
+        return positions
+
+    def _apply_token(
+        self, positions: dict[int, DronePosition], token: str
+    ) -> None:
+        label, _, target = token.partition("-")
+        drone_id = int(label[1:])
+        state = positions[drone_id]
+        if "-" in target:
+            name_a, _, name_b = target.partition("-")
+            dest_name = name_b if state.zone.name == name_a else name_a
+            state.target_zone = self._graph.get_zone(dest_name)
+        else:
+            state.zone = self._graph.get_zone(target)
+            state.target_zone = None
+
 
 BACKGROUND = (18, 18, 24)
 TEXT_COLOR = (230, 230, 230)

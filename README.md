@@ -89,16 +89,12 @@ Errors stop the program with the offending line and cause, for example
 
 | Module | Responsibility |
 |---|---|
-| `src/zone.py` | `Zone` and `ZoneType`, movement cost and capacity rules |
-| `src/connection.py` | `Connection`, a bidirectional link and its capacity |
-| `src/graph.py` | Hand-written graph: zones by name plus an adjacency map |
+| `src/network.py` | `Zone`, `ZoneType`, `Connection` and the hand-written `Graph` |
 | `src/parsing.py` | Map file parser, raises `ParseError` with line and cause |
-| `src/pathfinder.py` | Dijkstra search and the `Congestion` usage counters |
-| `src/drone.py` | Per-drone state: path, position on it, lifecycle status |
-| `src/scheduler.py` | Path assignment strategies and the turn-by-turn `Simulation` |
-| `src/terminal_display.py` | Colored terminal output (rich) |
-| `src/visualizer.py` | Graphical replay (pygame) |
-| `src/layout.py`, `src/camera.py`, `src/replay.py` | GUI support: coordinate mapping, pan/zoom, position replay |
+| `src/pathfinding.py` | Dijkstra search, `Congestion` counters, space-time planner |
+| `src/simulation.py` | `Drone` state, path assignment strategies, turn-by-turn `Simulation` |
+| `src/application.py` | CLI entry point and colored terminal output (rich) |
+| `src/gui.py` | Graphical replay (pygame): layout, camera, replay, drawing |
 
 `Graph` validates its own invariants (duplicate zones, duplicate
 connections, unknown endpoints) by raising `ValueError`; the parser catches
@@ -120,7 +116,7 @@ Complexity is O(E log V) per call, with V zones and E connections.
 
 ## Path assignment
 
-Two strategies are computed and simulated, and the shorter result is kept:
+Three strategies are computed and simulated, and the shorter result is kept:
 
 - **Shared**: every drone follows the single cheapest path. This is optimal
   when the network has no contention, since nothing beats the shortest route

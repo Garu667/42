@@ -1,6 +1,4 @@
-from src.connection import Connection
-from src.graph import Graph
-from src.zone import Zone, ZoneType
+from src.network import Connection, Graph, Zone, ZoneType
 
 
 class ParseError(Exception):
