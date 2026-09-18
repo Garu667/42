@@ -148,3 +148,35 @@ class Application:
             help="Disable the pygame graphical replay window",
         )
         return parser
+
+class CapacityReporter:
+    """Shows zone and connection usage after each turn."""
+
+    def __init__(self, graph: Graph, console: Console | None = None) -> None:
+        self._graph = graph
+        self._console = console or Console()
+        self._positions: dict[str, str] = {}
+
+    def show(self, tokens: list[str]) -> None:
+        """Print the used/max capacity of every occupied location."""
+        for token in tokens:
+            drone, _, target = token.partition("-")
+            self._positions[drone] = target
+        counts: dict[str, int] = {}
+        for target in self._positions.values():
+            counts[target] = counts.get(target, 0) + 1
+        for name, used in sorted(counts.items()):
+            self._console.print(f"     {self._describe(name, used)}")
+
+    def _describe(self, name: str, used: int) -> str:
+        try:
+            capacity = self._graph.get_zone(name).capacity
+            limit = "inf" if capacity is None else capacity
+            return f"Zone {name}: {used}/{limit} drones"
+        except KeyError:
+            first, _, second = name.partition("-")
+            link = self._graph.get_connection(
+                self._graph.get_zone(first), self._graph.get_zone(second)
+            )
+            limit = link.max_link_capacity if link else "?"
+            return f"Connection {name}: {used}/{limit} capacity used"
