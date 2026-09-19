@@ -1,7 +1,12 @@
 import argparse
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
+    """Parse command line arguments.
+    
+    Return:
+        Parsed argument namespace.
+    """
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--functions_definition",
@@ -9,5 +14,5 @@ def parse_arguments():
     parser.add_argument("--input",
                         default="data/input/function_calling_tests.json")
     parser.add_argument("--output",
-                        default="data/output/function_calls.json")
+                        default="data/output/function_calling_results.json")
     return parser.parse_args()
