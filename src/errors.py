@@ -1,3 +1,6 @@
+
+class VocabError(Exception):
+    ...
 class UnsupportedTypeError(Exception):
     """Un paramètre utilise un type JSON que le décodeur ne gère pas."""
 

@@ -1,4 +1,4 @@
-from dataclass import dataclasses
+from dataclasses import dataclass
 import re
 
 _HEX = "0123456789abcdefABCDEF"
@@ -75,6 +75,7 @@ def build_skeleton(fn: FunctionDefinition) -> list[Segment]:
     segments.append("}")
     return segments
 
+# TODO: precalc frozenset
 def is_viable(slot: Slot, partial: str) -> bool:
     """This prefix can lead to a valid value of the good type ?"""
     if slot.kind == "enum":
