@@ -1,0 +1,88 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/06 08:34:34 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/09/15 19:04:00 by ramaroud         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "codexion.h"
+#include <limits.h>
+
+void	swap_waiters(t_waiter **a, t_waiter **b)
+{
+	t_waiter	*tmp;
+
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
+static int	invalid_number(const char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str || str[0] == '\0')
+		return (1);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (2);
+		i++;
+	}
+	return (0);
+}
+
+static long	parse_positive_long(const char *str, int flag)
+{
+	long	result;
+	int		i;
+
+	if (invalid_number(str))
+		return (-1);
+	result = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (result > (LONG_MAX - (str[i] - '0')) / 10)
+			return (-1);
+		result = result * 10 + (str[i] - '0');
+		i++;
+	}
+	if (result < 0)
+		return (-1);
+	if (flag == 1 && result == 0)
+		return (-1);
+	return (result);
+}
+
+int	parsing(char **av, t_sim *sim)
+{
+	sim->n_coders = (int)parse_positive_long(av[1], 1);
+	sim->time_burnout = parse_positive_long(av[2], 1);
+	sim->time_compile = parse_positive_long(av[3], 1);
+	sim->time_debug = parse_positive_long(av[4], 1);
+	sim->time_refactor = parse_positive_long(av[5], 1);
+	sim->n_req_compiles = (int)parse_positive_long(av[6], 0);
+	sim->dongle_cd = parse_positive_long(av[7], 0);
+	if (sim->n_coders < 0 || sim->time_burnout < 0
+		|| sim->time_compile < 0 || sim->time_debug < 0
+		|| sim->time_refactor < 0 || sim->n_req_compiles < 0
+		|| sim->dongle_cd < 0)
+		return (ERR_PARSING);
+	if (strcmp(av[8], "fifo") == 0 || strcmp(av[8], "edf") == 0)
+	{
+		if (strcmp(av[8], "fifo") == 0)
+			sim->scheduler = SCHEDULER_FIFO;
+		if (strcmp(av[8], "edf") == 0)
+			sim->scheduler = SCHEDULER_EDF;
+	}
+	else
+		return (ERR_PARSING);
+	return (0);
+}

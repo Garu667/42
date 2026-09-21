@@ -1,0 +1,40 @@
+NAME			= codexion
+CC				= cc
+CFLAGS			= -Wall -Werror -Wextra -pthread -MMD -MP -g
+OBJDIR			= objs
+
+MANDATORY_SRCS	= src/parsing.c	\
+				  src/coders.c	\
+				  src/dongle.c	\
+				  src/utils.c	\
+				  src/error.c	\
+				  src/heap.c	\
+				  src/scheduler.c	\
+				  src/sched_wait.c	\
+				  src/init.c	\
+				  src/main.c
+
+MANDATORY_OBJS	= $(MANDATORY_SRCS:%.c=$(OBJDIR)/%.o)
+DEPFILES		= $(MANDATORY_OBJS:.o=.d)
+
+all: $(NAME)
+
+$(NAME): $(MANDATORY_OBJS)
+	$(CC) $(CFLAGS) $(MANDATORY_OBJS) -o $(NAME) 
+
+$(OBJDIR)/%.o: %.c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(OBJDIR)
+	rm -f $(DEPFILES)
+
+fclean: clean
+	rm -f $(NAME)
+
+re: fclean all
+
+-include $(DEPFILES)
+
+.PHONY: all clean fclean re
