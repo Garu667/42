@@ -4,10 +4,17 @@ import time
 
 from pydantic import BaseModel, ValidationError, field_validator
 
+from src.decoding import Encoder
 from src.io import load_functions, load_tests, write_results
-from src.models import CallMeMaybeError, FunctionCall, InputError
-from src.pipeline import build_encoder, load_model, process_prompt
-from src.vocab import load_vocab
+from src.pipeline import SdkModel, build_encoder, load_model, process_prompt
+from src.vocab import Vocab, load_vocab
+from src.models import (
+    FunctionDefinition,
+    CallMeMaybeError,
+    FunctionCall,
+    InputError,
+    TestCase,
+)
 
 DEFAULT_FUNCTIONS = "data/input/functions_definition.json"
 DEFAULT_INPUT = "data/input/function_calling_tests.json"
@@ -62,12 +69,14 @@ def parse_arguments(argv: list[str] | None = None) -> Options:
 def run(argv: list[str] | None = None) -> int:
     """Load the inputs, process every prompt, write the results."""
     try:
-        arguments = parse_arguments(argv)
-        functions = load_functions(arguments.functions_definition)
-        tests = load_tests(arguments.input)
-        model = load_model(arguments.model)
-        vocab = load_vocab(model.get_path_to_vocab_file())
-        encode = build_encoder(model)
+        arguments: Options = parse_arguments(argv)
+        functions: list[FunctionDefinition] = load_functions(
+            arguments.functions_definition
+        )
+        tests: list[TestCase] = load_tests(arguments.input)
+        model: SdkModel = load_model(arguments.model)
+        vocab: Vocab = load_vocab(model.get_path_to_vocab_file())
+        encode: Encoder = build_encoder(model)
 
         started = time.monotonic()
         results: list[FunctionCall] = []
