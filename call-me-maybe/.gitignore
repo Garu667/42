@@ -1,0 +1,8 @@
+__pycache__/
+*.py[oc]
+.python-version
+.mypy_cache
+.venv
+
+data/output/
+moulinette/
